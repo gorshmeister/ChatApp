@@ -242,6 +242,7 @@ class MainActivity : AppCompatActivity() {
 
 //            recyclerView.smoothSnapToPosition(LinearSmoothScroller.SNAP_TO_ANY)
 
+
             messageField.text.clear()
         }
     }
