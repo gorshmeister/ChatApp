@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:parentTag="ru.gorshenev.themesstyles.EmojiView">
+
+    <TextView
+        android:id="@+id/tvEmoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="😀 0"
+        android:textColor="#CCCCCC"
+        android:textSize="14sp"
+        android:paddingHorizontal="9dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/emoji_bg"
+        android:gravity="center"
+        android:textAlignment="center"
+        />
+
+</merge>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/AndroidStudioProjects/ThemesStyles/app/src/main/res/drawable-v24/ic_sun.xml" value="0.262" />
+        <entry key="..\:/AndroidStudioProjects/ThemesStyles/app/src/main/res/layout/activity_main.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/ThemesStyles/app/src/main/res/layout/view_welcome.xml" value="0.20878623188405798" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/drawable/circle_bg.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/drawable/circle_bg_not_selected.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/drawable/circle_bg_selected.xml" value="0.2" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/drawable/emoji_bg.xml" value="0.2625" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/drawable/emoji_bg_not_selected.xml" value="0.2625" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/drawable/emoji_bg_selected.xml" value="0.2625" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1125" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/layout/activity_second.xml" value="0.21195652173913043" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/layout/view_circle_image.xml" value="0.1037037037037037" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/layout/view_circular_image.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/layout/view_custom_layout.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/layout/view_custom_view_group.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/layout/view_emoji.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/layout/view_flexbox.xml" value="0.2" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStyles/app/src/main/res/layout/view_welcome.xml" value="0.20878623188405798" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/avatar.xml" value="0.279" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/bottom_sheet_draw.xml" value="0.279" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/circle_bg.xml" value="0.226" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/circle_bg_not_selected.xml" value="0.226" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/date.xml" value="0.278" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/emoji_bg.xml" value="0.2315" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/emoji_bg_not_selected.xml" value="0.279" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/emoji_bg_selected.xml" value="0.2315" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/ic_plane.xml" value="0.226" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/ic_plus.xml" value="0.226" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/input_line.xml" value="0.279" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/message_left.xml" value="0.279" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/message_right.xml" value="0.279" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/name_message_left.xml" value="0.279" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/rounded_bottom_sheet.xml" value="0.2315" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout-v31/view_custom_view_group.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/activity_main.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/activity_second.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/bottom_sheet.xml" value="0.2302158273381295" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_date.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_emoji.xml" value="0.72" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_message.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_progress.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_text.xml" value="0.23026315789473684" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_user.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/new_activity.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_circle_image.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_custom_view_group.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_custom_view_group_right.xml" value="0.6" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_emoji.xml" value="0.6" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_flexbox.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_message.xml" value="0.12552083333333333" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_message_left.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_message_right.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles/app/src/main/res/drawable/circle_bg.xml" value="0.227" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles/app/src/main/res/drawable/emoji_bg.xml" value="0.227" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles/app/src/main/res/layout/activity_second.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles/app/src/main/res/layout/view_circle_image.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles/app/src/main/res/layout/view_custom_layout.xml" value="0.21195652173913043" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles/app/src/main/res/layout/view_custom_view_group.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles/app/src/main/res/layout/view_emoji.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles/app/src/main/res/layout/view_flexbox.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles/app/src/main/res/layout/view_welcome.xml" value="0.21195652173913043" />
+        <entry key="app/src/main/res/drawable/circle_bg_selected.xml" value="0.2465" />
+        <entry key="app/src/main/res/drawable/emoji_bg.xml" value="0.2465" />
+        <entry key="app/src/main/res/drawable/emoji_bg_not_selected.xml" value="0.2465" />
+        <entry key="app/src/main/res/drawable/emoji_bg_selected.xml" value="0.2465" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_second.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/bottom_sheet.xml" value="0.3842662632375189" />
+        <entry key="app/src/main/res/layout/item_emoji.xml" value="4.0" />
+        <entry key="app/src/main/res/layout/item_text.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/view_custom_view_group.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/view_custom_view_group_right.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/view_emoji.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/view_flexbox.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/view_message_left.xml" value="0.40260416666666665" />
+        <entry key="app/src/main/res/layout/view_message_right.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/view_welcome.xml" value="0.4036458333333333" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

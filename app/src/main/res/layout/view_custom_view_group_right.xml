@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="ru.gorshenev.themesstyles.CustomViewGroupRight">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/background"
+        style="@style/CardViewRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="12dp">
+
+        <TextView
+            android:id="@+id/tvText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="220dp"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            tools:text="Textet" />
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/time_color"
+            android:textSize="11sp"
+            tools:text="@tools:sample/date/hhmm" />
+    </androidx.cardview.widget.CardView>
+
+    <ru.gorshenev.themesstyles.FlexboxLayout
+        android:id="@+id/flexbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="7dp" />
+
+    <!--//todo заглушка
+    Удалить -> marginRight="4dp" у flexbox, поставить в CusVieGrRight gap    -->
+</merge>

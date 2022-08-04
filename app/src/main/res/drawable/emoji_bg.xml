@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+            <corners android:radius="10dp"/>
+            <solid android:color="#1C1C1C"/>
+        </shape>
+    </item>
+    <item>
+        <selector>
+            <item android:state_selected="true" android:drawable="@drawable/emoji_bg_selected" />
+            <item android:drawable="@drawable/emoji_bg_not_selected"/>
+        </selector>
+    </item>
+</layer-list>

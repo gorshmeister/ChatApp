@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.MyApp" parent="android:Widget" />
+
+    <style name="Widget.MyApp.WelcomeView">
+        <item name="imgTint">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Widget.MyApp.ToolBar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="titleTextColor">?attr/colorOnPrimary</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:elevation">@dimen/elevation_toolbar</item>
+    </style>
+
+    <style name="Widget.MyApp.EmojiView">
+        <item name="ev_textColor">@color/black</item>
+        <item name="ev_textSize">6sp</item>
+        <item name="ev_padding">6dp</item>
+    </style>
+
+    <style name="Widget.MyApp.Flexbox">
+        <item name="gap">8dp</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="CardViewLeft" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="contentPaddingLeft">13dp</item>
+        <item name="contentPaddingRight">13dp</item>
+        <item name="contentPaddingTop">10dp</item>
+        <item name="contentPaddingBottom">10dp</item>
+
+        <item name="cardBackgroundColor">#1C1C1C</item>
+        <item name="cardCornerRadius">18dp</item>
+    </style>
+
+    <style name="CardViewRight" parent="CardViewLeft">
+        <item name="contentPaddingLeft">16dp</item>
+        <item name="contentPaddingRight">16dp</item>
+    </style>
+
+    <style name="Widget.MyApp.BottomSheet.Modal" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:backgroundTint">#1C1C1C</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.MyApp.LargeComponent</item>
+    </style>
+
+    <style name="Widget.MyApp.BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.MyApp.BottomSheet.Modal</item>
+    </style>
+
+</resources>
