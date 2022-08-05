@@ -14,16 +14,7 @@
         android:layout_gravity="top|center"
         android:gravity="center"
         android:textColor="#999999"
-        android:background="@drawable/date"
+        android:background="@drawable/date_bg"
         android:textSize="14sp"
         tools:text="1 Feb" />
 </LinearLayout>
-
-    <!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--    xmlns:tools="http://schemas.android.com/tools"-->
-    <!--    android:id="@+id/textHolder"-->
-    <!--    android:layout_width="76dp"-->
-    <!--    android:layout_height="22dp"-->
-    <!--    android:layout_gravity="top|center"-->
-    <!--    android:gravity="center"-->
-    <!--    tools:text="1 Feb" />-->

@@ -1,6 +1,6 @@
-package ru.gorshenev.themesstyles.hw3
+package ru.gorshenev.themesstyles
 
-import ru.gorshenev.themesstyles.hw3.items.EmojiUi
+import ru.gorshenev.themesstyles.items.EmojiUi
 
 object Data {
 
@@ -10,8 +10,6 @@ object Data {
         EmojiUi(code = 0x1F600, counter = 1),
         EmojiUi(code = 0x1F603, counter = 1),
         EmojiUi(code = 0x1F604, counter = 1),
-//		EmojiUi(code = 0x1F606),
-//		EmojiUi(code = 0),
     )
 
     fun getAllEmojies(): List<EmojiUi> = listOf(

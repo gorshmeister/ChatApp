@@ -89,11 +89,9 @@ class CustomViewGroupRight @JvmOverloads constructor(
             flexbox.measuredWidth + flexboxLayoutParams.leftMargin + flexboxLayoutParams.rightMargin
 
 
-//        val height = maxOf(textHeight, textHeight + timeHeight + flexboxHeight)
         val height = maxOf(backgroundHeight, textHeight + timeHeight + flexboxHeight)
         setMeasuredDimension(
             resolveSize(backgroundWidth, widthMeasureSpec),
-//            resolveSize(textWidth + timeWidth, widthMeasureSpec),
             resolveSize(height, heightMeasureSpec)
         )
     }
@@ -129,5 +127,4 @@ class CustomViewGroupRight @JvmOverloads constructor(
     private fun View.layout(rect: Rect) {
         layout(rect.left, rect.top, rect.right, rect.bottom)
     }
-
 }

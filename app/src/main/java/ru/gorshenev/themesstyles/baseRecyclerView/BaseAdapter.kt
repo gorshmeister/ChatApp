@@ -1,9 +1,8 @@
-package ru.gorshenev.themesstyles.hw3
+package ru.gorshenev.themesstyles.baseRecyclerView
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.gorshenev.rv.BaseViewHolder
-import ru.gorshenev.rv.HolderFactory
+import ru.gorshenev.themesstyles.ViewTyped
 
 
 abstract class BaseAdapter<T : ViewTyped>(internal val holderFactory: HolderFactory) :

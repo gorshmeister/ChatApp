@@ -8,12 +8,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import ru.gorshenev.themesstyles.hw3.Adapter
-import ru.gorshenev.themesstyles.hw3.Data
-import ru.gorshenev.themesstyles.hw3.ViewTyped
-import ru.gorshenev.themesstyles.hw3.holderFactory.BottomSheetHolderFactory
-import ru.gorshenev.themesstyles.hw3.items.EmojiUi
-import ru.gorshenev.themesstyles.hw3.items.ReactionsUi
+import ru.gorshenev.themesstyles.holderFactory.BottomSheetHolderFactory
+import ru.gorshenev.themesstyles.items.EmojiUi
+import ru.gorshenev.themesstyles.items.ReactionsUi
 import java.io.Serializable
 
 class BottomSheet : BottomSheetDialogFragment() {
@@ -29,7 +26,7 @@ class BottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val messageId = arguments?.getInt(MSG_ID)
+        val messageId = arguments?.getInt(ARGUMENT_MSG_ID)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_emojis)
         val holderFactory = BottomSheetHolderFactory(
@@ -39,7 +36,7 @@ class BottomSheet : BottomSheetDialogFragment() {
                     emojiCode = emojiCode
                 )
                 dismiss()
-                setFragmentResult(PICKER_KEY, bundleOf(EMOJI_PICK to result))
+                setFragmentResult(PICKER_KEY, bundleOf(RESULT_EMOJI_PICK to result))
             }
         )
         val adapter = Adapter<ViewTyped>(holderFactory)
@@ -59,9 +56,9 @@ class BottomSheet : BottomSheetDialogFragment() {
 
     companion object {
         const val TAG = "BottomSheet"
-        const val MSG_ID = "MessageId"
-        const val PICKER_KEY = "FragmentResultKey"
-        const val EMOJI_PICK = "EmojiPick"
+        const val ARGUMENT_MSG_ID = "ARGUMENT_MSG_ID"
+        const val PICKER_KEY = "PICKER_KEY"
+        const val RESULT_EMOJI_PICK = "RESULT_EMOJI_PICK"
     }
 
     //todo read Parcelizable||Parcelable, differences between it
@@ -69,5 +66,4 @@ class BottomSheet : BottomSheetDialogFragment() {
         val messageId: Int,
         val emojiCode: Int
     ) : Serializable
-
 }

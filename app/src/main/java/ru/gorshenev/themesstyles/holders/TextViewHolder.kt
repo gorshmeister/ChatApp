@@ -1,10 +1,10 @@
-package ru.gorshenev.themesstyles.hw3.holders
+package ru.gorshenev.themesstyles.holders
 
 import android.view.View
 import android.widget.TextView
-import ru.gorshenev.rv.BaseViewHolder
+import ru.gorshenev.themesstyles.baseRecyclerView.BaseViewHolder
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.hw3.items.TextUi
+import ru.gorshenev.themesstyles.items.TextUi
 
 
 class TextViewHolder(

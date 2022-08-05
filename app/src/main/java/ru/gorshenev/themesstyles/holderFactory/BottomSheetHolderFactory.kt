@@ -1,11 +1,11 @@
-package ru.gorshenev.themesstyles.hw3.holderFactory
+package ru.gorshenev.themesstyles.holderFactory
 
 import android.view.View
-import ru.gorshenev.rv.BaseViewHolder
-import ru.gorshenev.rv.HolderFactory
-import ru.gorshenev.themesstyles.hw3.holders.TextViewHolder
+import ru.gorshenev.themesstyles.baseRecyclerView.BaseViewHolder
+import ru.gorshenev.themesstyles.baseRecyclerView.HolderFactory
+import ru.gorshenev.themesstyles.holders.TextViewHolder
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.hw3.holders.ReactionsViewHolder
+import ru.gorshenev.themesstyles.holders.ReactionsViewHolder
 
 class BottomSheetHolderFactory(
 	private val onEmojiClick: (emojiCode: Int) -> Unit

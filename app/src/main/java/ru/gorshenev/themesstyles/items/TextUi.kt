@@ -1,7 +1,7 @@
-package ru.gorshenev.themesstyles.hw3.items
+package ru.gorshenev.themesstyles.items
 
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.hw3.ViewTyped
+import ru.gorshenev.themesstyles.ViewTyped
 
 data class TextUi(
     override val id: Int,

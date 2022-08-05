@@ -1,15 +1,15 @@
-package ru.gorshenev.themesstyles.hw3.holders
+package ru.gorshenev.themesstyles.holders
 
 import android.view.View
 import android.widget.TextView
-import ru.gorshenev.rv.BaseViewHolder
+import ru.gorshenev.themesstyles.baseRecyclerView.BaseViewHolder
 import ru.gorshenev.themesstyles.CustomViewGroupRight
 import ru.gorshenev.themesstyles.EmojiView
 import ru.gorshenev.themesstyles.FlexboxLayout
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.hw3.Utils.px
-import ru.gorshenev.themesstyles.hw3.Utils.toEmojiString
-import ru.gorshenev.themesstyles.hw3.items.RightMessageUi
+import ru.gorshenev.themesstyles.Utils.px
+import ru.gorshenev.themesstyles.Utils.toEmojiString
+import ru.gorshenev.themesstyles.items.RightMessageUi
 
 class RightMessageViewHolder(
     view: View,
@@ -49,7 +49,6 @@ class RightMessageViewHolder(
             flexBox.addViews(listOf(EmojiView(flexBox.context).apply {
                 text = "+"
                 this.setSize(48.px, 29.px)
-                //todo px -> dp -> setSize(dp.toPx, dp.toPx)
                 setOnClickListener { onMessageClick(item.id) }
             }))
         }

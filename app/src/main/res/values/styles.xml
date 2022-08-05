@@ -3,12 +3,6 @@
 
     <style name="Widget.MyApp" parent="android:Widget" />
 
-    <style name="Widget.MyApp.WelcomeView">
-        <item name="imgTint">?attr/colorPrimary</item>
-        <item name="android:textColor">?attr/colorPrimary</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
     <style name="Widget.MyApp.ToolBar" parent="Widget.MaterialComponents.Toolbar">
         <item name="titleTextColor">?attr/colorOnPrimary</item>
         <item name="android:background">?attr/colorPrimary</item>

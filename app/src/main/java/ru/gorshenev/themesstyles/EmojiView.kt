@@ -45,22 +45,18 @@ class EmojiView @JvmOverloads constructor(
     var count = 0
         set(value) {
             field = value
-            tvEmoji.text = if (text == "+") {
-                text
-            } else {
-                "$text $count"
-            }
+            tvEmoji.text = "$text $count"
         }
 
     var messageId = 0
         set(value) {
-			field = value
-		}
+            field = value
+        }
 
-	var userId: MutableList<Int> = mutableListOf()
+    var userId: MutableList<Int> = mutableListOf()
         set(value) {
-			field = value
-		}
+            field = value
+        }
 
     init {
         inflate(context, R.layout.view_emoji, this)
@@ -82,5 +78,4 @@ class EmojiView @JvmOverloads constructor(
         tvEmoji.layoutParams = LayoutParams(width, height)
 //		requestLayout()
     }
-
 }

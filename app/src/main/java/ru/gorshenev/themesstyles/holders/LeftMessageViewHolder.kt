@@ -1,18 +1,17 @@
-package ru.gorshenev.themesstyles.hw3.holders
+package ru.gorshenev.themesstyles.holders
 
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import ru.gorshenev.rv.BaseViewHolder
-import ru.gorshenev.themesstyles.CustomViewGroup
+import ru.gorshenev.themesstyles.baseRecyclerView.BaseViewHolder
+import ru.gorshenev.themesstyles.CustomViewGroupLeft
 import ru.gorshenev.themesstyles.EmojiView
 import ru.gorshenev.themesstyles.FlexboxLayout
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.hw3.Utils.dp
-import ru.gorshenev.themesstyles.hw3.Utils.px
-import ru.gorshenev.themesstyles.hw3.Utils.toEmojiString
-import ru.gorshenev.themesstyles.hw3.items.EmojiUi
-import ru.gorshenev.themesstyles.hw3.items.LeftMessageUi
+import ru.gorshenev.themesstyles.Utils.px
+import ru.gorshenev.themesstyles.Utils.toEmojiString
+import ru.gorshenev.themesstyles.items.EmojiUi
+import ru.gorshenev.themesstyles.items.LeftMessageUi
 
 
 class LeftMessageViewHolder(
@@ -21,7 +20,7 @@ class LeftMessageViewHolder(
     private val onEmojiClick: (emojiCode: Int, messageId: Int) -> Unit
 ) : BaseViewHolder<LeftMessageUi>(view) {
 
-    val messageView: CustomViewGroup = view.findViewById(R.id.view_message)
+    val messageView: CustomViewGroupLeft = view.findViewById(R.id.view_message)
 
     val avatar: ImageView = view.findViewById(R.id.ivAvatar)
     val name: TextView = view.findViewById(R.id.tvName)
