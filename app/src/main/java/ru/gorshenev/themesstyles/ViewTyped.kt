@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.hw3
+package ru.gorshenev.themesstyles
 
 interface ViewTyped {
     val viewType: Int

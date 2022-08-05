@@ -33,11 +33,6 @@
     <style name="ThemeOverlay.MyApp.Secondary.Blue" parent="">
         <item name="colorSecondary">@color/mtrl_blue_500</item>
         <item name="colorOnSecondary">@android:color/black</item>
-
-
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.MyApp.SmallComponent</item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.MyApp.LargeComponent</item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.MyApp.MediumComponent</item>
     </style>
 
 </resources>

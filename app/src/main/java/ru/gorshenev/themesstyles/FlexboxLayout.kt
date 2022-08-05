@@ -28,14 +28,8 @@ class FlexboxLayout @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-		children.forEachIndexed { index, it ->
-			measureChildWithMargins(it, widthMeasureSpec, 0, heightMeasureSpec, 0)
-//			if ((it as EmojiView).text == "+") {
-//                it.text = "11111"
-////				todo EmojiView with "+" size
-//				val lastEmojiWidth = getChildAt(0).measuredWidth
-//				it.setSize(70, it.measuredHeight)
-//			}
+		children.forEach {
+            measureChildWithMargins(it, widthMeasureSpec, 0, heightMeasureSpec, 0)
 		}
 
         var widthOffset = 0

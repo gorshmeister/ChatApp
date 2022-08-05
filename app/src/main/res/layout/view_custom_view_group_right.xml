@@ -10,7 +10,7 @@
         style="@style/CardViewRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="12dp">
+        android:layout_marginEnd="12dp">
 
         <TextView
             android:id="@+id/tvText"
@@ -37,9 +37,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="7dp"
-        android:layout_marginRight="4dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginBottom="7dp" />
 
-    <!--//todo заглушка
+    <!--//todo
     Удалить -> marginRight="4dp" у flexbox, поставить в CusVieGrRight gap    -->
 </merge>

@@ -1,11 +1,11 @@
-package ru.gorshenev.rv
+package ru.gorshenev.themesstyles.baseRecyclerView
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.hw3.ViewTyped
-import ru.gorshenev.themesstyles.hw3.holders.TextViewHolder
+import ru.gorshenev.themesstyles.ViewTyped
+import ru.gorshenev.themesstyles.holders.TextViewHolder
 
 abstract class HolderFactory : (ViewGroup, Int) -> BaseViewHolder<ViewTyped> {
 

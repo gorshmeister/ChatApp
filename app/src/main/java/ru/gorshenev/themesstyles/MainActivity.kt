@@ -6,22 +6,16 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
-import androidx.core.text.trimmedLength
 import androidx.core.widget.doOnTextChanged
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import ru.gorshenev.rv.HolderFactory
-import ru.gorshenev.themesstyles.hw3.Adapter
-import ru.gorshenev.themesstyles.hw3.Data
-import ru.gorshenev.themesstyles.hw3.ViewTyped
-import ru.gorshenev.themesstyles.hw3.holderFactory.TfsHolderFactory
-import ru.gorshenev.themesstyles.hw3.items.EmojiUi
-import ru.gorshenev.themesstyles.hw3.items.LeftMessageUi
-import ru.gorshenev.themesstyles.hw3.items.RightMessageUi
-import ru.gorshenev.themesstyles.hw3.items.TextUi
-import java.text.SimpleDateFormat
-import java.util.*
+import ru.gorshenev.themesstyles.Utils.getCurrentDate
+import ru.gorshenev.themesstyles.Utils.getCurrentTime
+import ru.gorshenev.themesstyles.baseRecyclerView.HolderFactory
+import ru.gorshenev.themesstyles.holderFactory.TfsHolderFactory
+import ru.gorshenev.themesstyles.items.EmojiUi
+import ru.gorshenev.themesstyles.items.LeftMessageUi
+import ru.gorshenev.themesstyles.items.RightMessageUi
+import ru.gorshenev.themesstyles.items.TextUi
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     private val holderFactory: HolderFactory = TfsHolderFactory(
         longClick = { messageId ->
-            bottomSheet.arguments = bundleOf(BottomSheet.MSG_ID to messageId)
+            bottomSheet.arguments = bundleOf(BottomSheet.ARGUMENT_MSG_ID to messageId)
             bottomSheet.show(supportFragmentManager, BottomSheet.TAG)
             true
         },
@@ -105,11 +99,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        supportFragmentManager.setFragmentResultListener(
-            BottomSheet.PICKER_KEY,
-            this
-        ) { _, result ->
-            val (messageId, emojiCode) = result.get(BottomSheet.EMOJI_PICK) as BottomSheet.EmojiPickResult
+        supportFragmentManager.setFragmentResultListener(BottomSheet.PICKER_KEY, this) { _, result ->
+            val (messageId, emojiCode) = result.get(BottomSheet.RESULT_EMOJI_PICK) as BottomSheet.EmojiPickResult
+
             adapter.items = adapter.items.map { item ->
                 when (item) {
                     is RightMessageUi -> {
@@ -184,100 +176,38 @@ class MainActivity : AppCompatActivity() {
         btnSend = findViewById(R.id.btn_sendMsg)
         inputField()
 
-        //todo govnoCode
         btnSend.setOnClickListener {
             if (messageField.text.isNotBlank()) {
                 val lastDate = (adapter.items.findLast { it is TextUi } as TextUi).text
-                if (lastDate != getDate()) {
+                if (lastDate != getCurrentDate()) {
                     adapter.items += TextUi(
                         id = adapter.itemCount + 1,
-                        text = getDate(),
+                        text = getCurrentDate(),
                         viewType = R.layout.item_date
                     )
                 }
 
-//                val listOfDates = adapter.items.filter { viewTyped ->
-//                    viewTyped.viewType == R.layout.item_date
-//                }
-//                val isCurrentDate = listOfDates.any {
-//                    val item = (it as TextUi)
-//                    item.text == getDate()
-//                }
-//
-//                if (!isCurrentDate)
-//                    adapter.items += TextUi(
-//                        id = adapter.itemCount + 1,
-//                        text = getDate(),
-//                        viewType = R.layout.item_date
-//                    )
-
-//                val lastView = adapter.items.lastOrNull() { viewTyped ->
-//                    viewTyped.viewType == R.layout.item_date
-//                }
-//                when (lastView) {
-//                    null -> adapter.items += TextUi(
-//                        id = adapter.itemCount + 1,
-//                        text = getDate(),
-//                        viewType = R.layout.item_date
-//                    )
-//                    is TextUi ->
-//                        if (lastView.text != getDate()) {
-//                            adapter.items += TextUi(
-//                                id = adapter.itemCount + 1,
-//                                text = getDate(),
-//                                viewType = R.layout.item_date
-//                            )
-//                        }
-//                }
-
-                //todo fix recyclerView size
                 adapter.items += RightMessageUi(
                     id = adapter.itemCount + 1,
                     text = messageField.text.toString(),
-                    time = getTime(),
+                    time = getCurrentTime(),
                     emojis = emptyList()
                 )
             }
+
             recyclerView.smoothScrollToPosition(adapter.itemCount)
-
-//            recyclerView.smoothSnapToPosition(LinearSmoothScroller.SNAP_TO_ANY)
-
-
             messageField.text.clear()
         }
     }
 
-    private fun RecyclerView.smoothSnapToPosition(
-        position: Int,
-        snapMode: Int = LinearSmoothScroller.SNAP_TO_END,
-    ) {
 
-        val smoothScroller = object : LinearSmoothScroller(this.context) {
-            override fun getVerticalSnapPreference(): Int = snapMode
-            override fun getHorizontalSnapPreference(): Int = snapMode
-        }
-        smoothScroller.targetPosition = position
-        layoutManager?.startSmoothScroll(smoothScroller)
-    }
 
     private fun inputField() {
         messageField.doOnTextChanged { text, _, _, _ ->
             if (!text.isNullOrBlank())
-                btnSend.setImageResource(R.drawable.plane)
+                btnSend.setImageResource(R.drawable.input_field_icon_plane)
             else
-                btnSend.setImageResource(R.drawable.plus)
+                btnSend.setImageResource(R.drawable.input_field_icon_plus)
         }
-    }
-
-    private fun getTime(): String {
-        val formatter = SimpleDateFormat("kk:mm", Locale.getDefault())
-        val current = Calendar.getInstance().time
-        return formatter.format(current)
-    }
-
-    private fun getDate(): String {
-        val formatter = SimpleDateFormat("d MMM", Locale.getDefault())
-        val current = Calendar.getInstance().time
-        return formatter.format(current)
     }
 }

@@ -15,7 +15,7 @@ import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 
-class CustomViewGroup @JvmOverloads constructor(
+class CustomViewGroupLeft @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
@@ -37,7 +37,7 @@ class CustomViewGroup @JvmOverloads constructor(
     private val backgroundRect = Rect()
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.view_custom_view_group, this, true)
+        LayoutInflater.from(context).inflate(R.layout.view_custom_view_group_left, this, true)
         ivAvatar = findViewById(R.id.ivAvatar)
         tvName = findViewById(R.id.tvName)
         tvTime = findViewById(R.id.tvTime)
@@ -119,11 +119,9 @@ class CustomViewGroup @JvmOverloads constructor(
             flexbox.measuredWidth + flexboxLayoutParams.leftMargin + flexboxLayoutParams.rightMargin
 
 
-//        val height = maxOf(avatarHeight, nameHeight + textHeight + timeHeight + flexboxHeight)
         val height = maxOf(avatarHeight, nameHeight + textHeight + timeHeight + flexboxHeight)
         setMeasuredDimension(
             resolveSize(avatarWidth + backgroundWidth, widthMeasureSpec),
-//            resolveSize(avatarWidth + timeWidth, widthMeasureSpec),
             resolveSize(height, heightMeasureSpec)
         )
     }
@@ -174,5 +172,4 @@ class CustomViewGroup @JvmOverloads constructor(
     private fun View.layout(rect: Rect) {
         layout(rect.left, rect.top, rect.right, rect.bottom)
     }
-
 }

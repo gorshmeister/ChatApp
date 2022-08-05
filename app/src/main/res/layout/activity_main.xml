@@ -36,7 +36,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="12dp"
         android:layout_marginBottom="6dp"
-        android:background="@drawable/input_line"
+        android:background="@drawable/input_field_bg"
         android:ems="10"
         android:hint="Написать..."
         android:inputType="textPersonName"
@@ -57,8 +57,7 @@
         android:layout_height="40dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="12dp"
-        android:background="@drawable/circle_bg_not_selected"
-        android:src="@drawable/plus"
+        android:src="@drawable/input_field_icon_plus"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/et_msgField" />
