@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="#1E1E1E"
+    android:layout_height="60dp">
+
+    <include layout="@layout/btn_channels"
+        android:layout_width="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_channels"
+        android:text="Channels"
+        />
+
+    <include layout="@layout/btn_people"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/btn_people"
+        android:text="People"/>
+
+    <include
+        android:id="@+id/btn_profile"
+        layout="@layout/btn_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:text="Profile" />
+
+</RelativeLayout>

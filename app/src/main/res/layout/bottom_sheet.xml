@@ -13,7 +13,7 @@
         android:layout_height="7dp"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
-        android:background="@drawable/bottom_sheet_draw" />
+        android:background="@drawable/draw_bottom_sheet" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_emojis"

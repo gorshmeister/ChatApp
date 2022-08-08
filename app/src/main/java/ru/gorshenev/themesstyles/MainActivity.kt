@@ -205,9 +205,9 @@ class MainActivity : AppCompatActivity() {
     private fun inputField() {
         messageField.doOnTextChanged { text, _, _, _ ->
             if (!text.isNullOrBlank())
-                btnSend.setImageResource(R.drawable.input_field_icon_plane)
+                btnSend.setImageResource(R.drawable.icon_input_field_plane)
             else
-                btnSend.setImageResource(R.drawable.input_field_icon_plus)
+                btnSend.setImageResource(R.drawable.icon_input_field_plus)
         }
     }
 }

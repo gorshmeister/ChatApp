@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:id="@+id/iv_avatar"
+        android:src="@drawable/ic_launcher_background"
+        android:layout_marginRight="10dp"
+        app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+        tools:src="@drawable/ic_launcher_background" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_name"
+        android:layout_toEndOf="@id/iv_avatar"
+        tools:text="@tools:sample/full_names"
+        android:text="Name Surname"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="8dp"
+        android:textColor="#FAFAFA"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name"
+        android:layout_toEndOf="@id/iv_avatar"
+        android:text="darrel@gmail.com"
+        android:textColor="#A1A1A1"
+        android:layout_marginTop="4dp"
+        tools:text="darrel@gmail.com"/>
+
+
+</RelativeLayout>

@@ -14,7 +14,7 @@
         android:layout_gravity="top|center"
         android:gravity="center"
         android:textColor="#999999"
-        android:background="@drawable/date_bg"
+        android:background="@drawable/bg_date"
         android:textSize="14sp"
         tools:text="1 Feb" />
 </LinearLayout>
