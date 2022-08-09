@@ -16,6 +16,8 @@
 
         <item name="bottomSheetDialogTheme">@style/Widget.MyApp.BottomSheetDialog</item>
 
+        <item name="bottomNavigationStyle">@style/Widget.MyApp.BottomNavigationView</item>
+
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.MyApp.SmallComponent</item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.MyApp.LargeComponent</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.MyApp.MediumComponent</item>

@@ -11,7 +11,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
         android:gravity="start"
-        android:hint="#general"
+        android:text="#general"
         android:textColor="#FAFAFA"
         android:textColorHint="@color/white"
         android:textSize="18sp" />
