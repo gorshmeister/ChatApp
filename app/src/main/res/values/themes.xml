@@ -18,6 +18,8 @@
 
         <item name="bottomNavigationStyle">@style/Widget.MyApp.BottomNavigationView</item>
 
+        <item name="tabStyle">@style/Widget.MyApp.TabLayout</item>
+
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.MyApp.SmallComponent</item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.MyApp.LargeComponent</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.MyApp.MediumComponent</item>

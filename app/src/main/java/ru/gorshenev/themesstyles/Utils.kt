@@ -1,6 +1,9 @@
 package ru.gorshenev.themesstyles
 
 import android.content.res.Resources
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import ru.gorshenev.themesstyles.items.EmojiUi
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,4 +30,15 @@ object Utils {
         val current = Calendar.getInstance().time
         return formatter.format(current)
     }
+
+    fun RecyclerView.setDivider() {
+        val divider = DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL)
+        val drawable = ContextCompat.getDrawable(this.context, R.drawable.line_divider)
+
+        drawable?.let {
+            divider.setDrawable(it)
+            addItemDecoration(divider)
+        }
+    }
+
 }

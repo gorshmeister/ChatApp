@@ -13,15 +13,7 @@ import ru.gorshenev.themesstyles.items.EmojiUi
 import ru.gorshenev.themesstyles.items.ReactionsUi
 import java.io.Serializable
 
-class BottomSheet : BottomSheetDialogFragment() {
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        return inflater.inflate(R.layout.bottom_sheet, container, false)
-    }
+class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

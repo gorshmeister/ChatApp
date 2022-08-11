@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="66dp"
     android:background="#1E1E1E">
 
     <EditText
         android:id="@+id/et_search"
-        android:layout_width="match_parent"
+        android:layout_width="310dp"
         android:layout_height="56dp"
-        android:layout_alignParentTop="true"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="14dp"
-        android:layout_marginRight="36dp"
-        android:layout_toStartOf="@+id/iv_search"
         android:backgroundTint="#323232"
         android:fontFamily="sans-serif-thin"
         android:hint="Search..."
         android:paddingLeft="30dp"
-        android:paddingBottom="22dp"
+        android:paddingBottom="20dp"
         android:textColor="@color/white"
         android:textColorHint="#FFFFFF"
         android:textSize="24sp"
@@ -25,46 +22,11 @@
 
     <ImageView
         android:id="@+id/iv_search"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="28dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="18dp"
+        android:layout_marginRight="30dp"
         android:src="@drawable/icon_search" />
 
-    <TextView
-        android:id="@+id/tv_subscribed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/et_search"
-        android:layout_marginLeft="54dp"
-        android:layout_marginTop="10dp"
-        android:fontFamily="sans-serif-light"
-        android:text="Subscribed"
-        android:textColor="#FAFAFA"
-        android:textSize="22sp" />
-
-    <TextView
-        android:id="@+id/tv_allStreams"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/et_search"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="54dp"
-        android:fontFamily="sans-serif-light"
-        android:text="All streams"
-        android:textColor="#FAFAFA"
-        android:textSize="22sp" />
-
-    <View
-        android:layout_width="150dp"
-        android:layout_height="2dp"
-        android:layout_below="@+id/tv_subscribed"
-        android:layout_marginLeft="34dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/draw_channels_comp" />
-
-
-</RelativeLayout>
+</FrameLayout>

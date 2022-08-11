@@ -46,6 +46,7 @@
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/icon_people.xml" value="0.2315" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/input_field_bg.xml" value="0.2315" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/input_line.xml" value="0.279" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/line_divider.xml" value="0.1195" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/message_left.xml" value="0.279" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/message_right.xml" value="0.279" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/name_message_left.xml" value="0.279" />
@@ -65,10 +66,16 @@
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/channels_icon.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/component_bottom_icons.xml" value="0.27447916666666666" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/component_chanels.xml" value="0.27447916666666666" />
-        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/component_people.xml" value="0.6" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/component_channels.xml" value="0.22530996152201796" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/component_channels_stream.xml" value="0.22530996152201796" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/component_channels_topic.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/component_people.xml" value="0.536" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/fragment_channels.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/fragment_channels_stream.xml" value="0.22530996152201796" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/fragment_chat.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/fragment_people.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/fragment_profile.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/fragment_stream.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_date.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_emoji.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_message.xml" value="0.27447916666666666" />
@@ -81,7 +88,7 @@
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/people_icon.xml" value="0.72" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/profile.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/profile_icon.xml" value="0.6" />
-        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/search_field.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/search_field.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/second.xml" value="0.2" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/users_field.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_circle_image.xml" value="0.27447916666666666" />

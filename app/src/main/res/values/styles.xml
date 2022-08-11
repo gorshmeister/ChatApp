@@ -50,14 +50,24 @@
     <style name="Widget.MyApp.BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Widget.MyApp.BottomSheet.Modal</item>
     </style>
-    
+
     <style name="Widget.MyApp.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
         <item name="materialThemeOverlay">@style/ThemeOverlay.MyApp.BottomNavigationView</item>
     </style>
-    
+
     <style name="ThemeOverlay.MyApp.BottomNavigationView" parent="">
         <item name="colorPrimary">#1E1E1E</item>
         <item name="colorOnPrimary">#FAFAFA</item>
     </style>
 
+    <style name="Widget.MyApp.TabLayout" parent="Widget.MaterialComponents.TabLayout.Colored">
+        <item name="tabTextAppearance">@style/ThemeOverlay.MyApp.TabLayoutTextAppearance</item>
+        <item name="android:background">#1E1E1E</item>
+        <item name="tabIndicatorColor">#219653</item>
+        <item name="tabTextColor">@color/white</item>
+    </style>
+
+    <style name="ThemeOverlay.MyApp.TabLayoutTextAppearance" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">22sp</item>
+    </style>
 </resources>

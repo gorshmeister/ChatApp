@@ -6,60 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_view"
+        android:name="ru.gorshenev.themesstyles.fragments.ChannelsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/app_name" />
+        tools:layout="@layout/fragment_channels" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_items"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="62dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:stackFromEnd="true"
-        tools:itemCount="2"
-        tools:listitem="@layout/view_message_left" />
-
-    <EditText
-        android:id="@+id/et_msgField"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginBottom="6dp"
-        android:background="@drawable/bg_input_field"
-        android:ems="10"
-        android:hint="Написать..."
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:paddingLeft="21dp"
-        android:paddingRight="10dp"
-        android:textColor="#CCCCCC"
-        android:textColorHint="#CCCCCC"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sendMsg"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Написать..." />
-
-    <ImageView
-        android:id="@+id/btn_sendMsg"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="12dp"
-        android:src="@drawable/icon_input_field_plus"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/et_msgField" />
+        app:menu="@menu/bottom_navigation_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
