@@ -12,11 +12,18 @@ class ReactionsViewHolder(
     private val onEmojiClick: (emojiCode: Int) -> Unit
 ) : BaseViewHolder<ReactionsUi>(view) {
 
+    private var currentCode: Int? = null
+
     val emoji: TextView = view.findViewById(R.id.emojiHolder)
 
-    override fun bind(item: ReactionsUi) {
-        emoji.text = item.emojiCode.toEmojiString()
+    init {
+        emoji.setOnClickListener {
+            currentCode?.let(onEmojiClick)
+        }
+    }
 
-        emoji.setOnClickListener { onEmojiClick(item.emojiCode) }
+    override fun bind(item: ReactionsUi) {
+        currentCode = item.emojiCode
+        emoji.text = item.emojiCode.toEmojiString()
     }
 }

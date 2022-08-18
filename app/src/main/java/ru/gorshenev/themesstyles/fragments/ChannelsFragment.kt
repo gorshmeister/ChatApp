@@ -2,8 +2,11 @@ package ru.gorshenev.themesstyles.fragments
 
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
+import androidx.core.os.bundleOf
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.setFragmentResult
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -28,12 +31,12 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
         tabLayout = view.findViewById(R.id.tabLayout)
         setTabNames()
 
-//        view.findViewById<TextView>(R.id.tv_channel).setOnClickListener {
-//            parentFragmentManager.beginTransaction()
-//                .replace(R.id.fragment_container_view, ChatFragment())
-//                .commit()
-//        }
 
+        val searchField: EditText = view.findViewById(R.id.et_search)
+
+        searchField.doOnTextChanged { text, _, _, _ ->
+            setFragmentResult(STREAM_SEARCH, bundleOf(RESULT_STREAM to text.toString()))
+        }
 
     }
 
@@ -42,5 +45,12 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
         TabLayoutMediator(tabLayout, fragmentViewPager) { tab, position ->
             tab.text = tabs[position]
         }.attach()
+    }
+
+    companion object {
+        const val STREAM_SEARCH = "STREAM_SEARCH"
+        const val RESULT_STREAM = "RESULT_STREAM"
+        const val STR_NAME = "STR_NAME"
+        const val TPC_NAME = "TPC_NAME"
     }
 }

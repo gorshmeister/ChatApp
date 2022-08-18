@@ -6,6 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    tools:listitem="@layout/component_channels_stream">
+    tools:listitem="@layout/item_channels_stream">
 
 </androidx.recyclerview.widget.RecyclerView>

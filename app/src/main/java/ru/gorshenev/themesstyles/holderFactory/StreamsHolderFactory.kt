@@ -13,8 +13,8 @@ class StreamsHolderFactory(
 ) : HolderFactory() {
     override fun createViewHolder(view: View, viewType: Int): BaseViewHolder<*>? {
         return when (viewType) {
-            R.layout.component_channels_stream -> StreamViewHolder(view, onStreamClick)
-            R.layout.component_channels_topic -> TopicViewHolder(view, onTopicClick)
+            R.layout.item_channels_stream -> StreamViewHolder(view, onStreamClick)
+            R.layout.item_channels_topic -> TopicViewHolder(view, onTopicClick)
             else -> null
         }
     }

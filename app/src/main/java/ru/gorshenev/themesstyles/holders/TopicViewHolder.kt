@@ -13,9 +13,16 @@ class TopicViewHolder(
 
     val topic = view.findViewById<TextView>(R.id.tv_topic)
 
+    private var currentId:Int? = null
+
+    init {
+        itemView.setOnClickListener{
+            currentId?.let(onTopicClick)
+        }
+    }
+
     override fun bind(item: TopicUi) {
         topic.text = item.name
-
-        topic.setOnClickListener { onTopicClick(item.id) }
+        currentId = item.id
     }
 }

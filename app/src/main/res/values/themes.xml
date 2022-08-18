@@ -34,9 +34,8 @@
         <item name="colorOnSecondary">@android:color/white</item>
     </style>
 
-    <style name="ThemeOverlay.MyApp.Secondary.Blue" parent="">
-        <item name="colorSecondary">@color/mtrl_blue_500</item>
-        <item name="colorOnSecondary">@android:color/black</item>
+    <style name="ThemeOverlay.MyApp" parent="Theme.MyApp">
+        <item name="colorPrimary">@color/mtrl_orange_700</item>
     </style>
 
 </resources>

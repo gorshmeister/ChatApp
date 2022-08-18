@@ -7,7 +7,7 @@
     tools:parentTag="ru.gorshenev.themesstyles.CustomViewGroupLeft">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/ivAvatar"
+        android:id="@+id/iv_msg_avatar"
         android:layout_width="38dp"
         android:layout_height="38dp"
         android:layout_marginStart="12dp"
@@ -20,21 +20,19 @@
         android:id="@+id/background"
         style="@style/CardViewLeft"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tvName"
+            android:id="@+id/tv_msg_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#2A9D8F"
             android:textSize="14sp"
             android:textStyle="bold"
-            tools:text="@tools:sample/full_names"
-            />
+            tools:text="@tools:sample/full_names" />
 
         <TextView
-            android:id="@+id/tvText"
+            android:id="@+id/tv_msg_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
@@ -44,7 +42,7 @@
             tools:text="sdafadfkajdhsf" />
 
         <TextView
-            android:id="@+id/tvTime"
+            android:id="@+id/tv_msg_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
@@ -58,7 +56,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="7dp"
-        android:layout_marginBottom="7dp"
-        />
+        android:layout_marginBottom="7dp" />
 
 </merge>

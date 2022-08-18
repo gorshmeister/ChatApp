@@ -4,21 +4,23 @@
     android:layout_height="64dp">
 
     <TextView
+        android:id="@+id/tv_stream"
         android:layout_width="276dp"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_stream"
+        android:layout_gravity="start|center"
         android:layout_marginLeft="20dp"
         android:text="#general"
-        android:layout_gravity="start|center"
         android:textColor="#FAFAFA"
         android:textColorHint="@color/white"
         android:textSize="18sp" />
 
     <ImageView
         android:layout_width="wrap_content"
+        android:id="@+id/iv_stream_arrow"
         android:layout_height="wrap_content"
         android:layout_gravity="end|center"
+        android:background="@drawable/bg_arrow_up_down"
         android:layout_marginRight="42dp"
-        android:src="@drawable/icon_arrow_down" />
+        />
 
 </FrameLayout>

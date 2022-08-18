@@ -1,6 +1,7 @@
 package ru.gorshenev.themesstyles.holders
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.items.StreamUi
@@ -11,11 +12,19 @@ class StreamViewHolder(
     private val onStreamClick: (streamId: Int) -> Unit
 ) : BaseViewHolder<StreamUi>(view) {
 
-    val stream = view.findViewById<TextView>(R.id.tv_stream)
+    val stream: TextView = view.findViewById(R.id.tv_stream)
+    val image: ImageView = view.findViewById(R.id.iv_stream_arrow)
 
+    private var currentId: Int? = null
+
+    init {
+        itemView.setOnClickListener {
+            currentId?.let(onStreamClick)
+        }
+    }
     override fun bind(item: StreamUi) {
+        currentId = item.id
         stream.text = item.name
-
-        stream.setOnClickListener { onStreamClick(item.id) }
+        image.isEnabled = item.isExpanded
     }
 }

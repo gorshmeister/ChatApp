@@ -20,8 +20,8 @@ class RightMessageViewHolder(
 
     val messageView: CustomViewGroupRight = view.findViewById(R.id.view_message)
 
-    val text: TextView = view.findViewById(R.id.tvText)
-    val time: TextView = view.findViewById(R.id.tvTime)
+    val text: TextView = view.findViewById(R.id.tv_msg_text)
+    val time: TextView = view.findViewById(R.id.tv_msg_time)
     val flexBox: FlexboxLayout = view.findViewById(R.id.flexbox)
 
     override fun bind(item: RightMessageUi) {

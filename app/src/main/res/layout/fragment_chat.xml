@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="?android:windowBackground"
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
@@ -10,10 +11,18 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:navigationIcon="@drawable/icon_arrow_left"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/icon_arrow_left"
         app:title="@string/app_name" />
+
+    <include
+        android:id="@+id/item_chat"
+        layout="@layout/item_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -25,7 +34,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/item_chat"
         app:stackFromEnd="true"
         tools:itemCount="2"
         tools:listitem="@layout/view_message_left" />

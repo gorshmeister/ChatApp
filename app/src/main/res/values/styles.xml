@@ -32,7 +32,6 @@
         <item name="contentPaddingRight">13dp</item>
         <item name="contentPaddingTop">10dp</item>
         <item name="contentPaddingBottom">10dp</item>
-
         <item name="cardBackgroundColor">#1C1C1C</item>
         <item name="cardCornerRadius">18dp</item>
     </style>
@@ -40,6 +39,7 @@
     <style name="CardViewRight" parent="CardViewLeft">
         <item name="contentPaddingLeft">16dp</item>
         <item name="contentPaddingRight">16dp</item>
+        <item name="cardBackgroundColor">@color/colorPrimaryBlue</item>
     </style>
 
     <style name="Widget.MyApp.BottomSheet.Modal" parent="Widget.Design.BottomSheet.Modal">

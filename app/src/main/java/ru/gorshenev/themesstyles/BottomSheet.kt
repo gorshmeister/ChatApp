@@ -1,9 +1,7 @@
 package ru.gorshenev.themesstyles
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +16,7 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val messageId = arguments?.getInt(ARGUMENT_MSG_ID)
+        val messageId = arguments?.getInt(ARG_MSG_ID)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_emojis)
         val holderFactory = BottomSheetHolderFactory(
@@ -48,7 +46,7 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
 
     companion object {
         const val TAG = "BottomSheet"
-        const val ARGUMENT_MSG_ID = "ARGUMENT_MSG_ID"
+        const val ARG_MSG_ID = "ARG_MSG_ID"
         const val PICKER_KEY = "PICKER_KEY"
         const val RESULT_EMOJI_PICK = "RESULT_EMOJI_PICK"
     }

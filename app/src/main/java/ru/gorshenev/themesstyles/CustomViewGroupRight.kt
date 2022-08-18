@@ -8,11 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
-import androidx.core.view.marginLeft
-import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 
 class CustomViewGroupRight @JvmOverloads constructor(
@@ -34,8 +33,8 @@ class CustomViewGroupRight @JvmOverloads constructor(
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_custom_view_group_right, this, true)
-        tvTime = findViewById(R.id.tvTime)
-        tvText = findViewById(R.id.tvText)
+        tvTime = findViewById(R.id.tv_msg_time)
+        tvText = findViewById(R.id.tv_msg_text)
         flexbox = findViewById(R.id.flexbox)
         background = findViewById(R.id.background)
     }

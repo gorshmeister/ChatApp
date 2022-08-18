@@ -38,10 +38,10 @@ class CustomViewGroupLeft @JvmOverloads constructor(
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_custom_view_group_left, this, true)
-        ivAvatar = findViewById(R.id.ivAvatar)
-        tvName = findViewById(R.id.tvName)
-        tvTime = findViewById(R.id.tvTime)
-        tvText = findViewById(R.id.tvText)
+        ivAvatar = findViewById(R.id.iv_msg_avatar)
+        tvName = findViewById(R.id.tv_msg_name)
+        tvTime = findViewById(R.id.tv_msg_time)
+        tvText = findViewById(R.id.tv_msg_text)
         flexbox = findViewById(R.id.flexbox)
         background = findViewById(R.id.background)
     }

@@ -3,13 +3,13 @@ package ru.gorshenev.themesstyles.holders
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import ru.gorshenev.themesstyles.baseRecyclerView.BaseViewHolder
 import ru.gorshenev.themesstyles.CustomViewGroupLeft
 import ru.gorshenev.themesstyles.EmojiView
 import ru.gorshenev.themesstyles.FlexboxLayout
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.Utils.px
 import ru.gorshenev.themesstyles.Utils.toEmojiString
+import ru.gorshenev.themesstyles.baseRecyclerView.BaseViewHolder
 import ru.gorshenev.themesstyles.items.EmojiUi
 import ru.gorshenev.themesstyles.items.LeftMessageUi
 
@@ -22,11 +22,11 @@ class LeftMessageViewHolder(
 
     val messageView: CustomViewGroupLeft = view.findViewById(R.id.view_message)
 
-    val avatar: ImageView = view.findViewById(R.id.ivAvatar)
-    val name: TextView = view.findViewById(R.id.tvName)
-    val text: TextView = view.findViewById(R.id.tvText)
-    val time: TextView = view.findViewById(R.id.tvTime)
+    val name: TextView = view.findViewById(R.id.tv_msg_name)
+    val text: TextView = view.findViewById(R.id.tv_msg_text)
+    val time: TextView = view.findViewById(R.id.tv_msg_time)
     val flexBox: FlexboxLayout = view.findViewById(R.id.flexbox)
+    val avatar: ImageView = view.findViewById(R.id.iv_msg_avatar)
 
 
     override fun bind(item: LeftMessageUi) {
