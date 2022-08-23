@@ -3,21 +3,22 @@ package ru.gorshenev.themesstyles.holders
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.baseRecyclerView.BaseViewHolder
+import ru.gorshenev.themesstyles.databinding.ItemPeopleBinding
 import ru.gorshenev.themesstyles.items.PeopleUi
 
 class PeopleViewHolder(
     view: View
 ) : BaseViewHolder<PeopleUi>(view) {
-
-    val avatar: ImageView = view.findViewById(R.id.iv_people_avatar)
-    val name: TextView = view.findViewById(R.id.tv_people_name)
-    val email: TextView = view.findViewById(R.id.tv_people_email)
+private val binding: ItemPeopleBinding by viewBinding()
 
     override fun bind(item: PeopleUi) {
-        avatar.setImageResource(item.avatar)
-        name.text = item.name
-        email.text = item.email
+        with(binding) {
+            ivPeopleAvatar.setImageResource(item.avatar)
+            tvPeopleName.text = item.name
+            tvPeopleEmail.text = item.email
+        }
     }
 }

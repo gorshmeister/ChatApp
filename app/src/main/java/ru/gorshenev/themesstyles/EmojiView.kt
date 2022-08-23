@@ -7,6 +7,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.view.setPadding
+import by.kirich1409.viewbindingdelegate.viewBinding
+import ru.gorshenev.themesstyles.databinding.ItemEmojiBinding
+import ru.gorshenev.themesstyles.databinding.ViewEmojiBinding
 
 class EmojiView @JvmOverloads constructor(
     context: Context,
@@ -15,37 +18,37 @@ class EmojiView @JvmOverloads constructor(
 //	defStyleRes: Int = R.style.Widget_MyApp_EmojiView,
     defStyleRes: Int = 0,
 ) : LinearLayout(context, attrs, defStyleAttr, defStyleRes) {
-    private var tvEmoji: TextView
+    private val binding: ViewEmojiBinding by viewBinding()
 
     var text: String? = null
         set(value) {
             field = value
-            tvEmoji.text = text
+            binding.tvEmoji.text = text
         }
 
     @ColorInt
     var textColor: Int = Color.BLACK
         set(value) {
             field = value
-            tvEmoji.setTextColor(value)
+            binding.tvEmoji.setTextColor(value)
         }
 
     var evTextSize: Int = 0
         set(value) {
             field = value
-            tvEmoji.textSize = evTextSize.toFloat()
+            binding.tvEmoji.textSize = evTextSize.toFloat()
         }
 
     var evPadding: Int = 0
         set(value) {
             field = value
-            tvEmoji.setPadding(evPadding)
+            binding.tvEmoji.setPadding(evPadding)
         }
 
     var count = 0
         set(value) {
             field = value
-            tvEmoji.text = "$text $count"
+            binding.tvEmoji.text = "$text $count"
         }
 
     var messageId = 0
@@ -60,7 +63,6 @@ class EmojiView @JvmOverloads constructor(
 
     init {
         inflate(context, R.layout.view_emoji, this)
-        tvEmoji = findViewById(R.id.tvEmoji)
 
         //todo write correct style
 //		context.obtainStyledAttributes(attrs, R.styleable.EmojiView, defStyleAttr, defStyleRes)
@@ -75,7 +77,7 @@ class EmojiView @JvmOverloads constructor(
 
 
     fun setSize(width: Int, height: Int) {
-        tvEmoji.layoutParams = LayoutParams(width, height)
+        binding.tvEmoji.layoutParams = LayoutParams(width, height)
 //		requestLayout()
     }
 }

@@ -8,11 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.FrameLayout
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
+import by.kirich1409.viewbindingdelegate.viewBinding
+import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupRightBinding
 
 class CustomViewGroupRight @JvmOverloads constructor(
     context: Context,
@@ -20,11 +19,7 @@ class CustomViewGroupRight @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0,
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
-
-    private var tvTime: TextView
-    private var tvText: TextView
-    private var flexbox: FlexboxLayout
-    private var background: CardView
+    private val binding: ViewCustomViewGroupRightBinding by viewBinding()
 
     private val timeRect = Rect()
     private val textRect = Rect()
@@ -33,86 +28,97 @@ class CustomViewGroupRight @JvmOverloads constructor(
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_custom_view_group_right, this, true)
-        tvTime = findViewById(R.id.tv_msg_time)
-        tvText = findViewById(R.id.tv_msg_text)
-        flexbox = findViewById(R.id.flexbox)
-        background = findViewById(R.id.background)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val tvTimeLayoutParams = tvTime.layoutParams as MarginLayoutParams
-        val tvTextLayoutParams = tvText.layoutParams as MarginLayoutParams
-        val flexboxLayoutParams = flexbox.layoutParams as MarginLayoutParams
-        val backgroundLayoutParams = background.layoutParams as MarginLayoutParams
+        with(binding) {
+            val tvTimeLayoutParams = tvMsgTime.layoutParams as MarginLayoutParams
+            val tvTextLayoutParams = tvMsgText.layoutParams as MarginLayoutParams
+            val flexboxLayoutParams = flexbox.layoutParams as MarginLayoutParams
+            val backgroundLayoutParams = background.layoutParams as MarginLayoutParams
 
 
-        measureChildWithMargins(background, widthMeasureSpec, 0, heightMeasureSpec, 0)
+            measureChildWithMargins(background, widthMeasureSpec, 0, heightMeasureSpec, 0)
 
-        val backgroundHeight =
-            background.measuredHeight + backgroundLayoutParams.topMargin + backgroundLayoutParams.bottomMargin
+            val backgroundHeight =
+                background.measuredHeight + backgroundLayoutParams.topMargin + backgroundLayoutParams.bottomMargin
 
-        val backgroundWidth =
-            background.measuredWidth + backgroundLayoutParams.leftMargin + backgroundLayoutParams.rightMargin
-
-
-
-        measureChildWithMargins(tvText, widthMeasureSpec, 0, heightMeasureSpec, 0)
-
-        val textHeight =
-            tvText.measuredHeight + tvTextLayoutParams.topMargin + tvTextLayoutParams.bottomMargin
-        val textWidth =
-            tvText.measuredWidth + tvTextLayoutParams.leftMargin + tvTextLayoutParams.rightMargin
+            val backgroundWidth =
+                background.measuredWidth + backgroundLayoutParams.leftMargin + backgroundLayoutParams.rightMargin
 
 
 
-        measureChildWithMargins(tvTime, widthMeasureSpec, 0, heightMeasureSpec, textHeight)
+            measureChildWithMargins(tvMsgText, widthMeasureSpec, 0, heightMeasureSpec, 0)
 
-        val timeHeight =
-            tvTime.measuredHeight + tvTimeLayoutParams.topMargin + tvTimeLayoutParams.bottomMargin
-        val timeWidth =
-            tvTime.measuredWidth + tvTimeLayoutParams.leftMargin + tvTimeLayoutParams.rightMargin
-
-
-
-        measureChildWithMargins(
-            flexbox,
-            widthMeasureSpec,
-            0,
-            heightMeasureSpec,
-            textHeight
-        )
-
-        val flexboxHeight =
-            flexbox.measuredHeight + flexboxLayoutParams.topMargin + flexboxLayoutParams.bottomMargin
-        val flexboxWidth =
-            flexbox.measuredWidth + flexboxLayoutParams.leftMargin + flexboxLayoutParams.rightMargin
+            val textHeight =
+                tvMsgText.measuredHeight + tvTextLayoutParams.topMargin + tvTextLayoutParams.bottomMargin
+            val textWidth =
+                tvMsgText.measuredWidth + tvTextLayoutParams.leftMargin + tvTextLayoutParams.rightMargin
 
 
-        val height = maxOf(backgroundHeight, textHeight + timeHeight + flexboxHeight)
-        setMeasuredDimension(
-            resolveSize(backgroundWidth, widthMeasureSpec),
-            resolveSize(height, heightMeasureSpec)
-        )
+
+            measureChildWithMargins(
+                tvMsgTime,
+                widthMeasureSpec,
+                0,
+                heightMeasureSpec,
+                textHeight
+            )
+
+            val timeHeight =
+                tvMsgTime.measuredHeight + tvTimeLayoutParams.topMargin + tvTimeLayoutParams.bottomMargin
+            val timeWidth =
+                tvMsgTime.measuredWidth + tvTimeLayoutParams.leftMargin + tvTimeLayoutParams.rightMargin
+
+
+
+            measureChildWithMargins(
+                flexbox,
+                widthMeasureSpec,
+                0,
+                heightMeasureSpec,
+                textHeight
+            )
+
+            val flexboxHeight =
+                flexbox.measuredHeight + flexboxLayoutParams.topMargin + flexboxLayoutParams.bottomMargin
+            val flexboxWidth =
+                flexbox.measuredWidth + flexboxLayoutParams.leftMargin + flexboxLayoutParams.rightMargin
+
+
+            val height = maxOf(backgroundHeight, textHeight + timeHeight + flexboxHeight)
+            setMeasuredDimension(
+                resolveSize(backgroundWidth, widthMeasureSpec),
+                resolveSize(height, heightMeasureSpec)
+            )
+        }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val timeLayoutParams = tvTime.layoutParams as MarginLayoutParams
-        val textLayoutParams = tvText.layoutParams as MarginLayoutParams
-        val flexboxLayoutParams = flexbox.layoutParams as MarginLayoutParams
-        val backgroundLayoutParams = background.layoutParams as MarginLayoutParams
+        with(binding) {
+            val timeLayoutParams = tvMsgTime.layoutParams as MarginLayoutParams
+            val textLayoutParams = tvMsgText.layoutParams as MarginLayoutParams
+            val flexboxLayoutParams = flexbox.layoutParams as MarginLayoutParams
+            val backgroundLayoutParams = background.layoutParams as MarginLayoutParams
 
-        backgroundRect.top = backgroundLayoutParams.topMargin
-        backgroundRect.right = measuredWidth - backgroundLayoutParams.rightMargin
-        backgroundRect.left = backgroundRect.right - maxOf(tvText.measuredWidth, tvTime.measuredWidth) - background.paddingLeft - background.paddingRight
-        backgroundRect.bottom = backgroundRect.top + tvTime.measuredHeight + tvTime.marginTop + tvText.measuredHeight + tvText.marginTop
-        background.layout(backgroundRect)
+            backgroundRect.top = backgroundLayoutParams.topMargin
+            backgroundRect.right = measuredWidth - backgroundLayoutParams.rightMargin
+            backgroundRect.left = backgroundRect.right - maxOf(
+                tvMsgText.measuredWidth,
+                tvMsgTime.measuredWidth
+            ) - background.paddingLeft - background.paddingRight
+            backgroundRect.bottom =
+                backgroundRect.top + tvMsgTime.measuredHeight + tvMsgTime.marginTop + tvMsgText.measuredHeight + tvMsgText.marginTop
+            background.layout(backgroundRect)
 
-//        flexboxRect.top = flexboxLayoutParams.topMargin + timeRect.bottom + tvTime.marginBottom
-        flexboxRect.top = flexboxLayoutParams.topMargin + backgroundRect.bottom + background.marginBottom
-        flexboxRect.right = measuredWidth - flexboxLayoutParams.rightMargin
-        flexboxRect.left = flexboxRect.right - flexbox.measuredWidth
-        flexboxRect.bottom = flexboxRect.top + flexbox.measuredHeight + flexbox.marginBottom
-        flexbox.layout(flexboxRect)
+            flexboxRect.top =
+                flexboxLayoutParams.topMargin + backgroundRect.bottom + background.marginBottom
+            flexboxRect.right = measuredWidth - flexboxLayoutParams.rightMargin
+            flexboxRect.left = flexboxRect.right - flexbox.measuredWidth
+            flexboxRect.bottom =
+                flexboxRect.top + flexbox.measuredHeight + flexbox.marginBottom
+            flexbox.layout(flexboxRect)
+        }
     }
 
     override fun generateDefaultLayoutParams(): LayoutParams =

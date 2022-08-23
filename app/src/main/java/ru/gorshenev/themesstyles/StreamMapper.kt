@@ -34,7 +34,7 @@ object StreamMapper {
         }
     }
 
-     fun updateEmojisCounter(
+    fun updateEmojisCounter(
         messages: List<ViewTyped>,
         emojiCode: Int,
         messageId: Int
@@ -96,12 +96,12 @@ object StreamMapper {
         }
     }
 
+    class ReactionAlreadyExist : Exception()
 
     fun addReactions(
         items: List<ViewTyped>,
         messageId: Int,
         emojiCode: Int,
-        context: Context?
     ): List<ViewTyped> {
 
         return items.map { item ->
@@ -110,13 +110,7 @@ object StreamMapper {
                     if (item.id == messageId) {
                         val isEmojiExists = item.emojis.map { it.code }.contains(emojiCode)
                         if (isEmojiExists) {
-                            Toast.makeText(
-                                context,
-                                "Реакция уже существует!",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                            item
+                            throw ReactionAlreadyExist()
                         } else {
                             item.copy(
                                 emojis = item.emojis + EmojiUi(
@@ -136,13 +130,7 @@ object StreamMapper {
                     if (item.id == messageId) {
                         val isEmojiExists = item.emojis.map { it.code }.contains(emojiCode)
                         if (isEmojiExists) {
-                            Toast.makeText(
-                                context,
-                                "Реакция уже существует!",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                            item
+                            throw ReactionAlreadyExist()
                         } else {
                             item.copy(
                                 emojis = item.emojis + EmojiUi(

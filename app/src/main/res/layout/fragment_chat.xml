@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="?android:windowBackground"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?android:windowBackground">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,14 +16,17 @@
         app:navigationIcon="@drawable/icon_arrow_left"
         app:title="@string/app_name" />
 
-    <include
-        android:id="@+id/item_chat"
-        layout="@layout/item_chat"
+    <TextView
+        android:id="@+id/tv_topic_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:background="#1C1C1C"
+        android:gravity="center"
+        android:textColor="#CCCCCC"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
-
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        tools:text="Topic: #topic_name" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_items"
@@ -34,7 +37,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_chat"
+        app:layout_constraintTop_toBottomOf="@id/tv_topic_name"
         app:stackFromEnd="true"
         tools:itemCount="2"
         tools:listitem="@layout/view_message_left" />

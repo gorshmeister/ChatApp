@@ -8,12 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
+import by.kirich1409.viewbindingdelegate.viewBinding
+import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupLeftBinding
 
 class CustomViewGroupLeft @JvmOverloads constructor(
     context: Context,
@@ -21,13 +20,7 @@ class CustomViewGroupLeft @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0,
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
-
-    private var ivAvatar: ImageView
-    private var tvName: TextView
-    private var tvTime: TextView
-    private var tvText: TextView
-    private var flexbox: FlexboxLayout
-    private var background: CardView
+    private val binding: ViewCustomViewGroupLeftBinding by viewBinding()
 
     private val avatarRect = Rect()
     private val nameRect = Rect()
@@ -38,127 +31,132 @@ class CustomViewGroupLeft @JvmOverloads constructor(
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_custom_view_group_left, this, true)
-        ivAvatar = findViewById(R.id.iv_msg_avatar)
-        tvName = findViewById(R.id.tv_msg_name)
-        tvTime = findViewById(R.id.tv_msg_time)
-        tvText = findViewById(R.id.tv_msg_text)
-        flexbox = findViewById(R.id.flexbox)
-        background = findViewById(R.id.background)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val ivAvatarLayoutParams = ivAvatar.layoutParams as MarginLayoutParams
-        val tvNameLayoutParams = tvName.layoutParams as MarginLayoutParams
-        val tvTimeLayoutParams = tvTime.layoutParams as MarginLayoutParams
-        val tvTextLayoutParams = tvText.layoutParams as MarginLayoutParams
-        val flexboxLayoutParams = flexbox.layoutParams as MarginLayoutParams
-        val backgroundLayoutParams = background.layoutParams as MarginLayoutParams
+        with(binding) {
+            val ivAvatarLayoutParams = ivMsgAvatar.layoutParams as MarginLayoutParams
+            val tvNameLayoutParams = tvMsgName.layoutParams as MarginLayoutParams
+            val tvTimeLayoutParams = tvMsgTime.layoutParams as MarginLayoutParams
+            val tvTextLayoutParams = tvMsgText.layoutParams as MarginLayoutParams
+            val flexboxLayoutParams = flexbox.layoutParams as MarginLayoutParams
+            val backgroundLayoutParams = background.layoutParams as MarginLayoutParams
 
-        measureChildWithMargins(ivAvatar, widthMeasureSpec, 0, heightMeasureSpec, 0)
+            measureChildWithMargins(ivMsgAvatar, widthMeasureSpec, 0, heightMeasureSpec, 0)
 
-        val avatarHeight =
-            ivAvatar.measuredHeight + ivAvatarLayoutParams.topMargin + ivAvatarLayoutParams.bottomMargin
-        val avatarWidth =
-            ivAvatar.measuredWidth + ivAvatarLayoutParams.leftMargin + ivAvatarLayoutParams.rightMargin
-
-
-        measureChildWithMargins(background, widthMeasureSpec, avatarWidth, heightMeasureSpec, 0)
-
-        val backgroundHeight =
-            background.measuredHeight + backgroundLayoutParams.topMargin + backgroundLayoutParams.bottomMargin
-
-        val backgroundWidth =
-            background.measuredWidth + backgroundLayoutParams.leftMargin + backgroundLayoutParams.rightMargin
+            val avatarHeight =
+                ivMsgAvatar.measuredHeight + ivAvatarLayoutParams.topMargin + ivAvatarLayoutParams.bottomMargin
+            val avatarWidth =
+                ivMsgAvatar.measuredWidth + ivAvatarLayoutParams.leftMargin + ivAvatarLayoutParams.rightMargin
 
 
+            measureChildWithMargins(background, widthMeasureSpec, avatarWidth, heightMeasureSpec, 0)
 
-        measureChildWithMargins(tvName, widthMeasureSpec, avatarWidth, heightMeasureSpec, 0)
+            val backgroundHeight =
+                background.measuredHeight + backgroundLayoutParams.topMargin + backgroundLayoutParams.bottomMargin
 
-        val nameHeight =
-            tvName.measuredHeight + tvNameLayoutParams.topMargin + tvNameLayoutParams.bottomMargin
-        val nameWidth =
-            tvName.measuredWidth + tvNameLayoutParams.leftMargin + tvNameLayoutParams.rightMargin
+            val backgroundWidth =
+                background.measuredWidth + backgroundLayoutParams.leftMargin + backgroundLayoutParams.rightMargin
 
 
 
-        measureChildWithMargins(
-            tvText,
-            widthMeasureSpec,
-            avatarWidth,
-            heightMeasureSpec,
-            nameHeight
-        )
+            measureChildWithMargins(tvMsgName, widthMeasureSpec, avatarWidth, heightMeasureSpec, 0)
 
-        val textHeight =
-            tvText.measuredHeight + tvTextLayoutParams.topMargin + tvTextLayoutParams.bottomMargin
-        val textWidth =
-            tvText.measuredWidth + tvTextLayoutParams.leftMargin + tvTextLayoutParams.rightMargin
+            val nameHeight =
+                tvMsgName.measuredHeight + tvNameLayoutParams.topMargin + tvNameLayoutParams.bottomMargin
+            val nameWidth =
+                tvMsgName.measuredWidth + tvNameLayoutParams.leftMargin + tvNameLayoutParams.rightMargin
 
 
 
-        measureChildWithMargins(tvTime, widthMeasureSpec, nameWidth, heightMeasureSpec, textHeight)
+            measureChildWithMargins(
+                tvMsgText,
+                widthMeasureSpec,
+                avatarWidth,
+                heightMeasureSpec,
+                nameHeight
+            )
 
-        val timeHeight =
-            tvTime.measuredHeight + tvTimeLayoutParams.topMargin + tvTimeLayoutParams.bottomMargin
-        val timeWidth =
-            tvTime.measuredWidth + tvTimeLayoutParams.leftMargin + tvTimeLayoutParams.rightMargin
-
-
-
-        measureChildWithMargins(
-            flexbox,
-            widthMeasureSpec,
-            avatarWidth,
-            heightMeasureSpec,
-            textHeight
-        )
-
-        val flexboxHeight =
-            flexbox.measuredHeight + flexboxLayoutParams.topMargin + flexboxLayoutParams.bottomMargin
-        val flexboxWidth =
-            flexbox.measuredWidth + flexboxLayoutParams.leftMargin + flexboxLayoutParams.rightMargin
+            val textHeight =
+                tvMsgText.measuredHeight + tvTextLayoutParams.topMargin + tvTextLayoutParams.bottomMargin
+            val textWidth =
+                tvMsgText.measuredWidth + tvTextLayoutParams.leftMargin + tvTextLayoutParams.rightMargin
 
 
-        val height = maxOf(avatarHeight, nameHeight + textHeight + timeHeight + flexboxHeight)
-        setMeasuredDimension(
-            resolveSize(avatarWidth + backgroundWidth, widthMeasureSpec),
-            resolveSize(height, heightMeasureSpec)
-        )
+
+            measureChildWithMargins(
+                tvMsgTime,
+                widthMeasureSpec,
+                nameWidth,
+                heightMeasureSpec,
+                textHeight
+            )
+
+            val timeHeight =
+                tvMsgTime.measuredHeight + tvTimeLayoutParams.topMargin + tvTimeLayoutParams.bottomMargin
+            val timeWidth =
+                tvMsgTime.measuredWidth + tvTimeLayoutParams.leftMargin + tvTimeLayoutParams.rightMargin
+
+
+
+            measureChildWithMargins(
+                flexbox,
+                widthMeasureSpec,
+                avatarWidth,
+                heightMeasureSpec,
+                textHeight
+            )
+
+            val flexboxHeight =
+                flexbox.measuredHeight + flexboxLayoutParams.topMargin + flexboxLayoutParams.bottomMargin
+            val flexboxWidth =
+                flexbox.measuredWidth + flexboxLayoutParams.leftMargin + flexboxLayoutParams.rightMargin
+
+
+            val height = maxOf(avatarHeight, nameHeight + textHeight + timeHeight + flexboxHeight)
+            setMeasuredDimension(
+                resolveSize(avatarWidth + backgroundWidth, widthMeasureSpec),
+                resolveSize(height, heightMeasureSpec)
+            )
+        }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val ivAvatarLayoutParams = ivAvatar.layoutParams as MarginLayoutParams
-        val nameLayoutParams = tvName.layoutParams as MarginLayoutParams
-        val timeLayoutParams = tvTime.layoutParams as MarginLayoutParams
-        val textLayoutParams = tvText.layoutParams as MarginLayoutParams
-        val flexboxLayoutParams = flexbox.layoutParams as MarginLayoutParams
-        val backgroundLayoutParams = background.layoutParams as MarginLayoutParams
+        with(binding) {
+            val ivAvatarLayoutParams = ivMsgAvatar.layoutParams as MarginLayoutParams
+            val nameLayoutParams = tvMsgName.layoutParams as MarginLayoutParams
+            val timeLayoutParams = tvMsgTime.layoutParams as MarginLayoutParams
+            val textLayoutParams = tvMsgText.layoutParams as MarginLayoutParams
+            val flexboxLayoutParams = flexbox.layoutParams as MarginLayoutParams
+            val backgroundLayoutParams = background.layoutParams as MarginLayoutParams
 
-        avatarRect.left = ivAvatarLayoutParams.leftMargin + paddingLeft
-        avatarRect.top = ivAvatarLayoutParams.topMargin + paddingTop
-        avatarRect.right = avatarRect.left + ivAvatar.measuredWidth
-        avatarRect.bottom = avatarRect.top + ivAvatar.measuredHeight
-        ivAvatar.layout(avatarRect)
+            avatarRect.left = ivAvatarLayoutParams.leftMargin + paddingLeft
+            avatarRect.top = ivAvatarLayoutParams.topMargin + paddingTop
+            avatarRect.right = avatarRect.left + ivMsgAvatar.measuredWidth
+            avatarRect.bottom = avatarRect.top + ivMsgAvatar.measuredHeight
+            ivMsgAvatar.layout(avatarRect)
 
 
-        backgroundRect.left =
-            background.marginLeft + avatarRect.right + ivAvatarLayoutParams.rightMargin
-        backgroundRect.top = backgroundLayoutParams.topMargin
-        backgroundRect.right = backgroundRect.left + maxOf(
-            tvText.measuredWidth,
-            tvName.measuredWidth
-        ) + background.paddingLeft + background.paddingRight
-        backgroundRect.bottom = backgroundRect.top +
-                nameLayoutParams.topMargin + tvName.measuredHeight +
-                textLayoutParams.topMargin + tvText.measuredHeight + tvText.marginBottom +
-                timeLayoutParams.topMargin + tvTime.measuredHeight
-        background.layout(backgroundRect)
+            backgroundRect.left =
+                background.marginLeft + avatarRect.right + ivAvatarLayoutParams.rightMargin
+            backgroundRect.top = backgroundLayoutParams.topMargin
+            backgroundRect.right = backgroundRect.left + maxOf(
+                tvMsgText.measuredWidth,
+                tvMsgName.measuredWidth
+            ) + background.paddingLeft + background.paddingRight
+            backgroundRect.bottom = backgroundRect.top +
+                    nameLayoutParams.topMargin + tvMsgName.measuredHeight +
+                    textLayoutParams.topMargin + tvMsgText.measuredHeight + tvMsgText.marginBottom +
+                    timeLayoutParams.topMargin + tvMsgTime.measuredHeight
+            background.layout(backgroundRect)
 
-        flexboxRect.left = flexbox.marginLeft + avatarRect.right + ivAvatarLayoutParams.rightMargin
-        flexboxRect.top = flexboxLayoutParams.topMargin + backgroundRect.bottom
-        flexboxRect.right = measuredWidth - flexbox.marginRight
-        flexboxRect.bottom = flexboxRect.top + flexbox.measuredHeight + flexbox.marginBottom
-        flexbox.layout(flexboxRect)
+            flexboxRect.left =
+                flexbox.marginLeft + avatarRect.right + ivAvatarLayoutParams.rightMargin
+            flexboxRect.top = flexboxLayoutParams.topMargin + backgroundRect.bottom
+            flexboxRect.right = measuredWidth - flexbox.marginRight
+            flexboxRect.bottom = flexboxRect.top + flexbox.measuredHeight + flexbox.marginBottom
+            flexbox.layout(flexboxRect)
+        }
     }
 
     override fun generateDefaultLayoutParams(): LayoutParams =

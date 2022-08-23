@@ -1,15 +1,12 @@
 package ru.gorshenev.themesstyles.holders
 
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import ru.gorshenev.themesstyles.CustomViewGroupLeft
+import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.gorshenev.themesstyles.EmojiView
-import ru.gorshenev.themesstyles.FlexboxLayout
-import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.Utils.px
 import ru.gorshenev.themesstyles.Utils.toEmojiString
 import ru.gorshenev.themesstyles.baseRecyclerView.BaseViewHolder
+import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupLeftBinding
 import ru.gorshenev.themesstyles.items.EmojiUi
 import ru.gorshenev.themesstyles.items.LeftMessageUi
 
@@ -19,46 +16,40 @@ class LeftMessageViewHolder(
     private val onMessageClick: ((messageId: Int) -> Unit),
     private val onEmojiClick: (emojiCode: Int, messageId: Int) -> Unit
 ) : BaseViewHolder<LeftMessageUi>(view) {
-
-    val messageView: CustomViewGroupLeft = view.findViewById(R.id.view_message)
-
-    val name: TextView = view.findViewById(R.id.tv_msg_name)
-    val text: TextView = view.findViewById(R.id.tv_msg_text)
-    val time: TextView = view.findViewById(R.id.tv_msg_time)
-    val flexBox: FlexboxLayout = view.findViewById(R.id.flexbox)
-    val avatar: ImageView = view.findViewById(R.id.iv_msg_avatar)
-
+    private val binding: ViewCustomViewGroupLeftBinding by viewBinding()
 
     override fun bind(item: LeftMessageUi) {
-        messageView.setOnLongClickListener {
+        itemView.setOnLongClickListener {
             onMessageClick(item.id)
             true
         }
 
-        avatar.setImageResource(item.avatar)
-        name.text = item.name
-        text.text = item.text
-        time.text = item.time
+        with(binding) {
+            ivMsgAvatar.setImageResource(item.avatar)
+            tvMsgName.text = item.name
+            tvMsgText.text = item.text
+            tvMsgTime.text = item.time
 
-        flexBox.removeAllViews()
-        flexBox.addViews(
-            item.emojis.map { emojiUi: EmojiUi ->
-                EmojiView(flexBox.context).apply {
-                    text = emojiUi.code.toEmojiString()
-                    count = emojiUi.counter
-                    messageId = emojiUi.message_id
-                    userId += emojiUi.user_id
-                    isSelected = emojiUi.isSelected
-                    setOnClickListener { onEmojiClick(emojiUi.code, item.id) }
+            flexbox.removeAllViews()
+            flexbox.addViews(
+                item.emojis.map { emojiUi: EmojiUi ->
+                    EmojiView(flexbox.context).apply {
+                        text = emojiUi.code.toEmojiString()
+                        count = emojiUi.counter
+                        messageId = emojiUi.message_id
+                        userId += emojiUi.user_id
+                        isSelected = emojiUi.isSelected
+                        setOnClickListener { onEmojiClick(emojiUi.code, item.id) }
+                    }
                 }
+            )
+            if (item.emojis.isNotEmpty()) {
+                flexbox.addViews(listOf(EmojiView(flexbox.context).apply {
+                    text = "+"
+                    this.setSize(48.px, 29.px)
+                    setOnClickListener { onMessageClick(item.id) }
+                }))
             }
-        )
-        if (item.emojis.isNotEmpty()) {
-            flexBox.addViews(listOf(EmojiView(flexBox.context).apply {
-                text = "+"
-                this.setSize(48.px, 29.px)
-                setOnClickListener { onMessageClick(item.id) }
-            }))
         }
     }
 }

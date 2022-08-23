@@ -16,7 +16,7 @@
 
     <ImageView
         android:layout_width="wrap_content"
-        android:id="@+id/iv_stream_arrow"
+        android:id="@+id/iv_stream"
         android:layout_height="wrap_content"
         android:layout_gravity="end|center"
         android:background="@drawable/bg_arrow_up_down"

@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.gorshenev.themesstyles.Adapter
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.StreamMapper
@@ -13,6 +14,7 @@ import ru.gorshenev.themesstyles.Utils.initStreamSearch
 import ru.gorshenev.themesstyles.Utils.setDivider
 import ru.gorshenev.themesstyles.ViewTyped
 import ru.gorshenev.themesstyles.baseRecyclerView.HolderFactory
+import ru.gorshenev.themesstyles.databinding.FragmentChannelsStreamBinding
 import ru.gorshenev.themesstyles.fragments.ChannelsFragment.Companion.RESULT_STREAM
 import ru.gorshenev.themesstyles.fragments.ChannelsFragment.Companion.STREAM_SEARCH
 import ru.gorshenev.themesstyles.fragments.ChannelsFragment.Companion.STR_NAME
@@ -22,6 +24,7 @@ import ru.gorshenev.themesstyles.items.StreamUi
 import ru.gorshenev.themesstyles.items.TopicUi
 
 class StreamSubsFragment : Fragment(R.layout.fragment_channels_stream) {
+    private val binding: FragmentChannelsStreamBinding by viewBinding()
 
     private var cachedItems: MutableSet<ViewTyped> = mutableSetOf()
 
@@ -52,17 +55,18 @@ class StreamSubsFragment : Fragment(R.layout.fragment_channels_stream) {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rv_streams)
 
         adapter.items = createStreams(50)
         cachedItems += adapter.items
 
-        recyclerView.setDivider()
+        with(binding) {
+            rvStreams.setDivider()
 
-        recyclerView.adapter = adapter
+            rvStreams.adapter = adapter
+        }
 
         parentFragmentManager.setFragmentResultListener(STREAM_SEARCH, this) { _, result ->
-            val searchText = result.get(RESULT_STREAM) as String
+            val searchText = result.getString(RESULT_STREAM,"")
             adapter.items = initStreamSearch(cachedItems = cachedItems, searchText = searchText)
         }
     }

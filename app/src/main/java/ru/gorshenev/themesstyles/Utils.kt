@@ -4,7 +4,9 @@ import android.content.res.Resources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import ru.gorshenev.themesstyles.items.*
+import ru.gorshenev.themesstyles.items.PeopleUi
+import ru.gorshenev.themesstyles.items.StreamUi
+import ru.gorshenev.themesstyles.items.TopicUi
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -68,18 +70,34 @@ object Utils {
 
     fun initStreamSearch(cachedItems: Set<ViewTyped>, searchText: String): List<ViewTyped> {
         val digits = searchText.filter { it.isDigit() }
-
-        val regex = when {
-            digits.isNotBlank() ->
-                "${searchText.replace(digits, "").trim()}.*${digits}$"
-                    .toRegex(RegexOption.IGNORE_CASE)
-
-            else -> searchText.trim().toRegex(RegexOption.IGNORE_CASE)
+        val notNumsOrLetters = searchText.filter { !it.isLetterOrDigit() }.trim()
+        var escapedChars = ""
+        notNumsOrLetters.forEach {
+            escapedChars += "\\$it"
         }
 
+        val regex = when {
+            notNumsOrLetters.isNotBlank() && digits.isNotBlank() -> searchText
+                .replace(digits, "").trim()
+                .replace(notNumsOrLetters, escapedChars).trim()
+                .plus(".*${digits}$")
+
+            notNumsOrLetters.isNotBlank() -> searchText
+                .replace(notNumsOrLetters, escapedChars)
+                .trim()
+
+            digits.isNotBlank() -> searchText
+                .replace(digits, "")
+                .trim().plus(".*${digits}$")
+
+            else -> searchText.trim()
+
+        }.toRegex(RegexOption.IGNORE_CASE)
+
         val filteredItems = cachedItems.filter { item ->
-            item is StreamUi && item.name.contains(regex)
-                || item is StreamUi && item.topics.any { it.name.contains(regex) } }
+            item is StreamUi && item.name.contains(regex) ||
+                    item is StreamUi && item.topics.any { it.name.contains(regex) }
+        }
 
         return when (searchText) {
             "" -> cachedItems.toList()
@@ -93,17 +111,17 @@ object Utils {
                 val digits = searchText.filter { it.isDigit() }
 
                 val regex = when {
-                    digits.isNotBlank() ->
-                        "${searchText.replace(digits, "").trim()}.*${digits}$"
-                            .toRegex(RegexOption.IGNORE_CASE)
 
-                    else -> searchText.trim().toRegex(RegexOption.IGNORE_CASE)
-                }
+                    digits.isNotBlank() -> searchText
+                            .replace(digits, "")
+                            .trim().plus(".*${digits}$")
 
-                cachedItems.filter {
-                    it is PeopleUi &&
-                            (it.name.contains(regex)
-                                    || it.email.contains(regex))
+                    else -> searchText.trim()
+
+                }.toRegex(RegexOption.IGNORE_CASE)
+
+                cachedItems.filter { item ->
+                    item is PeopleUi && (item.name.contains(regex) || item.email.contains(regex))
                 }
             }
             else -> cachedItems.toList()
