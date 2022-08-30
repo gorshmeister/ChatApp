@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.gorshenev.themesstyles.databinding.ActivityMainBinding
 import ru.gorshenev.themesstyles.fragments.ChannelsFragment
-import ru.gorshenev.themesstyles.fragments.PeopleFragment
+import ru.gorshenev.themesstyles.fragments.people.PeopleFragment
 import ru.gorshenev.themesstyles.fragments.ProfileFragment
 
 class MainActivity : AppCompatActivity() {
