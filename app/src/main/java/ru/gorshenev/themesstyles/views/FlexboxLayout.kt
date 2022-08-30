@@ -1,10 +1,11 @@
-package ru.gorshenev.themesstyles
+package ru.gorshenev.themesstyles.views
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
+import ru.gorshenev.themesstyles.R
 
 class FlexboxLayout @JvmOverloads constructor(
     context: Context,

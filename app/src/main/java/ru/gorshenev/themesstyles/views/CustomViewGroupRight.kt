@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles
+package ru.gorshenev.themesstyles.views
 
 import android.content.Context
 import android.graphics.Rect
@@ -11,6 +11,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
 import by.kirich1409.viewbindingdelegate.viewBinding
+import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupRightBinding
 
 class CustomViewGroupRight @JvmOverloads constructor(

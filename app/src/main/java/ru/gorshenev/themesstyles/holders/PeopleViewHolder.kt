@@ -19,6 +19,7 @@ private val binding: ItemPeopleBinding by viewBinding()
             ivPeopleAvatar.setImageResource(item.avatar)
             tvPeopleName.text = item.name
             tvPeopleEmail.text = item.email
+            indicator.isSelected = item.isOnline
         }
     }
 }

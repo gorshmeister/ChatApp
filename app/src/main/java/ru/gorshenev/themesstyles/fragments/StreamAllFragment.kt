@@ -3,29 +3,30 @@ package ru.gorshenev.themesstyles.fragments
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
-import ru.gorshenev.themesstyles.Adapter
-import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.StreamMapper
-import ru.gorshenev.themesstyles.Utils.createStreams
+import com.google.android.material.snackbar.Snackbar
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import ru.gorshenev.themesstyles.*
 import ru.gorshenev.themesstyles.Utils.setDivider
-import ru.gorshenev.themesstyles.Utils.initStreamSearch
-import ru.gorshenev.themesstyles.ViewTyped
+import ru.gorshenev.themesstyles.baseRecyclerView.Adapter
 import ru.gorshenev.themesstyles.baseRecyclerView.HolderFactory
+import ru.gorshenev.themesstyles.baseRecyclerView.ViewTyped
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsStreamBinding
 import ru.gorshenev.themesstyles.fragments.ChannelsFragment.Companion.RESULT_STREAM
 import ru.gorshenev.themesstyles.fragments.ChannelsFragment.Companion.STREAM_SEARCH
 import ru.gorshenev.themesstyles.holderFactory.StreamsHolderFactory
 import ru.gorshenev.themesstyles.items.TopicUi
+import java.util.concurrent.TimeUnit
 
 class StreamAllFragment : Fragment(R.layout.fragment_channels_stream) {
     private val binding: FragmentChannelsStreamBinding by viewBinding()
 
-    private var cachedItems: MutableSet<ViewTyped> = mutableSetOf()
-
     private val holderFactory: HolderFactory = StreamsHolderFactory(
         onStreamClick = { streamId ->
+            //todo
             adapter.items = StreamMapper.expandableStream(adapter.items, streamId)
         },
         onTopicClick = { topicId ->
@@ -39,24 +40,63 @@ class StreamAllFragment : Fragment(R.layout.fragment_channels_stream) {
     )
 
     private val adapter = Adapter<ViewTyped>(holderFactory)
+    private var cachedItems: List<ViewTyped> = listOf()
+    private val compositeDisposable = CompositeDisposable()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        initViews()
+        loadStreams(30)
+    }
 
-        adapter.items = createStreams(40)
-        cachedItems += adapter.items
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
+    }
 
+    private fun loadStreams(count: Int) {
+        StreamDataSource.getStreamsObservable(count)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { streams ->
+                    adapter.items = streams
+                    cachedItems = streams
+                },
+                { error -> showError(error) },
+                { Snackbar.make(binding.root, "Completed", Snackbar.LENGTH_SHORT).show() }
+            )
+            .apply { compositeDisposable.add(this) }
+    }
+
+    private fun initViews() {
         with(binding) {
+            rvStreams.adapter = adapter
             rvStreams.setDivider()
 
-            rvStreams.adapter = adapter
-        }
+            parentFragmentManager.setFragmentResultListener(
+                STREAM_SEARCH,
+                this@StreamAllFragment
+            ) { _, result ->
+                val searchText = result.getString(RESULT_STREAM, "")
 
-        parentFragmentManager.setFragmentResultListener(STREAM_SEARCH, this) { _, result ->
-            val searchText = result.getString(RESULT_STREAM,"")
-            adapter.items = initStreamSearch(cachedItems = cachedItems, searchText = searchText)
-        }
+                Observable.create { emitter ->
+                    emitter.onNext(searchText)
+                }
+                    .filter { text -> text.isNotEmpty() }
+                    .distinctUntilChanged()
+                    .debounce(500, TimeUnit.MILLISECONDS)
+                    .switchMap { text -> Utils.initStreamSearchObservable(cachedItems, text) }
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { filteredItems -> adapter.items = filteredItems }
+                    .apply { compositeDisposable.add(this) }
 
+            }
+        }
+    }
+
+    private fun showError(error: Throwable?) {
+        Snackbar.make(binding.root, "Something wrong! $error", Snackbar.LENGTH_SHORT).show()
     }
 }

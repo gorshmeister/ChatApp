@@ -2,23 +2,23 @@ package ru.gorshenev.themesstyles.holders
 
 import android.view.View
 import by.kirich1409.viewbindingdelegate.viewBinding
-import ru.gorshenev.themesstyles.EmojiView
+import ru.gorshenev.themesstyles.views.EmojiView
 import ru.gorshenev.themesstyles.Utils.px
 import ru.gorshenev.themesstyles.Utils.toEmojiString
 import ru.gorshenev.themesstyles.baseRecyclerView.BaseViewHolder
 import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupLeftBinding
 import ru.gorshenev.themesstyles.items.EmojiUi
-import ru.gorshenev.themesstyles.items.LeftMessageUi
+import ru.gorshenev.themesstyles.items.MessageLeftUi
 
 
-class LeftMessageViewHolder(
+class MessageLeftViewHolder(
     view: View,
     private val onMessageClick: ((messageId: Int) -> Unit),
     private val onEmojiClick: (emojiCode: Int, messageId: Int) -> Unit
-) : BaseViewHolder<LeftMessageUi>(view) {
+) : BaseViewHolder<MessageLeftUi>(view) {
     private val binding: ViewCustomViewGroupLeftBinding by viewBinding()
 
-    override fun bind(item: LeftMessageUi) {
+    override fun bind(item: MessageLeftUi) {
         itemView.setOnLongClickListener {
             onMessageClick(item.id)
             true

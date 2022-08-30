@@ -4,9 +4,10 @@ import android.content.res.Resources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.Observable
+import ru.gorshenev.themesstyles.baseRecyclerView.ViewTyped
 import ru.gorshenev.themesstyles.items.PeopleUi
 import ru.gorshenev.themesstyles.items.StreamUi
-import ru.gorshenev.themesstyles.items.TopicUi
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -43,69 +44,85 @@ object Utils {
         }
     }
 
-    fun createStreams(count: Int): List<StreamUi> {
-        var id = 0
-        var cnt = 1
-        return List(count) {
-
-            StreamUi(
-                id = ++id,
-                name = "#Stream №${cnt}",
-                topics = listOf(
-                    TopicUi(++id, "Topic №$cnt"),
-                    TopicUi(++id, "Topic №${++cnt}"),
-                )
-            )
-        }
-    }
-
-    fun createPeople(count: Int): List<PeopleUi> {
-        return List(count) {
-            PeopleUi(
-                id = it,
-                name = "Name Surname:$it",
-            )
-        }
-    }
-
-    fun initStreamSearch(cachedItems: Set<ViewTyped>, searchText: String): List<ViewTyped> {
+    fun initStreamSearch(cachedItems: List<ViewTyped>, searchText: String): List<ViewTyped> {
         val digits = searchText.filter { it.isDigit() }
-        val notNumsOrLetters = searchText.filter { !it.isLetterOrDigit() }.trim()
-        var escapedChars = ""
-        notNumsOrLetters.forEach {
-            escapedChars += "\\$it"
-        }
 
-        val regex = when {
-            notNumsOrLetters.isNotBlank() && digits.isNotBlank() -> searchText
-                .replace(digits, "").trim()
-                .replace(notNumsOrLetters, escapedChars).trim()
-                .plus(".*${digits}$")
+        return when {
+            digits.isNotEmpty() -> {
+                val text = searchText.filter { !it.isDigit() }
 
-            notNumsOrLetters.isNotBlank() -> searchText
-                .replace(notNumsOrLetters, escapedChars)
-                .trim()
-
-            digits.isNotBlank() -> searchText
-                .replace(digits, "")
-                .trim().plus(".*${digits}$")
-
-            else -> searchText.trim()
-
-        }.toRegex(RegexOption.IGNORE_CASE)
-
-        val filteredItems = cachedItems.filter { item ->
-            item is StreamUi && item.name.contains(regex) ||
-                    item is StreamUi && item.topics.any { it.name.contains(regex) }
-        }
-
-        return when (searchText) {
-            "" -> cachedItems.toList()
-            else -> filteredItems
+                cachedItems.filter { item ->
+                    item is StreamUi &&
+                            (item.name.contains(text) && item.name.contains(digits) ||
+                                    (item.topics.any {
+                                        it.name.contains(text) && it.name.contains(
+                                            digits
+                                        )
+                                    }))
+                }
+            }
+            else -> {
+                cachedItems.filter { item ->
+                    item is StreamUi && (item.name.contains(searchText) ||
+                            item.topics.any { it.name.contains(searchText) })
+                }
+            }
         }
     }
 
-    fun initUserSearch(cachedItems: Set<ViewTyped>, searchText: String): List<ViewTyped> {
+    //todo куда засунуть это
+    fun initStreamSearchObservable(
+        cachedItems: List<ViewTyped>,
+        searchText: String
+    ): Observable<List<ViewTyped>> {
+        val digits = searchText.filter { it.isDigit() }
+
+        return Observable.fromCallable {
+            when {
+                digits.isNotEmpty() -> {
+                    val text = searchText.filter { !it.isDigit() }
+
+                    cachedItems.filter { item ->
+                        item is StreamUi &&
+                                (item.name.contains(text, true) && item.name.contains(
+                                    digits,
+                                    true
+                                ) ||
+                                        (item.topics.any {
+                                            it.name.contains(text, true) && it.name.contains(
+                                                digits,
+                                                true
+                                            )
+                                        }))
+                    }
+                }
+                searchText.isNotEmpty() -> {
+                    cachedItems.filter { item ->
+                        item is StreamUi && (item.name.contains(searchText, true) ||
+                                item.topics.any { it.name.contains(searchText, true) })
+                    }
+                }
+                else -> cachedItems
+            }
+        }
+    }
+
+    fun initUserSearchObservable(
+        cachedItems: List<ViewTyped>,
+        searchText: String
+    ): Observable<List<ViewTyped>> {
+        return Observable.fromCallable {
+            return@fromCallable when {
+                searchText.isEmpty() -> cachedItems
+                else -> cachedItems.filter { item ->
+                    item is PeopleUi && (item.name.contains(searchText, true) || item.email.contains(searchText, true))
+                }
+
+            }
+        }
+    }
+
+    fun initUserSearch(cachedItems: List<ViewTyped>, searchText: String): List<ViewTyped> {
         return when {
             searchText.isNotBlank() -> {
                 val digits = searchText.filter { it.isDigit() }
@@ -113,8 +130,8 @@ object Utils {
                 val regex = when {
 
                     digits.isNotBlank() -> searchText
-                            .replace(digits, "")
-                            .trim().plus(".*${digits}$")
+                        .replace(digits, "")
+                        .trim().plus(".*${digits}$")
 
                     else -> searchText.trim()
 
@@ -127,6 +144,5 @@ object Utils {
             else -> cachedItems.toList()
         }
     }
-
-
 }
+

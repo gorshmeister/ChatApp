@@ -1,7 +1,7 @@
 package ru.gorshenev.themesstyles.items
 
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.ViewTyped
+import ru.gorshenev.themesstyles.baseRecyclerView.ViewTyped
 
 data class TopicUi(
     override val id: Int,

@@ -1,7 +1,4 @@
-package ru.gorshenev.themesstyles
-
-import ru.gorshenev.themesstyles.baseRecyclerView.BaseAdapter
-import ru.gorshenev.themesstyles.baseRecyclerView.HolderFactory
+package ru.gorshenev.themesstyles.baseRecyclerView
 
 class Adapter<T : ViewTyped>(holderFactory: HolderFactory) : BaseAdapter<T>(holderFactory) {
     private val localItems: MutableList<T> = mutableListOf()

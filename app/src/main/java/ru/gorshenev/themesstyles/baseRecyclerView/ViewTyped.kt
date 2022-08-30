@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles
+package ru.gorshenev.themesstyles.baseRecyclerView
 
 interface ViewTyped {
     val viewType: Int

@@ -12,18 +12,9 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginRight="10dp"
-        android:src="@drawable/ic_launcher_background"
+        android:background="@color/shimmer_color"
         app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-        tools:src="@drawable/ic_launcher_background" />
-
-    <View
-        android:layout_width="21dp"
-        android:layout_height="21dp"
-        android:background="@drawable/bg_people_indicator"
-        android:layout_marginStart="43dp"
-        android:layout_gravity="bottom"
-        android:id="@+id/indicator"/>
-
+        tools:src="@color/shimmer_color" />
 
     <TextView
         android:id="@+id/tv_people_name"
@@ -32,19 +23,20 @@
         android:layout_marginLeft="74dp"
         android:layout_marginTop="8dp"
         android:text="Name Surname"
-        android:textColor="#FAFAFA"
+        android:textColor="@color/shimmer_color"
         android:textSize="20sp"
-        tools:text="@tools:sample/full_names" />
+        tools:text="@tools:sample/full_names"
+        />
 
     <TextView
+        android:id="@+id/tv_people_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_people_email"
         android:layout_gravity="bottom"
         android:layout_marginLeft="74dp"
         android:layout_marginBottom="8dp"
-        android:text="darrel@gmail.com"
-        android:textColor="#A1A1A1"
+        android:text="email@gmail.com"
+        android:textColor="@color/shimmer_color"
         android:textSize="16sp"
         tools:text="darrel@gmail.com" />
 

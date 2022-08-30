@@ -1,14 +1,13 @@
-package ru.gorshenev.themesstyles
+package ru.gorshenev.themesstyles.views
 
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.view.setPadding
 import by.kirich1409.viewbindingdelegate.viewBinding
-import ru.gorshenev.themesstyles.databinding.ItemEmojiBinding
+import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.ViewEmojiBinding
 
 class EmojiView @JvmOverloads constructor(

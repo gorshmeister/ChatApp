@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:parentTag="ru.gorshenev.themesstyles.CustomViewGroupLeft">
+    tools:parentTag="ru.gorshenev.themesstyles.views.CustomViewGroupLeft">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_msg_avatar"
@@ -51,7 +51,7 @@
             tools:text="@tools:sample/date/hhmm" />
     </androidx.cardview.widget.CardView>
 
-    <ru.gorshenev.themesstyles.FlexboxLayout
+    <ru.gorshenev.themesstyles.views.FlexboxLayout
         android:id="@+id/flexbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

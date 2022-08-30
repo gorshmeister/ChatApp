@@ -19,4 +19,5 @@
     <color name="colorPrimaryBlack">#1E1E1E</color>
     <color name="colorPrimaryBlue">#2A9D8F</color>
     <color name="colorBackground">#121212</color>
+    <color name="shimmer_color">#dddddd</color>
 </resources>

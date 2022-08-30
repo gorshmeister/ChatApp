@@ -2,22 +2,22 @@ package ru.gorshenev.themesstyles.holders
 
 import android.view.View
 import by.kirich1409.viewbindingdelegate.viewBinding
-import ru.gorshenev.themesstyles.EmojiView
+import ru.gorshenev.themesstyles.views.EmojiView
 import ru.gorshenev.themesstyles.Utils.px
 import ru.gorshenev.themesstyles.Utils.toEmojiString
 import ru.gorshenev.themesstyles.baseRecyclerView.BaseViewHolder
 import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupRightBinding
-import ru.gorshenev.themesstyles.items.RightMessageUi
+import ru.gorshenev.themesstyles.items.MessageRightUi
 
-class RightMessageViewHolder(
+class MessageRightViewHolder(
     view: View,
     private val onMessageClick: ((messageId: Int) -> Unit),
     private val onEmojiClick: (emojiCode: Int, messageId: Int) -> Unit,
 ) :
-    BaseViewHolder<RightMessageUi>(view) {
+    BaseViewHolder<MessageRightUi>(view) {
     private val binding: ViewCustomViewGroupRightBinding by viewBinding()
 
-    override fun bind(item: RightMessageUi) {
+    override fun bind(item: MessageRightUi) {
         itemView.setOnLongClickListener {
             onMessageClick(item.id)
             true

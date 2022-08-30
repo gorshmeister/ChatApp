@@ -1,9 +1,9 @@
 package ru.gorshenev.themesstyles.items
 
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.ViewTyped
+import ru.gorshenev.themesstyles.baseRecyclerView.ViewTyped
 
-data class LeftMessageUi(
+data class MessageLeftUi(
     override val id: Int,
     val avatar: Int = R.drawable.ic_launcher_background,
     val name: String,

@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.ViewTyped
 import ru.gorshenev.themesstyles.holders.DateViewHolder
 
 abstract class HolderFactory : (ViewGroup, Int) -> BaseViewHolder<ViewTyped> {
