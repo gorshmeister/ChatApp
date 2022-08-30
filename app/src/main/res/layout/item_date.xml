@@ -7,14 +7,14 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/textHolder"
+        android:id="@+id/tv_date"
         android:layout_width="76dp"
         android:layout_marginBottom="19dp"
         android:layout_height="22dp"
         android:layout_gravity="top|center"
         android:gravity="center"
         android:textColor="#999999"
-        android:background="@drawable/date_bg"
+        android:background="@drawable/bg_date"
         android:textSize="14sp"
         tools:text="1 Feb" />
 </LinearLayout>

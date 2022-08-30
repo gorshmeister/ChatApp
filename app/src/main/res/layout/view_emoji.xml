@@ -14,7 +14,7 @@
         android:textSize="14sp"
         android:paddingHorizontal="9dp"
         android:paddingVertical="5dp"
-        android:background="@drawable/emoji_bg"
+        android:background="@drawable/bg_emoji"
         android:gravity="center"
         android:textAlignment="center"
         />

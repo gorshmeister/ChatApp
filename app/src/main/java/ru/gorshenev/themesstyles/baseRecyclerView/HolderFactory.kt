@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.ViewTyped
-import ru.gorshenev.themesstyles.holders.TextViewHolder
+import ru.gorshenev.themesstyles.holders.DateViewHolder
 
 abstract class HolderFactory : (ViewGroup, Int) -> BaseViewHolder<ViewTyped> {
 
@@ -15,7 +15,7 @@ abstract class HolderFactory : (ViewGroup, Int) -> BaseViewHolder<ViewTyped> {
         val view: View = viewGroup.inflate(viewType)
 
         return when (viewType) {
-            R.layout.item_text -> TextViewHolder(view)
+            R.layout.item_date -> DateViewHolder(view)
             else -> checkNotNull(createViewHolder(view, viewType)) {
                 "unknown viewType=" + viewGroup.resources.getResourceName(viewType)
             }

@@ -3,8 +3,10 @@ package ru.gorshenev.themesstyles.items
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.ViewTyped
 
-data class TextUi(
+data class TopicUi(
     override val id: Int,
-    val text: String,
-    override val viewType: Int = R.layout.item_text
-) : ViewTyped
+    val name: String,
+    override val viewType: Int = R.layout.item_channels_topic
+) : ViewTyped {
+
+}

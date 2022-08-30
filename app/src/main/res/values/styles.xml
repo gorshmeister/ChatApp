@@ -23,12 +23,15 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="ShapeAppearanceOverlay.App.CornerSize15dp" parent="">
+        <item name="cornerSize">15dp</item>
+    </style>
+
     <style name="CardViewLeft" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="contentPaddingLeft">13dp</item>
         <item name="contentPaddingRight">13dp</item>
         <item name="contentPaddingTop">10dp</item>
         <item name="contentPaddingBottom">10dp</item>
-
         <item name="cardBackgroundColor">#1C1C1C</item>
         <item name="cardCornerRadius">18dp</item>
     </style>
@@ -36,6 +39,7 @@
     <style name="CardViewRight" parent="CardViewLeft">
         <item name="contentPaddingLeft">16dp</item>
         <item name="contentPaddingRight">16dp</item>
+        <item name="cardBackgroundColor">@color/colorPrimaryBlue</item>
     </style>
 
     <style name="Widget.MyApp.BottomSheet.Modal" parent="Widget.Design.BottomSheet.Modal">
@@ -47,4 +51,23 @@
         <item name="bottomSheetStyle">@style/Widget.MyApp.BottomSheet.Modal</item>
     </style>
 
+    <style name="Widget.MyApp.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.MyApp.BottomNavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.MyApp.BottomNavigationView" parent="">
+        <item name="colorPrimary">#1E1E1E</item>
+        <item name="colorOnPrimary">#FAFAFA</item>
+    </style>
+
+    <style name="Widget.MyApp.TabLayout" parent="Widget.MaterialComponents.TabLayout.Colored">
+        <item name="tabTextAppearance">@style/ThemeOverlay.MyApp.TabLayoutTextAppearance</item>
+        <item name="android:background">#1E1E1E</item>
+        <item name="tabIndicatorColor">#219653</item>
+        <item name="tabTextColor">@color/white</item>
+    </style>
+
+    <style name="ThemeOverlay.MyApp.TabLayoutTextAppearance" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">22sp</item>
+    </style>
 </resources>

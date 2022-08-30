@@ -13,21 +13,21 @@
         android:layout_marginEnd="12dp">
 
         <TextView
-            android:id="@+id/tvText"
+            android:id="@+id/tv_msg_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxWidth="220dp"
             android:textColor="@color/text_color"
             android:textSize="16sp"
-            tools:text="Textet" />
+            tools:text="Text text text" />
 
         <TextView
-            android:id="@+id/tvTime"
+            android:id="@+id/tv_msg_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginTop="20dp"
-            android:textColor="@color/time_color"
+            android:textColor="#E5E5E5"
             android:textSize="11sp"
             tools:text="@tools:sample/date/hhmm" />
     </androidx.cardview.widget.CardView>

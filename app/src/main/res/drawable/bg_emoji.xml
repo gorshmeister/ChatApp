@@ -8,8 +8,8 @@
     </item>
     <item>
         <selector>
-            <item android:state_selected="true" android:drawable="@drawable/emoji_bg_selected" />
-            <item android:drawable="@drawable/emoji_bg_not_selected"/>
+            <item android:state_selected="true" android:drawable="@drawable/bg_emoji_selected" />
+            <item android:drawable="@drawable/bg_emoji_not_selected"/>
         </selector>
     </item>
 </layer-list>
