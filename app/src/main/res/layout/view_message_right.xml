@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ru.gorshenev.themesstyles.views.CustomViewGroupRight xmlns:android="http://schemas.android.com/apk/res/android"
+<ru.gorshenev.themesstyles.presentation.ui.chat.views.CustomViewGroupRight xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/view_message"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-</ru.gorshenev.themesstyles.views.CustomViewGroupRight>
+</ru.gorshenev.themesstyles.presentation.ui.chat.views.CustomViewGroupRight>
