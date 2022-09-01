@@ -29,6 +29,7 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
 
             val pagerAdapter = PagerAdapter(parentFragmentManager, lifecycle)
             fragmentViewPager.adapter = pagerAdapter
+
             pagerAdapter.update(listOf(StreamSubsFragment(), StreamAllFragment()))
 
             val tabs = listOf("Subscribed", "All streams")
