@@ -68,7 +68,7 @@ class PeopleFragment : Fragment(R.layout.fragment_people), PeopleView {
     override fun showLoading() {
         binding.shimmerPeople.apply {
             visibility = View.VISIBLE
-            startShimmer()
+            showShimmer(true)
         }
     }
 
@@ -76,7 +76,7 @@ class PeopleFragment : Fragment(R.layout.fragment_people), PeopleView {
         Snackbar.make(binding.root, "Completed!", Snackbar.LENGTH_SHORT).show()
         binding.shimmerPeople.apply {
             visibility = View.GONE
-            stopShimmer()
+            hideShimmer()
         }
     }
 

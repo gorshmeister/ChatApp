@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.presentation.view_pager
+package ru.gorshenev.themesstyles.presentation.ui.channels.view_pager
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

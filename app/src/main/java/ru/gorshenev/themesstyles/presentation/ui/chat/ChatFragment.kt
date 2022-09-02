@@ -9,15 +9,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import ru.gorshenev.themesstyles.*
-import ru.gorshenev.themesstyles.data.Errors
-import ru.gorshenev.themesstyles.data.Utils
-import ru.gorshenev.themesstyles.data.mappers.StreamMapper
-import ru.gorshenev.themesstyles.data.repositories.ChatDataSource
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
@@ -25,10 +17,7 @@ import ru.gorshenev.themesstyles.databinding.FragmentChatBinding
 import ru.gorshenev.themesstyles.presentation.ui.chat.BottomSheet.Companion.PICKER_KEY
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STR_NAME
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.TPC_NAME
-import ru.gorshenev.themesstyles.presentation.ui.channels.StreamView
 import ru.gorshenev.themesstyles.presentation.ui.chat.adapter.ChatHolderFactory
-import ru.gorshenev.themesstyles.presentation.ui.chat.items.DateUi
-import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
 import kotlin.random.Random
 
 class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
@@ -37,6 +26,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
     private val bottomSheet: BottomSheet = BottomSheet()
 
     private val presenter: ChatPresenter = ChatPresenter(this)
+
 
     private val holderFactory: HolderFactory = ChatHolderFactory(
         longClick = { messageId ->
@@ -109,8 +99,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
 
     private fun initStreamAndTopicNames() {
         with(binding) {
-            val topicName = requireArguments().getString(TPC_NAME, "topic")
-            toolbar.title = requireArguments().getString(STR_NAME, "stream")
+            val topicName = arguments?.getString(TPC_NAME, "topic")
+            toolbar.title = arguments?.getString(STR_NAME, "stream")
             tvTopicName.text = "Topic: #$topicName"
             toolbar.setNavigationOnClickListener {
                 parentFragmentManager.popBackStack()
