@@ -9,15 +9,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import ru.gorshenev.themesstyles.*
-import ru.gorshenev.themesstyles.data.Errors
-import ru.gorshenev.themesstyles.data.Utils
-import ru.gorshenev.themesstyles.data.mappers.StreamMapper
-import ru.gorshenev.themesstyles.data.repositories.ChatDataSource
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
@@ -26,15 +18,15 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.BottomSheet.Companion.PICK
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STR_NAME
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.TPC_NAME
 import ru.gorshenev.themesstyles.presentation.ui.chat.adapter.ChatHolderFactory
-import ru.gorshenev.themesstyles.presentation.ui.chat.items.DateUi
-import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
 import kotlin.random.Random
 
-class ChatFragment : Fragment(R.layout.fragment_chat) {
+class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
     private val binding: FragmentChatBinding by viewBinding()
 
     private val bottomSheet: BottomSheet = BottomSheet()
-    private val compositeDisposable = CompositeDisposable()
+
+    private val presenter: ChatPresenter = ChatPresenter(this)
+
 
     private val holderFactory: HolderFactory = ChatHolderFactory(
         longClick = { messageId ->
@@ -45,16 +37,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             }
         },
         onEmojiClick = { emojiCode, messageId ->
-            Observable.just(emojiCode to messageId)
-                .flatMapSingle { (code, id) ->
-                    StreamMapper.updateEmojisCounter(adapter.items, code, id)
-                }
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { updList -> adapter.items = updList },
-                    { error -> showError(error) })
-                .apply { compositeDisposable.add(this) }
+            presenter.onEmojiClick(emojiCode, messageId)
         }
     )
     private val adapter = Adapter<ViewTyped>(holderFactory)
@@ -66,25 +49,14 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         initInputField()
         initSendingMessages()
         initStreamAndTopicNames()
-        loadMessages(Random.nextInt(24))
+        presenter.loadMessages(Random.nextInt(24))
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        compositeDisposable.clear()
+        presenter.onClear()
     }
 
-
-    private fun loadMessages(count: Int) {
-        ChatDataSource.getMessage(count)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { messages -> adapter.items = messages },
-                { error -> showError(error) }
-            )
-            .apply { compositeDisposable.add(this) }
-    }
 
     private fun initViews() {
         with(binding) {
@@ -96,22 +68,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             parentFragmentManager.setFragmentResultListener(PICKER_KEY, this@ChatFragment) { _, result ->
                 val resultPick =
                     result.get(BottomSheet.RESULT_EMOJI_PICK) as BottomSheet.EmojiPickResult
-
-                Observable.just(resultPick)
-                    .flatMapSingle { (id, code) ->
-                        StreamMapper.addReactions(adapter.items, id, code)
-                    }
-                    .subscribeOn(Schedulers.computation())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        { updList -> adapter.items = updList },
-                        { error ->
-                            when (error) {
-                                is Errors.ReactionAlreadyExist -> showToast()
-                                else -> showError(error)
-                            }
-                        })
-                    .apply { compositeDisposable.add(this) }
+                presenter.addReaction(resultPick)
             }
         }
     }
@@ -131,27 +88,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         with(binding) {
             btnSendMsg.setOnClickListener {
                 if (etMsgField.text.isNotBlank()) {
-                    val lastDate = (adapter.items.findLast { it is DateUi } as DateUi).text
-                    if (lastDate != Utils.getCurrentDate()) {
-                        adapter.items += DateUi(
-                            id = adapter.itemCount + 1,
-                            text = Utils.getCurrentDate(),
-                        )
-                    }
-
-                    try {
-                        adapter.items += MessageRightUi(
-                            id = adapter.itemCount + 1,
-                            text = etMsgField.text.toString(),
-                            time = Utils.getCurrentTime(),
-                            emojis = emptyList()
-                        )
-                        if (adapter.items.size % 5 == 0) {
-                            throw Errors.MessageError("Owi6ka oTnpaBku coo6weHu9I")
-                        }
-                    } catch (e: Errors.MessageError) {
-                        showError(e)
-                    }
+                    presenter.sendMessage(etMsgField.text.toString())
                 }
 
                 rvItems.smoothScrollToPosition(adapter.itemCount)
@@ -162,8 +99,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
 
     private fun initStreamAndTopicNames() {
         with(binding) {
-            val topicName = requireArguments().getString(TPC_NAME, "topic")
-            toolbar.title = requireArguments().getString(STR_NAME, "stream")
+            val topicName = arguments?.getString(TPC_NAME, "topic")
+            toolbar.title = arguments?.getString(STR_NAME, "stream")
             tvTopicName.text = "Topic: #$topicName"
             toolbar.setNavigationOnClickListener {
                 parentFragmentManager.popBackStack()
@@ -173,11 +110,15 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         }
     }
 
-    private fun showToast() {
+    override fun showToast() {
         Toast.makeText(context, "Реакция уже существует!", Toast.LENGTH_SHORT).show()
     }
 
-    private fun showError(error: Throwable?) {
+    override fun showItems(items: List<ViewTyped>) {
+        adapter.items = items
+    }
+
+    override fun showError(error: Throwable?) {
         Snackbar.make(
             binding.root, """Something wrong! $error
             |${error?.message}""".trimMargin(), Snackbar.LENGTH_SHORT

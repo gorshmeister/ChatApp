@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.tabs.TabLayoutMediator
-import ru.gorshenev.themesstyles.presentation.view_pager.PagerAdapter
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsBinding
+import ru.gorshenev.themesstyles.presentation.ui.channels.view_pager.PagerAdapter
 
 class ChannelsFragment : Fragment(R.layout.fragment_channels) {
     private val binding: FragmentChannelsBinding by viewBinding()
@@ -29,7 +29,14 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
 
             val pagerAdapter = PagerAdapter(parentFragmentManager, lifecycle)
             fragmentViewPager.adapter = pagerAdapter
-            pagerAdapter.update(listOf(StreamSubsFragment(), StreamAllFragment()))
+
+            pagerAdapter.update(listOf(
+                StreamFragment().apply {
+                    arguments = bundleOf(STR_TYPE to StreamFragment.StreamType.SUBSCRIBED)
+                },
+                StreamFragment().apply {
+                    arguments = bundleOf(STR_TYPE to StreamFragment.StreamType.ALL_STREAMS)
+                }))
 
             val tabs = listOf("Subscribed", "All streams")
 
@@ -49,5 +56,6 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
         const val RESULT_STREAM = "RESULT_STREAM"
         const val STR_NAME = "STR_NAME"
         const val TPC_NAME = "TPC_NAME"
+        const val STR_TYPE = "STR_TYPE"
     }
 }

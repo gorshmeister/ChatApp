@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.presentation.ui.channels
+package ru.gorshenev.themesstyles.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.ActivityMainBinding
+import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
 import ru.gorshenev.themesstyles.presentation.ui.people.PeopleFragment
 import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileFragment
 
@@ -16,7 +17,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //todo binding.root как в семинаре
 
         initViews()
     }
