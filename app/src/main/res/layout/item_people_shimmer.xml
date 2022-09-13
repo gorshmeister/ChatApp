@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_people_avatar"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/shimmer_color"
+        app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+        tools:src="@color/shimmer_color" />
+
+    <TextView
+        android:id="@+id/tv_people_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="74dp"
+        android:layout_marginTop="8dp"
+        android:text="Name Surname"
+        android:textColor="@color/shimmer_color"
+        android:textSize="20sp"
+        tools:text="@tools:sample/full_names"
+        />
+
+    <TextView
+        android:id="@+id/tv_people_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="74dp"
+        android:layout_marginBottom="8dp"
+        android:text="email@gmail.com"
+        android:textColor="@color/shimmer_color"
+        android:textSize="16sp"
+        tools:text="darrel@gmail.com" />
+
+</FrameLayout>

@@ -12,10 +12,29 @@
         android:layout_width="match_parent"
         android:layout_height="56dp" />
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_people"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <include layout="@layout/item_people_shimmer" />
+            <include layout="@layout/item_people_shimmer" />
+            <include layout="@layout/item_people_shimmer" />
+            <include layout="@layout/item_people_shimmer" />
+            <include layout="@layout/item_people_shimmer" />
+            <include layout="@layout/item_people_shimmer" />
+            <include layout="@layout/item_people_shimmer" />
+            <include layout="@layout/item_people_shimmer" />
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_people"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/rv_people"
         android:layout_weight="9"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_people" />

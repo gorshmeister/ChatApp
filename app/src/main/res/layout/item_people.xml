@@ -16,6 +16,15 @@
         app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
         tools:src="@drawable/ic_launcher_background" />
 
+    <View
+        android:layout_width="21dp"
+        android:layout_height="21dp"
+        android:background="@drawable/bg_people_indicator"
+        android:layout_marginStart="43dp"
+        android:layout_gravity="bottom"
+        android:id="@+id/indicator"/>
+
+
     <TextView
         android:id="@+id/tv_people_name"
         android:layout_width="wrap_content"
