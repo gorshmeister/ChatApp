@@ -2,19 +2,20 @@ package ru.gorshenev.themesstyles.presentation.ui.chat.adapter
 
 import android.view.View
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.bumptech.glide.Glide
+import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupLeftBinding
+import ru.gorshenev.themesstyles.presentation.base_recycler_view.BaseViewHolder
+import ru.gorshenev.themesstyles.presentation.ui.chat.items.EmojiUi
+import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageLeftUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.views.EmojiView
 import ru.gorshenev.themesstyles.utils.Utils.px
 import ru.gorshenev.themesstyles.utils.Utils.toEmojiString
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.BaseViewHolder
-import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupLeftBinding
-import ru.gorshenev.themesstyles.presentation.ui.chat.items.EmojiUi
-import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageLeftUi
 
 
 class MessageLeftViewHolder(
     view: View,
     private val onMessageClick: ((messageId: Int) -> Unit),
-    private val onEmojiClick: (emojiCode: Int, messageId: Int) -> Unit
+    private val onEmojiClick: (emojiName: String, messageId: Int) -> Unit
 ) : BaseViewHolder<MessageLeftUi>(view) {
     private val binding: ViewCustomViewGroupLeftBinding by viewBinding()
 
@@ -25,7 +26,8 @@ class MessageLeftViewHolder(
         }
 
         with(binding) {
-            ivMsgAvatar.setImageResource(item.avatar)
+            Glide.with(itemView).load(item.avatar).into(ivMsgAvatar)
+//            ivMsgAvatar.setImageResource(item.avatar)
             tvMsgName.text = item.name
             tvMsgText.text = item.text
             tvMsgTime.text = item.time
@@ -36,10 +38,11 @@ class MessageLeftViewHolder(
                     EmojiView(flexbox.context).apply {
                         text = emojiUi.code.toEmojiString()
                         count = emojiUi.counter
-                        messageId = emojiUi.message_id
-                        userId += emojiUi.user_id
+                        messageId = emojiUi.msgId
+                        userId += emojiUi.listUsersId
                         isSelected = emojiUi.isSelected
-                        setOnClickListener { onEmojiClick(emojiUi.code, item.id) }
+                        setOnClickListener { onEmojiClick(emojiUi.name, item.id) }
+//                        setOnClickListener { onEmojiClick(emojiUi.code, item.id) }
                     }
                 }
             )

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DiffUtil
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
@@ -22,6 +23,8 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.adapter.StreamsHolderF
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatFragment
+import ru.gorshenev.themesstyles.presentation.ui.chat.ChatPresenter
+import ru.gorshenev.themesstyles.utils.ItemDiffUtil
 
 class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
     private val binding: FragmentChannelsStreamBinding by viewBinding()
@@ -38,7 +41,7 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViews()
         val streamType = arguments?.get(STR_TYPE) as StreamType
-        presenter.loadStreams(30, streamType)
+        presenter.loadStreams(streamType)
     }
 
     override fun onDestroyView() {
@@ -71,6 +74,7 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
 
     override fun showError(error: Throwable?) {
         Snackbar.make(binding.root, "Something wrong! $error", Snackbar.LENGTH_SHORT).show()
+        Log.d("qweqwe", "STREAM PROBLEM: $error")
     }
 
     override fun showLoading() {
@@ -81,7 +85,6 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
     }
 
     override fun stopLoading() {
-        Snackbar.make(binding.root, "Completed", Snackbar.LENGTH_SHORT).show()
         binding.shimmerChannels.apply {
             visibility = View.GONE
             hideShimmer()

@@ -1,20 +1,19 @@
 package ru.gorshenev.themesstyles.presentation.ui.people
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
-import io.reactivex.subjects.PublishSubject
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentPeopleBinding
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.people.adapter.PeopleHolderFactory
-import kotlin.random.Random
 
 class PeopleFragment : Fragment(R.layout.fragment_people), PeopleView {
 
@@ -31,7 +30,7 @@ class PeopleFragment : Fragment(R.layout.fragment_people), PeopleView {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-        presenter.loadPeople(30)
+        presenter.loadPeople()
     }
 
     override fun onDestroyView() {
@@ -46,10 +45,7 @@ class PeopleFragment : Fragment(R.layout.fragment_people), PeopleView {
                 ContextCompat.getColor(requireContext(), R.color.colorPrimaryBlack)
 
             rvPeople.adapter = adapter
-            usersField.ivSearch.setOnClickListener {
-                adapter.items = emptyList()
-                presenter.loadPeople(Random.nextInt(50))
-            }
+
 
             usersField.etUsers.addTextChangedListener { text ->
                 presenter.searchPeople(text?.toString().orEmpty())
@@ -63,6 +59,7 @@ class PeopleFragment : Fragment(R.layout.fragment_people), PeopleView {
 
     override fun showError(error: Throwable?) {
         Snackbar.make(binding.root, "Something wrong! $error", Snackbar.LENGTH_LONG).show()
+        Log.d("qweqwe", "PEOPLE PROBLEM: $error")
     }
 
     override fun showLoading() {
@@ -73,7 +70,6 @@ class PeopleFragment : Fragment(R.layout.fragment_people), PeopleView {
     }
 
     override fun stopLoading() {
-        Snackbar.make(binding.root, "Completed!", Snackbar.LENGTH_SHORT).show()
         binding.shimmerPeople.apply {
             visibility = View.GONE
             hideShimmer()

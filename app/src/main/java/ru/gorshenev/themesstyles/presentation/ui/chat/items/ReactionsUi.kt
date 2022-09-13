@@ -4,7 +4,9 @@ import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 
 data class ReactionsUi(
-    val emojiCode: Int,
+    val category: String,
+    val name: String,
+    val code: String,
     override val id: Int = 0,
     override val viewType: Int = R.layout.item_emoji
 ) : ViewTyped

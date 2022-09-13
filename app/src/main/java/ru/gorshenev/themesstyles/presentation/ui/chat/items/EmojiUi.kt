@@ -1,9 +1,10 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat.items
 
 data class EmojiUi(
+    val msgId: Int = 0,
+    val name: String = "",
     val code: Int,
+    val listUsersId: List<Int> = emptyList(),
     val counter: Int = 0,
-    val isSelected: Boolean = false,
-    val message_id: Int = 0,
-    val user_id: List<Int> = emptyList()
+    val isSelected: Boolean
 )
