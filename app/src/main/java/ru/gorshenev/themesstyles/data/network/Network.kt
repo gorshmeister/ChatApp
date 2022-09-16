@@ -19,7 +19,11 @@ object Network {
     }
 
     private val converterFactory: Converter.Factory =
-        Json { ignoreUnknownKeys = true }.asConverterFactory("application/json".toMediaType())
+        Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+            useAlternativeNames = true
+        }.asConverterFactory("application/json".toMediaType())
 
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)

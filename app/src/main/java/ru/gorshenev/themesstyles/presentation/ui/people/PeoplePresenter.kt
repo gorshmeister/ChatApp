@@ -9,6 +9,7 @@ import io.reactivex.subjects.PublishSubject
 import ru.gorshenev.themesstyles.data.network.Network
 import ru.gorshenev.themesstyles.data.network.ZulipApi
 import ru.gorshenev.themesstyles.data.network.model.GetUserPresence
+import ru.gorshenev.themesstyles.data.network.model.PeopleStatusResponse
 import ru.gorshenev.themesstyles.data.network.model.User
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.people.items.PeopleUi
@@ -75,9 +76,9 @@ class PeoplePresenter(private val view: PeopleView) {
 
     private fun getStatus(presence: GetUserPresence): PeopleUi.PeopleStatus {
         return when (presence.presence.aggregated.status) {
-            "active" -> PeopleUi.PeopleStatus.ONLINE
-            "idle" -> PeopleUi.PeopleStatus.IDLE
-            else -> PeopleUi.PeopleStatus.OFFLINE
+            PeopleStatusResponse.ONLINE -> PeopleUi.PeopleStatus.ONLINE
+            PeopleStatusResponse.IDLE -> PeopleUi.PeopleStatus.IDLE
+            PeopleStatusResponse.OFFLINE -> PeopleUi.PeopleStatus.OFFLINE
         }
     }
 

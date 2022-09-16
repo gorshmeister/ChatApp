@@ -4,7 +4,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.*
 import ru.gorshenev.themesstyles.data.network.model.*
-import ru.gorshenev.themesstyles.presentation.ui.chat.ChatPresenter
 
 interface ZulipApi {
     @GET("users/{id}")
@@ -17,11 +16,10 @@ interface ZulipApi {
     fun getUserPresence(@Path("user_id_or_email") id: Int): Single<GetUserPresence>
 
 
-
     @GET("messages/{message_id}")
     fun getMessage(
         @Path("message_id") id: Int,
-        @Query("apply_markdown") apply_markdown: Boolean,
+        @Query("apply_markdown") apply_markdown: Boolean = false,
     ): Observable<GetOneMessageResponse>
 
     @GET("messages")
@@ -30,7 +28,7 @@ interface ZulipApi {
         @Query("num_before") nb: Int,
         @Query("num_after") na: Int,
         @Query("narrow") narrow: String,
-//        @QueryMap narrow: Map<String, String>,
+        @Query("client_gravatar") cg: Boolean,
         @Query("apply_markdown") apply_markdown: Boolean,
     ): Observable<GetMessageResponse>
 
@@ -55,29 +53,33 @@ interface ZulipApi {
     ): Single<CreateReactionResponse>
 
 
-
     @GET("streams")
     fun getStreamsAll(): Single<GetStreamResponse>
 
     @GET("users/me/subscriptions")
-    fun getStreamsSubs(): Single<GetStreamSubscriptionsResponse>
+    fun getStreamsSubs(): Single<GetStreamResponse>
 
     @GET("users/me/{stream_id}/topics")
     fun getTopics(@Path("stream_id") id: Int): Single<GetTopicResponse>
 
 
-
     @POST("register")
     fun getQueue(
-//        @Query("event_types") types: String,
-        @QueryMap narrow: Map<String,String>,
-        @Query("dont_block") db: Boolean = false
-        ): Observable<CreateQueueResponse>
+        @Query("event_types") types: String,
+        @QueryMap narrow: Map<String, String>,
+        @Query("slim_presence") slimPresence: Boolean = true,
+    ): Observable<CreateQueueResponse>
 
     @GET("events")
     fun getEventsFromQueue(
         @Query("queue_id") queueId: String,
-        @Query("last_event_id") lastId: Int = -1
+        @Query("last_event_id") lastId: Int
     ): Observable<GetEventsResponse>
+
+    @GET("events")
+    fun getEmojiEventsFromQueue(
+        @Query("queue_id") queueId: String,
+        @Query("last_event_id") lastId: Int
+    ): Observable<GetEmojiEventsResponse>
 }
 

@@ -1,7 +1,6 @@
 package ru.gorshenev.themesstyles.presentation.ui.channels
 
 import androidx.core.graphics.toColorInt
-import androidx.recyclerview.widget.DiffUtil
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -12,11 +11,9 @@ import ru.gorshenev.themesstyles.data.network.Network
 import ru.gorshenev.themesstyles.data.network.ZulipApi
 import ru.gorshenev.themesstyles.data.network.model.GetTopicResponse
 import ru.gorshenev.themesstyles.data.network.model.Stream
-import ru.gorshenev.themesstyles.data.network.model.StreamSubscription
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
-import ru.gorshenev.themesstyles.utils.ItemDiffUtil
 import java.util.concurrent.TimeUnit
 
 class StreamPresenter(private val view: StreamView) {
@@ -49,9 +46,19 @@ class StreamPresenter(private val view: StreamView) {
 
     fun loadStreams(streamType: StreamFragment.StreamType) {
         when (streamType) {
-            StreamFragment.StreamType.SUBSCRIBED -> getSubsStreams()
-            StreamFragment.StreamType.ALL_STREAMS -> getAllStreams()
+            StreamFragment.StreamType.SUBSCRIBED -> api.getStreamsSubs()
+            StreamFragment.StreamType.ALL_STREAMS -> api.getStreamsAll()
         }
+            .flatMap { response ->
+                Observable.fromIterable(response.streams)
+                    .flatMapSingle { stream ->
+                        Single.zip(
+                            Single.just(stream),
+                            api.getTopics(stream.streamId),
+                            ::createStreamUiWithColor
+                        )
+                    }.toList()
+            }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doAfterSuccess { view.stopLoading() }
@@ -67,49 +74,11 @@ class StreamPresenter(private val view: StreamView) {
                 }).apply { compositeDisposable.add(this) }
     }
 
-    private fun getAllStreams(): Single<MutableList<StreamUi>> {
-        return api.getStreamsAll()
-            .flatMap { response ->
-                Observable.fromIterable(response.streams)
-                    .flatMapSingle { stream ->
-                        Single.zip(
-                            Single.just(stream),
-                            api.getTopics(stream.streamId),
-                            ::createStreamUi
-                        )
-                    }.toList()
-            }
-    }
 
-    private fun getSubsStreams(): Single<MutableList<StreamUi>> {
-        return api.getStreamsSubs()
-            .flatMap { response ->
-                Observable.fromIterable(response.subscriptions)
-                    .flatMapSingle { stream ->
-                        Single.zip(
-                            Single.just(stream),
-                            api.getTopics(stream.streamId),
-                            ::createStreamUiWithColor
-                        )
-                    }.toList()
-            }
-    }
-
-    private fun createStreamUi(stream: Stream, response: GetTopicResponse): StreamUi {
-        val topics = response.topics.map { topic ->
-            TopicUi(
-                id = topic.maxId,
-                name = topic.name,
-            )
-        }
-
-        return StreamUi(
-            id = stream.streamId,
-            name = stream.name,
-            topics = topics
-        )
-    }
-    private fun createStreamUiWithColor(stream: StreamSubscription, response: GetTopicResponse): StreamUi {
+    private fun createStreamUiWithColor(
+        stream: Stream,
+        response: GetTopicResponse
+    ): StreamUi {
         val topics = response.topics.map { topic ->
             TopicUi(
                 id = topic.maxId,

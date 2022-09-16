@@ -1,14 +1,6 @@
 package ru.gorshenev.themesstyles.data.repositories
 
-import io.reactivex.Single
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.ui.chat.items.DateUi
-import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageLeftUi
-import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
-import kotlin.random.Random
-
 object ChatDataSource {
-
 
 
 //    fun getMessage(count: Int) =

@@ -5,7 +5,7 @@ import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 
 data class MessageLeftUi(
     override val id: Int,
-    val avatar: String? = R.drawable.ic_launcher_background.toString(),
+    val avatar: String?,
     val name: String,
     val text: String,
     val time: String ,

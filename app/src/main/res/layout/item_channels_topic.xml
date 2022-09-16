@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?attr/colorPrimary"
     android:layout_width="match_parent"
-    android:layout_height="42dp">
+    android:layout_height="42dp"
+    android:background="?attr/colorPrimary">
 
     <TextView
         android:id="@+id/tv_topic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:shadowColor="@color/black"
-        android:shadowRadius="3"
-        android:shadowDy="3"
-        android:shadowDx="3"
         android:layout_gravity="start|center"
         android:layout_marginLeft="42dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:shadowColor="@color/black"
+        android:shadowDx="3"
+        android:shadowDy="3"
+        android:shadowRadius="3"
         android:textColor="#FAFAFA"
         android:textSize="18sp"
         tools:text="text" />

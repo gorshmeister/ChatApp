@@ -36,7 +36,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
                 true
             }
         },
-        onEmojiClick = { emojiName, messageId ->
+        onEmojiClick = { emojiName, _, messageId ->
             presenter.onEmojiClick(emojiName, messageId)
         }
     )
@@ -45,12 +45,13 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        presenter.registerMessageQueue()
+        presenter.registerReactionQueue()
         initViews()
         initInputField()
         initSendingMessages()
         initStreamAndTopicNames()
-        presenter.loadMessages(streamName, topicName)
-        presenter.messageQueue(streamName, topicName)
+        presenter.loadMessages()
     }
 
     override fun onDestroyView() {
@@ -66,10 +67,13 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
 
             rvItems.adapter = adapter
 
-            parentFragmentManager.setFragmentResultListener(PICKER_KEY, this@ChatFragment) { _, result ->
+            parentFragmentManager.setFragmentResultListener(
+                PICKER_KEY,
+                this@ChatFragment
+            ) { _, result ->
                 val resultPick =
                     result.get(BottomSheet.RESULT_EMOJI_PICK) as BottomSheet.EmojiPickResult
-                presenter.onEmojiClick(
+                presenter.addReactionFromBottomSheet(
                     emojiName = resultPick.emojiName,
                     messageId = resultPick.messageId
                 )
@@ -92,26 +96,26 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
         with(binding) {
             btnSendMsg.setOnClickListener {
                 if (etMsgField.text.isNotBlank()) {
-                    presenter.sendMessage(etMsgField.text.toString(), streamName, topicName)
+                    presenter.sendMessage(etMsgField.text.toString())
                 }
                 etMsgField.text.clear()
             }
         }
     }
 
-    companion object {
-        var topicName: String = "topic"
-        var streamName: String = "stream"
-    }
 
     private fun initStreamAndTopicNames() {
         with(binding) {
-            topicName = arguments?.getString(TPC_NAME).toString()
-            streamName = arguments?.getString(STR_NAME).toString()
+            val topicName = arguments?.getString(TPC_NAME).toString()
+            val streamName = arguments?.getString(STR_NAME).toString()
+            presenter.setStreamAndTopicNames(streamName, topicName)
+
             toolbar.title = streamName
-            tvTopicName.text = "Topic: #$topicName"
+            tvTopicName.text = getString(R.string.topic_name, topicName)
+
             toolbar.setNavigationOnClickListener {
                 parentFragmentManager.popBackStack()
+
                 requireActivity().window.statusBarColor =
                     getColor(requireContext(), R.color.colorPrimaryBlack)
             }
@@ -123,7 +127,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
     }
 
     override fun updateMessages() {
-        presenter.loadMessages(streamName, topicName)
+        presenter.loadMessages()
     }
 
     override fun showToast() {

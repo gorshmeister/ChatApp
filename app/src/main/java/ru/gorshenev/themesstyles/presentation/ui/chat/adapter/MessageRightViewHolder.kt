@@ -12,7 +12,7 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
 class MessageRightViewHolder(
     view: View,
     private val onMessageClick: ((messageId: Int) -> Unit),
-    private val onEmojiClick: (emojiName: String, messageId: Int) -> Unit,
+    private val onEmojiClick: (emojiName: String, emojiCode: String, messageId: Int) -> Unit,
 ) :
     BaseViewHolder<MessageRightUi>(view) {
     private val binding: ViewCustomViewGroupRightBinding by viewBinding()
@@ -35,7 +35,7 @@ class MessageRightViewHolder(
                         messageId = emojiUi.msgId
                         userId += emojiUi.listUsersId
                         isSelected = emojiUi.isSelected
-                        setOnClickListener { onEmojiClick(emojiUi.name, item.id) }
+                        setOnClickListener { onEmojiClick(emojiUi.name, emojiUi.code.toEmojiString(), item.id) }
 //                        setOnClickListener { onEmojiClick(emojiUi.code, item.id) }
                     }
                 }

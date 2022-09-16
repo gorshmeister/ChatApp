@@ -21,7 +21,7 @@ object StreamDataSource {
                 id = stream.streamId,
                 name = stream.name,
                 topics = emptyList()
-                )
+            )
         }
         return Observable.fromCallable { list.toList() }
     }

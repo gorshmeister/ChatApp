@@ -27,36 +27,7 @@ class ItemDiffUtil(
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return when {
-            (oldItem is DateUi) && (newItem is DateUi) -> oldItem.text == newItem.text
-
-            (oldItem is MessageLeftUi) && (newItem is MessageLeftUi) -> oldItem.avatar == newItem.avatar
-                    && oldItem.name == newItem.name
-                    && oldItem.text == newItem.text
-                    && oldItem.emojis == newItem.emojis
-
-            (oldItem is MessageRightUi) && (newItem is MessageRightUi) -> oldItem.text == newItem.text
-                    && oldItem.emojis == newItem.emojis
-
-            (oldItem is PeopleUi) && (newItem is PeopleUi) -> oldItem.avatar == newItem.avatar
-                    && oldItem.status == newItem.status
-                    && oldItem.name == newItem.name
-                    && oldItem.email == newItem.email
-
-            (oldItem is ReactionsUi) && (newItem is ReactionsUi) -> oldItem.name == newItem.name
-                    && oldItem.code == newItem.code
-                    && oldItem.category == newItem.category
-
-            (oldItem is StreamUi) && (newItem is StreamUi) -> oldItem.name == newItem.name
-                    &&oldItem.isExpanded == newItem.isExpanded
-                    &&oldItem.topics == newItem.topics
-
-            (oldItem is TopicUi) && (newItem is TopicUi) -> oldItem.name == newItem.name
-                    && oldItem.color == newItem.color
-
-
-            else -> throw error("DiffUtil problem")
-        }
+        return oldItem == newItem
     }
 
 }

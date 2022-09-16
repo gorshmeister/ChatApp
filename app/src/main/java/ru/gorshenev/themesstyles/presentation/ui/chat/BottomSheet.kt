@@ -27,10 +27,11 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
         get() = arguments?.getInt(ARG_MSG_ID) ?: -1
 
     private val holderFactory = BottomSheetHolderFactory(
-        onEmojiClick = { emojiName ->
+        onEmojiClick = { emojiName, emojiCode ->
             val result = EmojiPickResult(
                 messageId = messageId,
-                emojiName = emojiName
+                emojiName = emojiName,
+                emojiCode = emojiCode
             )
             setFragmentResult(PICKER_KEY, bundleOf(RESULT_EMOJI_PICK to result))
             dismiss()
@@ -82,6 +83,7 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
     //todo read Parcelizable||Parcelable, differences between it
     data class EmojiPickResult(
         val messageId: Int,
-        val emojiName: String
+        val emojiName: String,
+        val emojiCode: String
     ) : Serializable
 }

@@ -7,7 +7,7 @@ import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
 
 class ChatHolderFactory(
     private val longClick: ((messageId: Int) -> Unit),
-    private val onEmojiClick: (emojiName: String, messageId: Int) -> Unit
+    private val onEmojiClick: (emojiName: String, emojiCode: String, messageId: Int) -> Unit
 ) : HolderFactory() {
 
     override fun createViewHolder(view: View, viewType: Int): BaseViewHolder<*>? {

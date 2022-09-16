@@ -10,7 +10,7 @@ interface ProfileView {
 
     fun showError(error: Throwable?)
 
-    fun setProfile(name: String, avatar: String)
+    fun setProfile(name: String, avatarUrl: String)
 
 
 

@@ -25,16 +25,23 @@ class ProfileFragment : Fragment(R.layout.fragment_profile), ProfileView {
         presenter.uploadProfile()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.onClear()
+    }
+
     override fun showError(error: Throwable?) {
         Snackbar.make(binding.root, "Something wrong! $error", Snackbar.LENGTH_LONG).show()
         Log.d("qweqwe", "PROFILE PROBLEM: $error")
     }
 
-    override fun setProfile(name: String, avatar: String) {
+    override fun setProfile(name: String, avatarUrl: String) {
         with(binding) {
             tvProfileName.text = name
             online.isVisible = true
-            Glide.with(this@ProfileFragment).load(avatar).into(ivProfileAvatar)
+            Glide.with(this@ProfileFragment).load(avatarUrl)
+                .placeholder(R.color.shimmer_color)
+                .into(ivProfileAvatar)
         }
     }
 

@@ -1,15 +1,5 @@
 package ru.gorshenev.themesstyles.data.repositories
 
-import android.util.Log
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import ru.gorshenev.themesstyles.data.network.Network
-import ru.gorshenev.themesstyles.data.network.ZulipApi
-import ru.gorshenev.themesstyles.data.network.model.User
-import ru.gorshenev.themesstyles.presentation.ui.people.PeoplePresenter
-import ru.gorshenev.themesstyles.presentation.ui.people.items.PeopleUi
-import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 object PeopleDataSource {

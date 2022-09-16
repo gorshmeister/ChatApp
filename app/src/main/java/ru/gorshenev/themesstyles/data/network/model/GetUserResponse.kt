@@ -2,7 +2,7 @@ package ru.gorshenev.themesstyles.data.network.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import ru.gorshenev.themesstyles.R
+import kotlinx.serialization.json.JsonNames
 
 
 @Serializable
@@ -20,11 +20,22 @@ data class Presence(
 @Serializable
 data class Aggregated(
     @SerialName("status")
-    val status: String,
+    val status: PeopleStatusResponse,
     @SerialName("timestamp")
     val time: Long
 )
 
+@Serializable
+enum class PeopleStatusResponse {
+    @SerialName("active")
+    ONLINE,
+
+    @SerialName("idle")
+    IDLE,
+
+    @SerialName("offline")
+    OFFLINE
+}
 
 
 @Serializable
@@ -54,37 +65,20 @@ data class User(
 )
 
 
-
-
 @Serializable
-data class GetStreamSubscriptionsResponse(
-    @SerialName("subscriptions")
-    val subscriptions: List<StreamSubscription>
+data class GetStreamResponse(
+    @JsonNames("subscriptions", "streams")
+    val streams: List<Stream>,
 )
 
 @Serializable
-open class StreamSubscription(
+data class Stream(
     @SerialName("stream_id")
     val streamId: Int,
     @SerialName("name")
     val name: String,
     @SerialName("color")
-    val color: String
-)
-
-
-@Serializable
-data class GetStreamResponse(
-    @SerialName("streams")
-    val streams: List<Stream>,
-)
-
-@Serializable
-open class Stream(
-    @SerialName("stream_id")
-    val streamId: Int,
-    @SerialName("name")
-    val name: String,
+    val color: String = "#2A9D8F"
 )
 
 
@@ -118,7 +112,6 @@ data class CreateReactionResponse(
 )
 
 
-
 @Serializable
 data class GetOneMessageResponse(
     @SerialName("message")
@@ -144,7 +137,7 @@ data class Message(
     @SerialName("timestamp")
     val time: Long,
     @SerialName("avatar_url")
-    val avatarUrl: String,
+    val avatarUrl: String?,
     @SerialName("reactions")
     val reactions: List<Reaction>,
     @SerialName("subject")
@@ -154,7 +147,7 @@ data class Message(
 @Serializable
 data class Reaction(
     @SerialName("emoji_name")
-    val emojiName:String,
+    val emojiName: String,
     @SerialName("emoji_code")
     val emojiCode: String,
     @SerialName("reaction_type")
@@ -171,13 +164,40 @@ data class CreateQueueResponse(
     @SerialName("msg")
     val msg: String,
     @SerialName("queue_id")
-    val queueId: String
+    val queueId: String,
+    @SerialName("last_event_id")
+    val lastId: Int
 )
+
+@Serializable
+data class GetEmojiEventsResponse(
+    @SerialName("events")
+    val events: List<EmojiEvent>,
+)
+
+@Serializable
+data class EmojiEvent(
+    @SerialName("id")
+    val id: Int,
+    @SerialName("type")
+    val type: String,
+    @SerialName("op")
+    val op: String,
+    @SerialName("message_id")
+    val messageId: Int,
+    @SerialName("emoji_name")
+    val emojiName: String,
+    @SerialName("emoji_code")
+    val emojiCode: String,
+    @SerialName("user_id")
+    val userId: Int,
+)
+
 
 @Serializable
 data class GetEventsResponse(
     @SerialName("events")
-    val events: List<Event>
+    val events: List<Event>,
 )
 
 @Serializable
@@ -188,4 +208,11 @@ data class Event(
     val type: String,
     @SerialName("message")
     val message: Message,
+)
+
+
+@Serializable
+data class Narrow(
+    val operator: String,
+    val operand: String
 )

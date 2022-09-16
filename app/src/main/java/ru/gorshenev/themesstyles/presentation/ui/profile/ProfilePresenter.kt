@@ -19,12 +19,12 @@ class ProfilePresenter(private val view: ProfileView) {
             .delay(2, TimeUnit.SECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doAfterSuccess { view.stopLoading() }
+//            .doAfterSuccess { view.stopLoading() }
             .subscribe(
                 { response ->
                     view.setProfile(
                         name = response.members.firstName,
-                        avatar = response.members.avatarUrl
+                        avatarUrl = response.members.avatarUrl
                     )
                 },
                 { err -> view.showError(err) }
@@ -32,4 +32,7 @@ class ProfilePresenter(private val view: ProfileView) {
             .apply { compositeDisposable.add(this) }
     }
 
+    fun onClear() {
+        compositeDisposable.clear()
+    }
 }
