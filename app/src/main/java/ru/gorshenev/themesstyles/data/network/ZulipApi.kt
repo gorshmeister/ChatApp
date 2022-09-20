@@ -19,17 +19,17 @@ interface ZulipApi {
     @GET("messages/{message_id}")
     fun getMessage(
         @Path("message_id") id: Int,
-        @Query("apply_markdown") apply_markdown: Boolean = false,
+        @Query("apply_markdown") applyMarkdown: Boolean = false,
     ): Observable<GetOneMessageResponse>
 
     @GET("messages")
     fun getMessages(
-        @Query("anchor") anchor: Int,
-        @Query("num_before") nb: Int,
-        @Query("num_after") na: Int,
+        @Query("anchor") anchor: Long,
+        @Query("num_before") numBefore: Int,
+        @Query("num_after") numAfter: Int,
         @Query("narrow") narrow: String,
-        @Query("client_gravatar") cg: Boolean,
-        @Query("apply_markdown") apply_markdown: Boolean,
+        @Query("client_gravatar") clientGravatar: Boolean,
+        @Query("apply_markdown") applyMarkdown: Boolean,
     ): Observable<GetMessageResponse>
 
     @POST("messages")

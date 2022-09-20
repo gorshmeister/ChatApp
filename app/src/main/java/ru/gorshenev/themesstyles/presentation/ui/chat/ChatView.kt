@@ -16,6 +16,6 @@ interface ChatView {
 
     fun scrollMsgsToTheEnd()
 
-    fun updateMessages()
+    fun uploadMoreMessages()
 
 }

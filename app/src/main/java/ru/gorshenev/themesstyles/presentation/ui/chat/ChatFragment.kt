@@ -8,6 +8,8 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
@@ -26,6 +28,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
     private val bottomSheet: BottomSheet = BottomSheet()
 
     private val presenter: ChatPresenter = ChatPresenter(this)
+
+    private var areTheMessagesUploaded = false
 
 
     private val holderFactory: HolderFactory = ChatHolderFactory(
@@ -64,6 +68,24 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
         with(binding) {
             requireActivity().window.statusBarColor =
                 getColor(requireContext(), R.color.colorPrimaryBlue)
+
+            val layoutManager = LinearLayoutManager(requireContext())
+            layoutManager.stackFromEnd = true
+
+
+            rvItems.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (areTheMessagesUploaded) {
+                        if (layoutManager.findLastVisibleItemPosition() == adapter.items.size - 1) {
+//                        if (layoutManager.findLastCompletelyVisibleItemPosition() == adapter.items.size - 1) {
+                            uploadMoreMessages()
+                        }
+                    }
+                }
+            })
+            rvItems.layoutManager = layoutManager
+
 
             rvItems.adapter = adapter
 
@@ -122,12 +144,13 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
         }
     }
 
+
     override fun scrollMsgsToTheEnd() {
         binding.rvItems.smoothScrollToPosition(adapter.itemCount)
     }
 
-    override fun updateMessages() {
-        presenter.loadMessages()
+    override fun uploadMoreMessages() {
+        presenter.uploadMoreMessages()
     }
 
     override fun showToast() {
@@ -151,6 +174,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
     }
 
     override fun stopLoading() {
+        areTheMessagesUploaded = true
         binding.shimmerChat.apply {
             visibility = View.GONE
             hideShimmer()

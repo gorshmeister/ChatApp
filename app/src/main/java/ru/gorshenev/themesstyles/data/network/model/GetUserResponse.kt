@@ -182,7 +182,7 @@ data class EmojiEvent(
     @SerialName("type")
     val type: String,
     @SerialName("op")
-    val op: String,
+    val addOrRemove: ReactionAddOrRemove,
     @SerialName("message_id")
     val messageId: Int,
     @SerialName("emoji_name")
@@ -192,6 +192,16 @@ data class EmojiEvent(
     @SerialName("user_id")
     val userId: Int,
 )
+
+@Serializable
+enum class ReactionAddOrRemove {
+    @SerialName("add")
+    ADD,
+
+    @SerialName("remove")
+    REMOVE
+}
+
 
 
 @Serializable
