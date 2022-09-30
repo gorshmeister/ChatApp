@@ -14,14 +14,13 @@ import ru.gorshenev.themesstyles.data.network.model.CreateReactionResponse
 import ru.gorshenev.themesstyles.data.network.model.Message
 import ru.gorshenev.themesstyles.data.network.model.Narrow
 import ru.gorshenev.themesstyles.data.network.model.Reaction
-import ru.gorshenev.themesstyles.data.repositories.Reactions.MY_USER_ID
+import ru.gorshenev.themesstyles.data.repositories.chat.Reactions.MY_USER_ID
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.EmojiUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageLeftUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
 import ru.gorshenev.themesstyles.utils.Utils
 import ru.gorshenev.themesstyles.utils.Utils.toEmojiCode
-import java.util.concurrent.TimeUnit
 
 class ChatPresenter(private val view: ChatView) {
 
@@ -295,7 +294,9 @@ class ChatPresenter(private val view: ChatView) {
 //
 //            if (lastDate != currentDate) list += DateUi(message.msgId, currentDate)
             if (addToDatabase)
-                view.repository().addToDatabase(message, topicName)
+                view.repository().addToDatabase(message, topicName).subscribe().apply {
+                    compositeDisposable.add(this)
+                }
 
             when (message.senderId) {
                 MY_USER_ID -> {

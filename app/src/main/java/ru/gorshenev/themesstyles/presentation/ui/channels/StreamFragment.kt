@@ -9,7 +9,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.data.database.AppDataBase
-import ru.gorshenev.themesstyles.data.repositories.StreamRepository
+import ru.gorshenev.themesstyles.data.repositories.stream.StreamRepository
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsStreamBinding
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory

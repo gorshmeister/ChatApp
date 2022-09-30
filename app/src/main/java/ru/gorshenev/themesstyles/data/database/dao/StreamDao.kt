@@ -13,19 +13,20 @@ interface StreamDao {
     @Query("SELECT * FROM stream WHERE strType LIKE :streamType")
     fun getStreams(streamType: StreamFragment.StreamType): Single<List<StreamWithTopics>>
 
-
-
     @Query("DELETE FROM stream WHERE strType in (:strType)")
-    fun deleteStreams(strType: StreamFragment.StreamType): Single<Unit>
-
-    @Query("DELETE FROM topic WHERE type in (:type)")
-    fun deleteTopics(type: StreamFragment.StreamType): Single<Unit>
-
+    fun deleteStreams(strType: StreamFragment.StreamType)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(stream: StreamEntity): Single<Unit>
+    fun insertStreams(stream: List<StreamEntity>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(topics: List<TopicEntity>): Single<Unit>
+    fun insertTopics(topics: List<TopicEntity>)
+
+    @Transaction
+    fun replaceAll(stream: List<StreamEntity>, topics: List<TopicEntity>, strType: StreamFragment.StreamType) {
+        deleteStreams(strType)
+        insertStreams(stream)
+        insertTopics(topics)
+    }
 
 }

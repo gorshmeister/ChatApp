@@ -4,7 +4,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.gorshenev.themesstyles.data.network.Network
-import ru.gorshenev.themesstyles.data.repositories.Reactions.MY_USER_ID
+import ru.gorshenev.themesstyles.data.repositories.chat.Reactions.MY_USER_ID
 import java.util.concurrent.TimeUnit
 
 class ProfilePresenter(private val view: ProfileView) {

@@ -1,6 +1,7 @@
-package ru.gorshenev.themesstyles.data.repositories
+package ru.gorshenev.themesstyles.data.repositories.chat
 
 import android.util.Log
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -27,9 +28,8 @@ class ChatRepository(private val messageDao: MessageDao) {
             }
     }
 
-    private fun updateMessageReactions(message: Message, topicName: String) {
-        val disp = Single.concat(
-            messageDao.deleteMessageReactions(message.msgId),
+    private fun updateMessageReactions(message: Message, topicName: String): Completable {
+       return messageDao.deleteMessageReactions(message.msgId).andThen(
             messageDao.insert(message.reactions.map { reaction ->
                 ReactionEntity(
                     messageId = message.msgId,
@@ -43,20 +43,17 @@ class ChatRepository(private val messageDao: MessageDao) {
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({}, { Log.d("database", "UPDATE MESSAGE ERROR $it") })
+//            .subscribe({}, { Log.d("database", "UPDATE MESSAGE ERROR $it") })
     }
 
-    private fun deleteFirstMessage(messages: List<MessageEntity>) {
-        val disp =
-            messageDao.deleteMessage(messages.first().msgId)
+    private fun deleteFirstMessage(messages: List<MessageEntity>): Completable {
+            return messageDao.deleteMessage(messages.first().msgId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({}, { Log.d("database", "DELETE FIRST MSG ERROR $it") })
     }
 
-    private fun insert(message: Message, topicName: String) {
-        val disp = Single.concat(
-            messageDao.insert(
+    private fun insert(message: Message, topicName: String): Completable {
+        return messageDao.insert(
                 MessageEntity(
                     topicName = topicName,
                     msgId = message.msgId,
@@ -67,7 +64,7 @@ class ChatRepository(private val messageDao: MessageDao) {
                     avatarUrl = message.avatarUrl,
                     subject = message.subject
                 )
-            ),
+            ).andThen(
             messageDao.insert(message.reactions.map { reaction ->
                 ReactionEntity(
                     messageId = message.msgId,
@@ -81,18 +78,17 @@ class ChatRepository(private val messageDao: MessageDao) {
             ))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({}, { Log.d("database", "INSERT ERROR ${it}") })
     }
 
     private fun updDB(
         messages: List<MessageEntity>,
         message: Message,
         topicName: String
-    ) {
+    ): Completable {
         val msgDoesNotExist = messages.all { it.msgId != message.msgId }
         val msgExist = messages.any { it.msgId == message.msgId }
 
-        when {
+        return when {
             messages.isEmpty() || msgDoesNotExist && messages.size != 50 -> {
                 insert(message, topicName)
             }
@@ -108,6 +104,7 @@ class ChatRepository(private val messageDao: MessageDao) {
 
             else -> {
                 Log.d("database", "add to data ERROR")
+                Completable.error(Error("add to data ERROR"))
             }
         }
     }
@@ -116,11 +113,10 @@ class ChatRepository(private val messageDao: MessageDao) {
     fun addToDatabase(
         message: Message,
         topicName: String
-    ) {
-        val disp = messageDao.getMessagesFromTopic(topicName)
-            .map { messageEntityList -> updDB(messageEntityList, message, topicName) }
+    ): Completable {
+       return messageDao.getMessagesFromTopic(topicName)
+            .flatMapCompletable { messageEntityList -> updDB(messageEntityList, message, topicName) }
             .subscribeOn(Schedulers.io())
-            .subscribe({}, { Log.d("database", "ADD TO DB ERROR $it") })
     }
 
 

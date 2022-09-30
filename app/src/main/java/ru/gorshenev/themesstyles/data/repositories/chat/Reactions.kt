@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.data.repositories
+package ru.gorshenev.themesstyles.data.repositories.chat
 
 import io.reactivex.Observable
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.ReactionsUi

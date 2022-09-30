@@ -7,6 +7,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import ru.gorshenev.themesstyles.ZulipApp
+import ru.gorshenev.themesstyles.data.database.AppDataBase
 import ru.gorshenev.themesstyles.data.network.Network
 import ru.gorshenev.themesstyles.data.network.ZulipApi
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
