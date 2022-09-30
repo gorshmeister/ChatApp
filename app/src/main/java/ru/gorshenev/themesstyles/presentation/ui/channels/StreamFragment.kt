@@ -5,11 +5,11 @@ import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DiffUtil
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.utils.Utils.setDivider
+import ru.gorshenev.themesstyles.data.database.AppDataBase
+import ru.gorshenev.themesstyles.data.repositories.StreamRepository
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsStreamBinding
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
@@ -23,11 +23,14 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.adapter.StreamsHolderF
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatFragment
-import ru.gorshenev.themesstyles.presentation.ui.chat.ChatPresenter
-import ru.gorshenev.themesstyles.utils.ItemDiffUtil
+import ru.gorshenev.themesstyles.utils.Utils.setDivider
 
 class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
     private val binding: FragmentChannelsStreamBinding by viewBinding()
+
+    private val db: AppDataBase by lazy { AppDataBase.getDataBase(requireContext()) }
+
+    private val streamRepository: StreamRepository by lazy { StreamRepository(db.streamDao()) }
 
     private val presenter: StreamPresenter = StreamPresenter(this)
 
@@ -35,13 +38,21 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
         onStreamClick = { streamId -> presenter.onStreamClick(streamId) },
         onTopicClick = { topicId -> presenter.onTopicClick(topicId) }
     )
+
     private val adapter = Adapter<ViewTyped>(holderFactory)
 
+//    fun checkIfFragmentAttached(operation: Context.() -> Unit) {
+//        if (isAdded && context != null) {
+//            operation(requireContext())
+//        }
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViews()
         val streamType = arguments?.get(STR_TYPE) as StreamType
         presenter.loadStreams(streamType)
+//        presenter.loadStreamsFromDataBase(streamType)
+//        presenter.loadStreamsFromApi(streamType)
     }
 
     override fun onDestroyView() {
@@ -55,7 +66,10 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
             rvStreams.adapter = adapter
             rvStreams.setDivider()
 
-            parentFragmentManager.setFragmentResultListener(STREAM_SEARCH, this@StreamFragment) { _, result ->
+            parentFragmentManager.setFragmentResultListener(
+                STREAM_SEARCH,
+                this@StreamFragment
+            ) { _, result ->
                 val searchText = result.getString(RESULT_STREAM, "")
                 presenter.searchStream(searchText?.toString().orEmpty())
             }
@@ -91,11 +105,19 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
         }
     }
 
+    override fun getDataBase(): AppDataBase {
+        return db
+    }
+
+    override fun repository(): StreamRepository {
+        return streamRepository
+    }
+
     override fun showItems(items: List<ViewTyped>) {
         adapter.items = items
     }
 
-     enum class StreamType {
+    enum class StreamType {
         SUBSCRIBED,
         ALL_STREAMS
     }

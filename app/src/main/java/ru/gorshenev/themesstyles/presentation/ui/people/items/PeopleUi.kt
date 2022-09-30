@@ -1,6 +1,5 @@
 package ru.gorshenev.themesstyles.presentation.ui.people.items
 
-import okhttp3.HttpUrl
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 
@@ -11,8 +10,7 @@ data class PeopleUi(
     val avatar: String = R.drawable.ic_launcher_background.toString(),
     val status: PeopleStatus = PeopleStatus.OFFLINE,
     override val viewType: Int = R.layout.item_people
-): ViewTyped
-{
+) : ViewTyped {
     enum class PeopleStatus {
         ONLINE,
         IDLE,

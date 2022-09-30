@@ -1,5 +1,7 @@
 package ru.gorshenev.themesstyles.data.network.model
 
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MetaSerializable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
@@ -67,8 +69,9 @@ data class User(
 
 @Serializable
 data class GetStreamResponse(
-    @JsonNames("subscriptions", "streams")
-    val streams: List<Stream>,
+    @SerialName("streams")
+    @JsonNames("subscriptions")
+    val streams: List<Stream>
 )
 
 @Serializable
@@ -201,7 +204,6 @@ enum class ReactionAddOrRemove {
     @SerialName("remove")
     REMOVE
 }
-
 
 
 @Serializable
