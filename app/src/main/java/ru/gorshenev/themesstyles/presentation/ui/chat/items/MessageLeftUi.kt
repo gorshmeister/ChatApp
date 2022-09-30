@@ -5,10 +5,10 @@ import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 
 data class MessageLeftUi(
     override val id: Int,
-    val avatar: Int = R.drawable.ic_launcher_background,
+    val avatar: String?,
     val name: String,
     val text: String,
-    val time: String,
+    val time: String ,
     val emojis: List<EmojiUi>,
     override val viewType: Int = R.layout.view_message_left,
 ) : ViewTyped

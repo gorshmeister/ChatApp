@@ -1,6 +1,9 @@
 package ru.gorshenev.themesstyles.main
 
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -19,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         initViews()
+//        registerNetworkCallback()
     }
 
     private fun initViews() {
@@ -47,4 +51,32 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun registerNetworkCallback() {
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.registerDefaultNetworkCallback(object :
+            ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                Toast.makeText(this@MainActivity, "Default Network Available", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            override fun onLost(network: Network) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "Default Network NOT Available",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        )
+    }
+
+    private fun isConnected(): Boolean {
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork
+        val capabilities = connectivityManager.getNetworkCapabilities(network)
+        return network != null && capabilities != null
+    }
+
 }

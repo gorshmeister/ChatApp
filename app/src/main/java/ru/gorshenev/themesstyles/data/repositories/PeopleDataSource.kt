@@ -1,30 +1,32 @@
 package ru.gorshenev.themesstyles.data.repositories
 
-import io.reactivex.Observable
-import ru.gorshenev.themesstyles.presentation.ui.people.items.PeopleUi
-import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 object PeopleDataSource {
 
-    fun getPeople(count: Int): Observable<List<PeopleUi>> =
-        Observable.fromCallable { createPeople(count) }
-            .delay (2, TimeUnit.SECONDS)
+//    fun getPeople(count: Int): Observable<List<PeopleUi>> =
+//        Observable.fromCallable { createPeople(count) }
+//            .delay(2, TimeUnit.SECONDS)
 
 
-    private fun createPeople(count: Int): List<PeopleUi> {
-        return List(count) {
-
-            val n = Random.nextInt(names.size - 1)
-            val m = Random.nextInt(surnames.size - 1)
-            PeopleUi(
-                id = it,
-                name = "${names[n]} ${surnames[m]}",
-                email = "${surnames[m]}@gmail.com",
-                isOnline = it % 2 == 0
-            )
-        }
-    }
+//    private fun createPeople(count: Int): List<PeopleUi> {
+//        return List(count) {
+//
+//            val n = Random.nextInt(names.size - 1)
+//            val m = Random.nextInt(surnames.size - 1)
+//            PeopleUi(
+//                id = it,
+//                name = "${names[n]} ${surnames[m]}",
+//                email = "${surnames[m]}@gmail.com",
+//                status = when (it % 3) {
+//                    0 -> PeopleUi.PeopleStatus.ONLINE
+//                    1 -> PeopleUi.PeopleStatus.IDLE
+//                    2 -> PeopleUi.PeopleStatus.OFFLINE
+//                    else -> PeopleUi.PeopleStatus.OFFLINE
+//                }
+//            )
+//        }
+//    }
 
     fun getRandomName(): String {
         val n = Random.nextInt(names.size - 1)

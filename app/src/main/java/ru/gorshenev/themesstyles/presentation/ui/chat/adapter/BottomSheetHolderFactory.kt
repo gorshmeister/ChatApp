@@ -6,7 +6,7 @@ import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.R
 
 class BottomSheetHolderFactory(
-	private val onEmojiClick: (emojiCode: Int) -> Unit
+	private val onEmojiClick: (emojiName: String, emojiCode: String) -> Unit
 ) : HolderFactory() {
 
 	override fun createViewHolder(view: View, viewType: Int): BaseViewHolder<*>? {

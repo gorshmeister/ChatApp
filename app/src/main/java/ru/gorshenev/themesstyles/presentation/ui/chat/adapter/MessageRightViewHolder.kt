@@ -12,7 +12,7 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
 class MessageRightViewHolder(
     view: View,
     private val onMessageClick: ((messageId: Int) -> Unit),
-    private val onEmojiClick: (emojiCode: Int, messageId: Int) -> Unit,
+    private val onEmojiClick: (emojiName: String, emojiCode: String, messageId: Int) -> Unit,
 ) :
     BaseViewHolder<MessageRightUi>(view) {
     private val binding: ViewCustomViewGroupRightBinding by viewBinding()
@@ -32,10 +32,11 @@ class MessageRightViewHolder(
                     EmojiView(flexbox.context).apply {
                         text = emojiUi.code.toEmojiString()
                         count = emojiUi.counter
-                        messageId = emojiUi.message_id
-                        userId += emojiUi.user_id
+                        messageId = emojiUi.msgId
+                        userId += emojiUi.listUsersId
                         isSelected = emojiUi.isSelected
-                        setOnClickListener { onEmojiClick(emojiUi.code, item.id) }
+                        setOnClickListener { onEmojiClick(emojiUi.name, emojiUi.code.toEmojiString(), item.id) }
+//                        setOnClickListener { onEmojiClick(emojiUi.code, item.id) }
                     }
                 }
             )

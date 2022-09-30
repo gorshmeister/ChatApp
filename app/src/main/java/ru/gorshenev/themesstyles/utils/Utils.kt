@@ -17,6 +17,10 @@ object Utils {
 
     fun Int.toEmojiString(): String = String(Character.toChars(this))
 
+    fun String.toEmojiString(): String = String(Character.toChars(this.toInt(16)))
+
+    fun String.toEmojiCode(): Int = Integer.parseInt(this, 16)
+
     val Int.dp: Int
         get() = (this / Resources.getSystem().displayMetrics.density).roundToInt()
 
@@ -28,11 +32,20 @@ object Utils {
         val current = Calendar.getInstance().time
         return formatter.format(current)
     }
+    fun getTimeFromUnix(time: Long): String {
+        val formatter = SimpleDateFormat("kk:mm", Locale.getDefault())
+        return formatter.format(time*1000)
+    }
 
     fun getCurrentDate(): String {
         val formatter = SimpleDateFormat("d MMM", Locale.getDefault())
         val current = Calendar.getInstance().time
         return formatter.format(current)
+    }
+    fun getDateFromUnix(time: Long): String {
+        val formatter = SimpleDateFormat("d MMM", Locale.getDefault())
+//        val current = Calendar.getInstance().time
+        return formatter.format(time*1000)
     }
 
     fun RecyclerView.setDivider() {

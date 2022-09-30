@@ -1,5 +1,6 @@
 package ru.gorshenev.themesstyles.presentation.base_recycler_view
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 

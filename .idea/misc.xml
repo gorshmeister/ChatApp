@@ -34,6 +34,7 @@
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/bg_input_field.xml" value="0.2315" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/bg_people_indicator.xml" value="0.1195" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/bg_people_indicator_off.xml" value="0.1195" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/bg_people_indicator_on.xml" value="0.1775" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/bottom_sheet_draw.xml" value="0.279" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/circle_bg.xml" value="0.226" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/drawable/circle_bg_not_selected.xml" value="0.226" />
@@ -85,13 +86,14 @@
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/fragment_channels_stream.xml" value="0.22530996152201796" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/fragment_chat.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/fragment_people.xml" value="0.264" />
-        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/fragment_profile.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/fragment_profile.xml" value="0.33391003460207613" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/fragment_stream.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_channels_stream.xml" value="0.33275862068965517" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_channels_stream_shimmer.xml" value="0.4" />
-        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_channels_topic.xml" value="0.22530996152201796" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_channels_topic.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_chat.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_date.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_date_shimmer.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_emoji.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_message.xml" value="0.27447916666666666" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/item_people.xml" value="0.6" />
@@ -112,11 +114,14 @@
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_circle_image.xml" value="0.27447916666666666" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_custom_view_group.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_custom_view_group_left.xml" value="0.27447916666666666" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_custom_view_group_left_shimmer.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_custom_view_group_right.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_custom_view_group_right_shimmer.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_emoji.xml" value="0.6" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_flexbox.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_message.xml" value="0.12552083333333333" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_message_left.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_message_left_shimmer.xml" value="0.22530996152201796" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_message_right.xml" value="0.27447916666666666" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/layout/view_welcome.xml" value="0.27447916666666666" />
         <entry key="..\:/AndroidStudioProjects/Tinkoff/ThemesStylesnew/ThemesStyles.hw3/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.2734375" />
@@ -158,7 +163,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.6" />
+        <option name="scale" value="0.72" />
       </ProjectState>
     </option>
   </component>

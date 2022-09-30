@@ -8,6 +8,14 @@ interface ChatView {
 
     fun showError(error: Throwable?)
 
+    fun showLoading()
+
+    fun stopLoading()
+
     fun showToast()
+
+    fun scrollMsgsToTheEnd()
+
+    fun uploadMoreMessages()
 
 }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ChatApp</string>
+    <string name="topic_name">Topic: #%1$s</string>
 </resources>

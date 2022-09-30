@@ -1,6 +1,7 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
@@ -11,10 +12,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.data.repositories.ReactionsData
+import ru.gorshenev.themesstyles.data.repositories.Reactions
+import ru.gorshenev.themesstyles.databinding.BottomSheetBinding
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.databinding.BottomSheetBinding
 import ru.gorshenev.themesstyles.presentation.ui.chat.adapter.BottomSheetHolderFactory
 import java.io.Serializable
 
@@ -26,9 +27,10 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
         get() = arguments?.getInt(ARG_MSG_ID) ?: -1
 
     private val holderFactory = BottomSheetHolderFactory(
-        onEmojiClick = { emojiCode ->
+        onEmojiClick = { emojiName, emojiCode ->
             val result = EmojiPickResult(
                 messageId = messageId,
+                emojiName = emojiName,
                 emojiCode = emojiCode
             )
             setFragmentResult(PICKER_KEY, bundleOf(RESULT_EMOJI_PICK to result))
@@ -52,14 +54,24 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
         compositeDisposable.clear()
     }
 
-
     private fun loadEmojis() {
-        ReactionsData.getEmojis()
+        Reactions.getReactions()
+            .map { list -> list.filter { it.category == "Smileys & Emotion" } }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { emojis -> adapter.items = emojis }
+            .subscribe(
+                { reactions -> adapter.items = reactions },
+                { err -> Log.d("qweqwe", "BOTTOM_SHEET PROBLEM: $err") }
+            )
             .apply { compositeDisposable.add(this) }
     }
+//    private fun loadEmojis() {
+//        ReactionsData.getEmojis()
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe { emojis -> adapter.items = emojis }
+//            .apply { compositeDisposable.add(this) }
+//    }
 
     companion object {
         const val TAG = "BottomSheet"
@@ -71,6 +83,7 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
     //todo read Parcelizable||Parcelable, differences between it
     data class EmojiPickResult(
         val messageId: Int,
-        val emojiCode: Int
+        val emojiName: String,
+        val emojiCode: String
     ) : Serializable
 }
