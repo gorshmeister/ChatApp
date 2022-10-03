@@ -15,6 +15,8 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.data.database.AppDataBase
+import ru.gorshenev.themesstyles.data.network.Network
+import ru.gorshenev.themesstyles.data.network.ZulipApi
 import ru.gorshenev.themesstyles.data.repositories.ChatRepository
 import ru.gorshenev.themesstyles.databinding.FragmentChatBinding
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
@@ -35,11 +37,6 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
     private val topicName: String by lazy { arguments?.getString(TPC_NAME).toString() }
 
     private val streamName: String by lazy { arguments?.getString(STR_NAME).toString() }
-
-    private val db: AppDataBase by lazy { AppDataBase.getDataBase(requireContext()) }
-
-    private val chatRepository: ChatRepository by lazy { ChatRepository(db.messageDao()) }
-
 
     private val holderFactory: HolderFactory = ChatHolderFactory(
         longClick = { messageId ->
@@ -84,11 +81,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
                     super.onScrolled(recyclerView, dx, dy)
                     val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
                     if (position == 5 && dy != 0) {
-                        try {
-                            presenter.uploadMoreMessages()
-                        } catch (e:UninitializedPropertyAccessException) {
-                            showError(e)
-                        }
+                        presenter.uploadMoreMessages()
                     }
                 }
             })
@@ -141,26 +134,19 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
                 viewLifecycleOwner,
                 object : OnBackPressedCallback(true) {
                     override fun handleOnBackPressed() {
-                        parentFragmentManager.popBackStack()
-                        requireActivity().window.statusBarColor =
-                            getColor(requireContext(), R.color.colorPrimaryBlack)
+                        onBackPress()
                     }
                 })
             toolbar.setNavigationOnClickListener {
-                parentFragmentManager.popBackStack()
-                requireActivity().window.statusBarColor =
-                    getColor(requireContext(), R.color.colorPrimaryBlack)
+                onBackPress()
             }
         }
     }
 
-
-    override fun dataBase(): AppDataBase {
-        return db
-    }
-
-    override fun repository(): ChatRepository {
-        return chatRepository
+    private fun onBackPress() {
+        parentFragmentManager.popBackStack()
+        requireActivity().window.statusBarColor =
+            getColor(requireContext(), R.color.colorPrimaryBlack)
     }
 
     override fun scrollMsgsToTheEnd() {

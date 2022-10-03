@@ -4,10 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import ru.gorshenev.themesstyles.data.database.AppDataBase
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamFragment
 
 @Entity(
-    tableName = "topic",
+    tableName = AppDataBase.TOPIC,
     foreignKeys = [ForeignKey(
         entity = StreamEntity::class,
         parentColumns = arrayOf("streamId", "strType"),

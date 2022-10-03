@@ -5,8 +5,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
+import ru.gorshenev.themesstyles.data.database.AppDataBase
+
 @Entity(
-    tableName = "reaction",
+    tableName = AppDataBase.REACTION,
     foreignKeys = [ForeignKey(
         entity = MessageEntity::class,
         parentColumns = arrayOf("msgId"),

@@ -1,20 +1,28 @@
 package ru.gorshenev.themesstyles.presentation.ui.channels
 
 import android.util.Log
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import ru.gorshenev.themesstyles.ChatApp
+import ru.gorshenev.themesstyles.data.database.AppDataBase
 import ru.gorshenev.themesstyles.data.network.Network
 import ru.gorshenev.themesstyles.data.network.ZulipApi
+import ru.gorshenev.themesstyles.data.repositories.StreamRepository
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
 import java.util.concurrent.TimeUnit
 
 class StreamPresenter(private val view: StreamView) {
+
+    private val db: AppDataBase by lazy { AppDataBase.getDataBase(ChatApp.appContext) }
+
+    private val api: ZulipApi = Network.api
+
+    private val streamRepository: StreamRepository by lazy { StreamRepository(db.streamDao(), api) }
 
     private val searchSubject: PublishSubject<String> = PublishSubject.create()
 
@@ -24,7 +32,6 @@ class StreamPresenter(private val view: StreamView) {
 
     private var displayedItems: List<ViewTyped> = listOf()
 
-//    private val api: ZulipApi = Network.api
 
     init {
         searchSubject
@@ -43,7 +50,7 @@ class StreamPresenter(private val view: StreamView) {
     }
 
     fun loadStreams(streamType: StreamFragment.StreamType) {
-        view.repository().getStreams(streamType)
+        streamRepository.getStreams(streamType)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

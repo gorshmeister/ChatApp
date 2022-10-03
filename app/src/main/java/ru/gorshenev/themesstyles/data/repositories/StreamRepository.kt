@@ -1,25 +1,25 @@
 package ru.gorshenev.themesstyles.data.repositories
 
 import android.util.Log
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.gorshenev.themesstyles.data.database.dao.StreamDao
-import ru.gorshenev.themesstyles.data.database.dao.StreamWithTopics
 import ru.gorshenev.themesstyles.data.database.entities.StreamEntity
+import ru.gorshenev.themesstyles.data.database.entities.StreamWithTopics
 import ru.gorshenev.themesstyles.data.database.entities.TopicEntity
 import ru.gorshenev.themesstyles.data.network.Network
 import ru.gorshenev.themesstyles.data.network.ZulipApi
 import ru.gorshenev.themesstyles.data.network.model.GetTopicResponse
-import ru.gorshenev.themesstyles.data.network.model.Stream
+import ru.gorshenev.themesstyles.data.network.model.StreamResponse
+import ru.gorshenev.themesstyles.data.network.model.TopicResponse
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamFragment
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
 
-class StreamRepository(private val streamDao: StreamDao) {
-
-    private val api: ZulipApi = Network.api
+class StreamRepository(private val streamDao: StreamDao, private val api: ZulipApi) {
 
     fun getStreams(streamType: StreamFragment.StreamType): Flowable<List<StreamUi>> {
         return Single.concatArrayEager(
@@ -57,12 +57,12 @@ class StreamRepository(private val streamDao: StreamDao) {
     }
 
     private fun createStreamUi(
-        stream: Stream,
-        response: GetTopicResponse,
+        stream: StreamResponse,
+        topicResponse: GetTopicResponse,
     ): StreamUi {
-        addToDatabase(response, stream)
+        addToDatabase(topicResponse.topics, stream)
 
-        val topics = response.topics.map { topic ->
+        val topics = topicResponse.topics.map { topic ->
             TopicUi(
                 id = topic.maxId,
                 name = topic.name,
@@ -78,20 +78,19 @@ class StreamRepository(private val streamDao: StreamDao) {
     }
 
 
-    private fun addToDatabase(topicResponse: GetTopicResponse, stream: Stream) {
-        val x = Single.concat(
-            streamDao.insert(
-                StreamEntity(
-                    streamId = stream.streamId,
-                    name = stream.name,
-                    color = stream.color,
-                    type = when {
-                        stream.color != "#2A9D8F" -> StreamFragment.StreamType.SUBSCRIBED
-                        else -> StreamFragment.StreamType.ALL_STREAMS
-                    }
-                )
-            ),
-            streamDao.insert(topicResponse.topics.map { topic ->
+    private fun addToDatabase(topics: List<TopicResponse>, stream: StreamResponse): Completable {
+        return streamDao.insert(
+            StreamEntity(
+                streamId = stream.streamId,
+                name = stream.name,
+                color = stream.color,
+                type = when {
+                    stream.color != "#2A9D8F" -> StreamFragment.StreamType.SUBSCRIBED
+                    else -> StreamFragment.StreamType.ALL_STREAMS
+                }
+            )
+        ).andThen(
+            streamDao.insert(topics.map { topic ->
                 TopicEntity(
                     streamId = stream.streamId,
                     maxId = topic.maxId,
@@ -104,18 +103,10 @@ class StreamRepository(private val streamDao: StreamDao) {
                 )
             }
             ))
-            .subscribeOn(Schedulers.io())
-            .subscribe({ },
-                { Log.d("database", "ERROR ADD TO DB $it") }
-            )
     }
 
-    private fun deleteStreamsAndTopics(streamType: StreamFragment.StreamType) {
-        val disp = streamDao.deleteStreams(streamType)
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                { Log.d("database", "streams delete from DB") },
-                { Log.d("database", "DELETE ERROR $it") })
+    private fun deleteStreamsAndTopics(streamType: StreamFragment.StreamType): Completable {
+        return streamDao.deleteStreams(streamType)
     }
 
     private fun createStreamUiFromEntity(
@@ -132,8 +123,8 @@ class StreamRepository(private val streamDao: StreamDao) {
                 }
 
             StreamUi(
-                id = stream.stream!!.streamId,
-                name = stream.stream!!.name,
+                id = stream.stream.streamId,
+                name = stream.stream.name,
                 topics = topics,
             )
         }

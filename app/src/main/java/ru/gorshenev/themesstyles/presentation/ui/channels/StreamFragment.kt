@@ -8,8 +8,6 @@ import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.data.database.AppDataBase
-import ru.gorshenev.themesstyles.data.repositories.StreamRepository
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsStreamBinding
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
@@ -28,9 +26,7 @@ import ru.gorshenev.themesstyles.utils.Utils.setDivider
 class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
     private val binding: FragmentChannelsStreamBinding by viewBinding()
 
-    private val db: AppDataBase by lazy { AppDataBase.getDataBase(requireContext()) }
-
-    private val streamRepository: StreamRepository by lazy { StreamRepository(db.streamDao()) }
+    private val streamType by lazy { arguments?.get(STR_TYPE) as StreamType }
 
     private val presenter: StreamPresenter = StreamPresenter(this)
 
@@ -41,18 +37,10 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
 
     private val adapter = Adapter<ViewTyped>(holderFactory)
 
-//    fun checkIfFragmentAttached(operation: Context.() -> Unit) {
-//        if (isAdded && context != null) {
-//            operation(requireContext())
-//        }
-//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViews()
-        val streamType = arguments?.get(STR_TYPE) as StreamType
         presenter.loadStreams(streamType)
-//        presenter.loadStreamsFromDataBase(streamType)
-//        presenter.loadStreamsFromApi(streamType)
     }
 
     override fun onDestroyView() {
@@ -103,14 +91,6 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
             visibility = View.GONE
             hideShimmer()
         }
-    }
-
-    override fun getDataBase(): AppDataBase {
-        return db
-    }
-
-    override fun repository(): StreamRepository {
-        return streamRepository
     }
 
     override fun showItems(items: List<ViewTyped>) {

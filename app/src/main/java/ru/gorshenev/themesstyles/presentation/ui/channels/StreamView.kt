@@ -18,8 +18,4 @@ interface StreamView {
 
     fun goToChat(topic: TopicUi, stream: StreamUi)
 
-    fun getDataBase() : AppDataBase
-
-    fun repository(): StreamRepository
-
 }

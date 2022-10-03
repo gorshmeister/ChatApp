@@ -1,14 +1,15 @@
 package ru.gorshenev.themesstyles.data.repositories
 
 import android.util.Log
+import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.gorshenev.themesstyles.data.database.dao.MessageDao
-import ru.gorshenev.themesstyles.data.database.dao.MessageWithReactions
 import ru.gorshenev.themesstyles.data.database.entities.MessageEntity
+import ru.gorshenev.themesstyles.data.database.entities.MessageWithReactions
 import ru.gorshenev.themesstyles.data.database.entities.ReactionEntity
-import ru.gorshenev.themesstyles.data.network.model.Message
+import ru.gorshenev.themesstyles.data.network.ZulipApi
+import ru.gorshenev.themesstyles.data.network.model.MessageResponse
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.EmojiUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageLeftUi
@@ -16,20 +17,17 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
 import ru.gorshenev.themesstyles.utils.Utils
 import ru.gorshenev.themesstyles.utils.Utils.toEmojiCode
 
-class ChatRepository(private val messageDao: MessageDao) {
+class ChatRepository(private val messageDao: MessageDao, private val api: ZulipApi) {
 
     fun getMessagesFromDb(topic: String): Single<List<ViewTyped>> {
-        return messageDao.getMessages(topic)
-            .map { list -> createMessageUiFromEntity(list) }
-            .subscribeOn(Schedulers.io())
-            .doAfterSuccess {
+        return messageDao.getMessages(topic).map { list -> createMessageUiFromEntity(list) }
+            .subscribeOn(Schedulers.io()).doAfterSuccess {
                 Log.d("database", "==== Messages loaded from DATABASE ==== ")
             }
     }
 
-    private fun updateMessageReactions(message: Message, topicName: String) {
-        val disp = Single.concat(
-            messageDao.deleteMessageReactions(message.msgId),
+    private fun updateMessageReactions(message: MessageResponse, topicName: String): Completable {
+        return messageDao.deleteMessageReactions(message.msgId).andThen(
             messageDao.insert(message.reactions.map { reaction ->
                 ReactionEntity(
                     messageId = message.msgId,
@@ -41,86 +39,71 @@ class ChatRepository(private val messageDao: MessageDao) {
                 )
             })
         )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({}, { Log.d("database", "UPDATE MESSAGE ERROR $it") })
     }
 
-    private fun deleteFirstMessage(messages: List<MessageEntity>) {
-        val disp =
-            messageDao.deleteMessage(messages.first().msgId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({}, { Log.d("database", "DELETE FIRST MSG ERROR $it") })
+    private fun deleteFirstMessage(messages: List<MessageEntity>): Completable {
+        return messageDao.deleteMessage(messages.first().msgId)
     }
 
-    private fun insert(message: Message, topicName: String) {
-        val disp = Single.concat(
-            messageDao.insert(
-                MessageEntity(
-                    topicName = topicName,
-                    msgId = message.msgId,
-                    senderName = message.senderName,
-                    content = message.content,
-                    senderId = message.senderId,
-                    time = message.time,
-                    avatarUrl = message.avatarUrl,
-                    subject = message.subject
-                )
-            ),
-            messageDao.insert(message.reactions.map { reaction ->
+    private fun insert(newMessage: MessageResponse, topicName: String): Completable {
+        return messageDao.insert(
+            MessageEntity(
+                topicName = topicName,
+                msgId = newMessage.msgId,
+                senderName = newMessage.senderName,
+                content = newMessage.content,
+                senderId = newMessage.senderId,
+                time = newMessage.time,
+                avatarUrl = newMessage.avatarUrl,
+                subject = newMessage.subject
+            )
+        ).andThen(
+            messageDao.insert(newMessage.reactions.map { reaction ->
                 ReactionEntity(
-                    messageId = message.msgId,
+                    messageId = newMessage.msgId,
                     emojiName = reaction.emojiName,
                     emojiCode = reaction.emojiCode,
                     reactionType = reaction.reactionType,
                     userId = reaction.userId,
                     topicName = topicName
                 )
-            }
-            ))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({}, { Log.d("database", "INSERT ERROR ${it}") })
+            })
+        )
     }
 
     private fun updDB(
-        messages: List<MessageEntity>,
-        message: Message,
-        topicName: String
-    ) {
-        val msgDoesNotExist = messages.all { it.msgId != message.msgId }
-        val msgExist = messages.any { it.msgId == message.msgId }
+        currentMessages: List<MessageEntity>, newMessage: MessageResponse, topicName: String
+    ): Completable {
+        val msgDoesNotExist = currentMessages.all { it.msgId != newMessage.msgId }
+        val msgExist = currentMessages.any { it.msgId == newMessage.msgId }
 
-        when {
-            messages.isEmpty() || msgDoesNotExist && messages.size != 50 -> {
-                insert(message, topicName)
+        return when {
+            currentMessages.isEmpty() || msgDoesNotExist && currentMessages.size != 50 -> {
+                insert(newMessage, topicName)
             }
 
             msgExist -> {
-                updateMessageReactions(message, topicName)
+                updateMessageReactions(newMessage, topicName)
             }
 
-            msgDoesNotExist && messages.size == 50 -> {
-                deleteFirstMessage(messages)
-                insert(message, topicName)
+            msgDoesNotExist && currentMessages.size == 50 -> {
+                deleteFirstMessage(currentMessages)
+                insert(newMessage, topicName)
             }
 
             else -> {
                 Log.d("database", "add to data ERROR")
+                Completable.fromCallable(error("add to data ERROR"))
             }
         }
     }
 
 
     fun addToDatabase(
-        message: Message,
-        topicName: String
-    ) {
-        val disp = messageDao.getMessagesFromTopic(topicName)
+        message: MessageResponse, topicName: String
+    ): Single<Completable> {
+        return messageDao.getMessagesFromTopic(topicName)
             .map { messageEntityList -> updDB(messageEntityList, message, topicName) }
-            .subscribeOn(Schedulers.io())
-            .subscribe({}, { Log.d("database", "ADD TO DB ERROR $it") })
     }
 
 
@@ -128,7 +111,7 @@ class ChatRepository(private val messageDao: MessageDao) {
         list: List<MessageWithReactions>
     ): List<ViewTyped> {
         return list.map { msgWithReact ->
-            val messageEntity: MessageEntity = msgWithReact.message!!
+            val messageEntity: MessageEntity = msgWithReact.message
             val reactionEntities = msgWithReact.reactions
 
             when (messageEntity.senderId) {

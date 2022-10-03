@@ -18,8 +18,4 @@ interface ChatView {
 
     fun scrollMsgsToTheEnd()
 
-    fun dataBase(): AppDataBase
-
-    fun repository(): ChatRepository
-
 }

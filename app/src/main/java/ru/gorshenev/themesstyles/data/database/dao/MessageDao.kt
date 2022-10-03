@@ -1,8 +1,10 @@
 package ru.gorshenev.themesstyles.data.database.dao
 
 import androidx.room.*
+import io.reactivex.Completable
 import io.reactivex.Single
 import ru.gorshenev.themesstyles.data.database.entities.MessageEntity
+import ru.gorshenev.themesstyles.data.database.entities.MessageWithReactions
 import ru.gorshenev.themesstyles.data.database.entities.ReactionEntity
 
 @Dao
@@ -17,17 +19,17 @@ interface MessageDao {
 
 
     @Query("DELETE FROM reaction WHERE message_id in (:messageId)")
-    fun deleteMessageReactions(messageId: Int): Single<Unit>
+    fun deleteMessageReactions(messageId: Int): Completable
 
     @Query("DELETE FROM message WHERE msgId in (:messageId)")
-    fun deleteMessage(messageId: Int): Single<Unit>
+    fun deleteMessage(messageId: Int): Completable
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(reactions: List<ReactionEntity>): Single<Unit>
+    fun insert(reactions: List<ReactionEntity>): Completable
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(message: MessageEntity): Single<Unit>
+    fun insert(message: MessageEntity): Completable
 
 }

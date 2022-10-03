@@ -8,12 +8,15 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import ru.gorshenev.themesstyles.ChatApp
+import ru.gorshenev.themesstyles.data.database.AppDataBase
 import ru.gorshenev.themesstyles.data.network.Network
 import ru.gorshenev.themesstyles.data.network.ZulipApi
 import ru.gorshenev.themesstyles.data.network.model.CreateReactionResponse
-import ru.gorshenev.themesstyles.data.network.model.Message
+import ru.gorshenev.themesstyles.data.network.model.MessageResponse
 import ru.gorshenev.themesstyles.data.network.model.Narrow
-import ru.gorshenev.themesstyles.data.network.model.Reaction
+import ru.gorshenev.themesstyles.data.network.model.ReactionResponse
+import ru.gorshenev.themesstyles.data.repositories.ChatRepository
 import ru.gorshenev.themesstyles.data.repositories.Reactions.MY_USER_ID
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.EmojiUi
@@ -21,9 +24,14 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageLeftUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
 import ru.gorshenev.themesstyles.utils.Utils
 import ru.gorshenev.themesstyles.utils.Utils.toEmojiCode
-import java.util.concurrent.TimeUnit
 
 class ChatPresenter(private val view: ChatView) {
+
+    private val db: AppDataBase by lazy { AppDataBase.getDataBase(ChatApp.appContext) }
+
+    private val api: ZulipApi = Network.api
+
+    private val chatRepository: ChatRepository by lazy { ChatRepository(db.messageDao(), api) }
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -31,8 +39,6 @@ class ChatPresenter(private val view: ChatView) {
 
     private var reactionDisposable: Disposable? = null
     private var msgDisposable: Disposable? = null
-
-    private val api: ZulipApi = Network.api
 
     private lateinit var streamName: String
     private lateinit var topicName: String
@@ -43,7 +49,7 @@ class ChatPresenter(private val view: ChatView) {
     fun loadMessagesFromDatabase(stream: String, topic: String) {
         streamName = stream
         topicName = topic
-        view.repository().getMessagesFromDb(topic)
+        chatRepository.getMessagesFromDb(topic)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { messages ->
@@ -62,7 +68,6 @@ class ChatPresenter(private val view: ChatView) {
                 Narrow("topic", topicName)
             )
         )
-//todo либо загружать 50 либо 20
         api.getMessages(
             anchor = 10000000000000000,
             numBefore = 50,
@@ -273,13 +278,11 @@ class ChatPresenter(private val view: ChatView) {
     fun onClear() {
         reactionDisposable?.dispose()
         msgDisposable?.dispose()
-//        if (this::reactionDisposable::isInitialized.get()) reactionDisposable.dispose()
-//        if (this::msgDisposable::isInitialized.get()) msgDisposable.dispose()
         compositeDisposable.clear()
     }
 
     private fun createMessageUi(
-        messages: List<Message>,
+        messages: List<MessageResponse>,
         addToDatabase: Boolean
     ): List<ViewTyped> {
         return messages.map { message ->
@@ -295,7 +298,7 @@ class ChatPresenter(private val view: ChatView) {
 //
 //            if (lastDate != currentDate) list += DateUi(message.msgId, currentDate)
             if (addToDatabase)
-                view.repository().addToDatabase(message, topicName)
+                chatRepository.addToDatabase(message, topicName)
 
             when (message.senderId) {
                 MY_USER_ID -> {
@@ -320,7 +323,7 @@ class ChatPresenter(private val view: ChatView) {
         }
     }
 
-    private fun createEmojiUi(reactions: List<Reaction>, messageId: Int): List<EmojiUi> {
+    private fun createEmojiUi(reactions: List<ReactionResponse>, messageId: Int): List<EmojiUi> {
         val list = mutableListOf<EmojiUi>()
         reactions.forEach { reaction ->
             val sameEmojiUi = list.find { it.name == reaction.emojiName }

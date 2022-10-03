@@ -33,7 +33,7 @@ abstract class AppDataBase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDataBase::class.java,
-                    "appDataBase",
+                    DB_NAME,
                 )
                     .fallbackToDestructiveMigration()
                     .build()
@@ -41,5 +41,11 @@ abstract class AppDataBase : RoomDatabase() {
                 instance
             }
         }
+        private const val DB_NAME = "appDataBase"
+        const val MESSAGE = "message"
+        const val REACTION = "reaction"
+        const val STREAM = "stream"
+        const val TOPIC = "topic"
     }
+
 }
