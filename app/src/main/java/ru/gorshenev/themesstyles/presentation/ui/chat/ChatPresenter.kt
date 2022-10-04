@@ -1,29 +1,22 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat
 
-import android.util.Log
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import ru.gorshenev.themesstyles.ChatApp
 import ru.gorshenev.themesstyles.data.database.AppDataBase
 import ru.gorshenev.themesstyles.data.network.Network
 import ru.gorshenev.themesstyles.data.network.ZulipApi
-import ru.gorshenev.themesstyles.data.network.model.CreateReactionResponse
-import ru.gorshenev.themesstyles.data.network.model.MessageResponse
-import ru.gorshenev.themesstyles.data.network.model.Narrow
-import ru.gorshenev.themesstyles.data.network.model.ReactionResponse
-import ru.gorshenev.themesstyles.data.repositories.ChatRepository
-import ru.gorshenev.themesstyles.data.repositories.Reactions.MY_USER_ID
+import ru.gorshenev.themesstyles.data.repositories.chat.ChatMapper.toDomain
+import ru.gorshenev.themesstyles.data.repositories.chat.ChatMapper.toUi
+import ru.gorshenev.themesstyles.data.repositories.chat.ChatRepository
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.ui.chat.items.EmojiUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageLeftUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
-import ru.gorshenev.themesstyles.utils.Utils
-import ru.gorshenev.themesstyles.utils.Utils.toEmojiCode
+import java.util.concurrent.TimeUnit
 
 class ChatPresenter(private val view: ChatView) {
 
@@ -31,7 +24,7 @@ class ChatPresenter(private val view: ChatView) {
 
     private val api: ZulipApi = Network.api
 
-    private val chatRepository: ChatRepository by lazy { ChatRepository(db.messageDao(), api) }
+    private val repository: ChatRepository by lazy { ChatRepository(db.messageDao(), api) }
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -46,73 +39,57 @@ class ChatPresenter(private val view: ChatView) {
     private var isLoading = false
 
 
-    fun loadMessagesFromDatabase(stream: String, topic: String) {
+    fun loadMessages(stream: String, topic: String) {
         streamName = stream
         topicName = topic
-        chatRepository.getMessagesFromDb(topic)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { messages ->
-                    displayedItems = displayedItems + messages
-                    view.showItems(displayedItems)
-                    if (displayedItems.isNotEmpty()) view.stopLoading()
-                },
-                { err -> view.showError(err) },
-            ).apply { compositeDisposable.add(this) }
-    }
 
-    fun loadMessagesFromApi() {
-        val narrow = Json.encodeToString(
-            listOf(
-                Narrow("stream", streamName),
-                Narrow("topic", topicName)
-            )
+        Observable.concatArrayEager(
+            repository.getMessagesFromDb(streamName, topicName)
+                .map { messageModels -> messageModels.toUi() },
+
+            repository.getMessagesFromApi()
+                .map { messageResponse ->
+                    Observable.fromIterable(messageResponse.messages)
+                        .concatMapCompletable {
+                            repository.addToDatabase(it, topicName)
+                        }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({}, { e -> view.showError(e) })
+                        .apply { compositeDisposable.add(this) }
+
+                    messageResponse.messages.toDomain().toUi()
+                }
         )
-        api.getMessages(
-            anchor = 10000000000000000,
-            numBefore = 50,
-            numAfter = 0,
-            narrow = narrow,
-            clientGravatar = false,
-            applyMarkdown = false
-        )
-            .map { response -> createMessageUi(response.messages, true) }
+            .debounce(400, TimeUnit.MILLISECONDS)
+            .materialize()
+            .filter { !it.isOnError }
+            .dematerialize { it }
             .doOnSubscribe { isLoading = true }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { messages ->
-                    Log.d("database", "==== Messages loaded from network ==== ")
                     displayedItems = messages
                     view.showItems(displayedItems)
+                    if (displayedItems.isNotEmpty()) view.stopLoading()
                     isLoading = false
                     registerMessageQueue()
                     registerReactionQueue()
                 },
-                { err -> view.showError(err) },
-                { view.stopLoading() }
+                { err ->
+                    view.stopLoading()
+                    view.showError(err)
+                },
             ).apply { compositeDisposable.add(this) }
+
     }
 
     fun uploadMoreMessages() {
         if (isLoading) return
-        val narrow = Json.encodeToString(
-            listOf(
-                Narrow("stream", streamName),
-                Narrow("topic", topicName)
-            )
-        )
-
-        api.getMessages(
-            displayedItems.first().id.toLong(),
-            20,
-            0,
-            narrow,
-            clientGravatar = false,
-            applyMarkdown = false
-        )
+        repository.uploadMoreMessages(displayedItems.first().id.toLong())
             .doOnSubscribe { isLoading = true }
-            .map { response -> createMessageUi(response.messages, false) }
+            .map { messageModels -> messageModels.toUi() }
             .map { messages -> (displayedItems + messages).distinctBy { it.id }.sortedBy { it.id } }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -131,25 +108,27 @@ class ChatPresenter(private val view: ChatView) {
     private var lastMessageQueueId = -1
 
     private fun registerMessageQueue() {
-        val narrow = (mapOf("stream" to streamName, "topic" to topicName))
-        val type = Json.encodeToString(listOf("message"))
-
-        api.getQueue(type, narrow)
-            .subscribeOn(Schedulers.io())
+        repository.registerMessageQueue()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { getMessageFromQueue(it.queueId, lastMessageQueueId) },
                 { err -> view.showError(err) }
-            )
-            .apply { compositeDisposable.add(this) }
+            ).apply { compositeDisposable.add(this) }
     }
 
     private fun getMessageFromQueue(queueId: String, lastId: Int) {
         currentMessageQueueId = queueId
-        msgDisposable = api.getEventsFromQueue(currentMessageQueueId, lastId)
+        msgDisposable = repository.getQueueMessages(currentMessageQueueId, lastId)
             .retry()
             .doOnNext { response -> lastMessageQueueId = response.events.last().id }
-            .map { response -> createMessageUi(response.events.map { it.message }, true) }
+            .map { eventsResponse ->
+                Single.just(eventsResponse.events.first().message)
+                    .flatMapCompletable { repository.addToDatabase(it, topicName) }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({}, { e -> view.showError(e) })
+                    .apply { compositeDisposable.add(this) }
+                eventsResponse.events.map { it.message }.toDomain().toUi()
+            }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -160,8 +139,7 @@ class ChatPresenter(private val view: ChatView) {
                     msgDisposable?.dispose()
                     getMessageFromQueue(currentMessageQueueId, lastMessageQueueId)
                 },
-                { err -> view.showError(err) }
-            )
+                { err -> view.showError(err) })
     }
 
 
@@ -169,34 +147,36 @@ class ChatPresenter(private val view: ChatView) {
     private var lastReactionQueueId = -1
 
     private fun registerReactionQueue() {
-        val narrow = (mapOf("stream" to streamName, "topic" to topicName))
-        val type = Json.encodeToString(listOf("reaction"))
-
-        api.getQueue(type, narrow)
-            .subscribeOn(Schedulers.io())
+        repository.registerReactionQueue()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { getReactionEventsFromQueue(it.queueId, lastReactionQueueId) },
                 { err -> view.showError(err) }
-            )
-            .apply { compositeDisposable.add(this) }
+            ).apply { compositeDisposable.add(this) }
     }
 
     private fun getReactionEventsFromQueue(queueId: String, lastId: Int) {
         var messageId = 0
         currentReactionQueueId = queueId
-        reactionDisposable = api.getEmojiEventsFromQueue(currentReactionQueueId, lastId)
+
+        reactionDisposable = repository.getQueueReactions(currentReactionQueueId, lastId)
             .retry()
-            .doOnNext { response -> lastReactionQueueId = response.events.first().id }
             .concatMap { response ->
+                lastReactionQueueId = response.events.first().id
                 messageId = response.events.first().messageId
-                api.getMessage(messageId)
+                repository.getMessage(messageId)
             }
             .map { response ->
+                Single.just(response.message)
+                    .flatMapCompletable { repository.addToDatabase(it, topicName) }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({}, { e -> view.showError(e) })
+                    .apply { compositeDisposable.add(this) }
+
                 updateMessage(
                     displayedItems,
                     messageId,
-                    createMessageUi(listOf(response.message), true).first()
+                    listOf(response.message).toDomain().toUi().first()
                 )
             }
             .subscribeOn(Schedulers.io())
@@ -237,12 +217,7 @@ class ChatPresenter(private val view: ChatView) {
     }
 
     fun onEmojiClick(emojiName: String, messageId: Int) {
-        api.getMessage(id = messageId, applyMarkdown = true)
-            .map { response ->
-                response.message.reactions.filter { reaction -> reaction.emojiName == emojiName }
-                    .any { it.userId == MY_USER_ID }
-            }
-            .concatMapSingle { isMyClick -> updateEmoji(messageId, emojiName, isMyClick) }
+        repository.onEmojiClick(emojiName, messageId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -251,23 +226,8 @@ class ChatPresenter(private val view: ChatView) {
             ).apply { compositeDisposable.add(this) }
     }
 
-    private fun updateEmoji(
-        msgId: Int,
-        emojiName: String,
-        isMyClick: Boolean = false
-    ): Single<CreateReactionResponse> {
-        return when {
-            isMyClick -> api.deleteEmoji(msgId = msgId, emojiName)
-            else -> api.addEmoji(msgId = msgId, emojiName)
-        }
-    }
-
     fun sendMessage(message: String) {
-        api.sendMessage(
-            to = streamName,
-            topic = topicName,
-            content = message
-        )
+        repository.sendMessage(message)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ },
@@ -281,76 +241,50 @@ class ChatPresenter(private val view: ChatView) {
         compositeDisposable.clear()
     }
 
-    private fun createMessageUi(
-        messages: List<MessageResponse>,
-        addToDatabase: Boolean
-    ): List<ViewTyped> {
-        return messages.map { message ->
-//            val currentDate = Utils.getDateFromUnix(message.time)
-//            var lastDate = ""
+//    private fun createMessageUi(
+//        messages: List<MessageResponse>,
+//        addToDatabase: Boolean
+//    ): List<ViewTyped> {
+//        return messages.map { message ->
+////            val currentDate = Utils.getDateFromUnix(message.time)
+////            var lastDate = ""
+////
+////            if (displayedItems.isNotEmpty()) {
+////                lastDate = (displayedItems.findLast { it is DateUi } as DateUi).text
+////            } else {
+////                if (list.isEmpty()) list += DateUi(message.msgId, currentDate)
+////                lastDate = (list.findLast { it is DateUi } as DateUi).text
+////            }
+////
+////            if (lastDate != currentDate) list += DateUi(message.msgId, currentDate)
+//            if (addToDatabase)
+//                repository.addToDatabase(message, topicName)
+//                    .subscribe({}, { e -> view.showError(e) })
+//                    .apply { compositeDisposable.add(this) }
 //
-//            if (displayedItems.isNotEmpty()) {
-//                lastDate = (displayedItems.findLast { it is DateUi } as DateUi).text
-//            } else {
-//                if (list.isEmpty()) list += DateUi(message.msgId, currentDate)
-//                lastDate = (list.findLast { it is DateUi } as DateUi).text
+//            when (message.senderId) {
+//                MY_USER_ID -> {
+//                    MessageRightUi(
+//                        id = message.msgId,
+//                        text = message.content,
+//                        time = Utils.getTimeFromUnix(message.time),
+//                        emojis = createEmojiUi(message.reactions, message.msgId)
+//                    )
+//                }
+//                else -> {
+//                    MessageLeftUi(
+//                        id = message.msgId,
+//                        name = message.senderName,
+//                        text = message.content,
+//                        emojis = createEmojiUi(message.reactions, message.msgId),
+//                        time = Utils.getTimeFromUnix(message.time),
+//                        avatar = message.avatarUrl
+//                    )
+//                }
 //            }
-//
-//            if (lastDate != currentDate) list += DateUi(message.msgId, currentDate)
-            if (addToDatabase)
-                chatRepository.addToDatabase(message, topicName)
+//        }
+//    }
 
-            when (message.senderId) {
-                MY_USER_ID -> {
-                    MessageRightUi(
-                        id = message.msgId,
-                        text = message.content,
-                        time = Utils.getTimeFromUnix(message.time),
-                        emojis = createEmojiUi(message.reactions, message.msgId)
-                    )
-                }
-                else -> {
-                    MessageLeftUi(
-                        id = message.msgId,
-                        name = message.senderName,
-                        text = message.content,
-                        emojis = createEmojiUi(message.reactions, message.msgId),
-                        time = Utils.getTimeFromUnix(message.time),
-                        avatar = message.avatarUrl
-                    )
-                }
-            }
-        }
-    }
-
-    private fun createEmojiUi(reactions: List<ReactionResponse>, messageId: Int): List<EmojiUi> {
-        val list = mutableListOf<EmojiUi>()
-        reactions.forEach { reaction ->
-            val sameEmojiUi = list.find { it.name == reaction.emojiName }
-
-            if (sameEmojiUi != null) {
-                val index = list.indexOf(sameEmojiUi)
-                list.remove(sameEmojiUi)
-
-                val updItem = sameEmojiUi.copy(
-                    listUsersId = sameEmojiUi.listUsersId + listOf(reaction.userId),
-                    counter = sameEmojiUi.counter + 1,
-                    isSelected = reaction.userId == MY_USER_ID
-                )
-                list.add(index, updItem)
-            } else {
-                list += EmojiUi(
-                    msgId = messageId,
-                    name = reaction.emojiName,
-                    code = reaction.emojiCode.toEmojiCode(),
-                    listUsersId = listOf(reaction.userId),
-                    counter = +1,
-                    isSelected = reaction.userId == MY_USER_ID
-                )
-            }
-        }
-        return list.toList()
-    }
 
 //    private fun addReactions(
 //        items: List<ViewTyped>,

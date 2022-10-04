@@ -15,7 +15,7 @@ data class StreamEntity(
 
 data class StreamWithTopics(
     @Embedded
-    var stream: StreamEntity,
+    val stream: StreamEntity,
     @Relation(parentColumn = "streamId", entityColumn = "stream_id")
-    var topics: List<TopicEntity> = ArrayList()
+    val topics: List<TopicEntity> = ArrayList()
 )

@@ -12,7 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.data.repositories.Reactions
+import ru.gorshenev.themesstyles.data.repositories.chat.Reactions
 import ru.gorshenev.themesstyles.databinding.BottomSheetBinding
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped

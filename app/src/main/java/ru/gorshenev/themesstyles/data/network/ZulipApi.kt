@@ -2,7 +2,6 @@ package ru.gorshenev.themesstyles.data.network
 
 import io.reactivex.Observable
 import io.reactivex.Single
-import kotlinx.serialization.ExperimentalSerializationApi
 import retrofit2.http.*
 import ru.gorshenev.themesstyles.data.network.model.*
 
@@ -14,7 +13,7 @@ interface ZulipApi {
     fun getUsers(): Single<GetUserResponse>
 
     @GET("users/{user_id_or_email}/presence")
-    fun getUserPresence(@Path("user_id_or_email") id: Int): Single<GetUserPresence>
+    fun getUserPresence(@Path("user_id_or_email") id: Int): Single<GetUserPresenceResponse>
 
 
     @GET("messages/{message_id}")
@@ -40,6 +39,7 @@ interface ZulipApi {
         @Query("topic") topic: String,
         @Query("content") content: String
     ): Single<CreateMessageResponse>
+
 
     @POST("messages/{message_id}/reactions")
     fun addEmoji(
@@ -75,7 +75,7 @@ interface ZulipApi {
     fun getEventsFromQueue(
         @Query("queue_id") queueId: String,
         @Query("last_event_id") lastId: Int
-    ): Observable<GetEventsResponse>
+    ): Observable<GetMessageEventsResponse>
 
     @GET("events")
     fun getEmojiEventsFromQueue(

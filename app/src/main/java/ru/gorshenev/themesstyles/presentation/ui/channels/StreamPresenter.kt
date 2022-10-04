@@ -1,6 +1,5 @@
 package ru.gorshenev.themesstyles.presentation.ui.channels
 
-import android.util.Log
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -10,7 +9,8 @@ import ru.gorshenev.themesstyles.ChatApp
 import ru.gorshenev.themesstyles.data.database.AppDataBase
 import ru.gorshenev.themesstyles.data.network.Network
 import ru.gorshenev.themesstyles.data.network.ZulipApi
-import ru.gorshenev.themesstyles.data.repositories.StreamRepository
+import ru.gorshenev.themesstyles.data.repositories.stream.StreamMapper.toUi
+import ru.gorshenev.themesstyles.data.repositories.stream.StreamRepository
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
@@ -22,7 +22,7 @@ class StreamPresenter(private val view: StreamView) {
 
     private val api: ZulipApi = Network.api
 
-    private val streamRepository: StreamRepository by lazy { StreamRepository(db.streamDao(), api) }
+    private val repository: StreamRepository by lazy { StreamRepository(db.streamDao(), api) }
 
     private val searchSubject: PublishSubject<String> = PublishSubject.create()
 
@@ -50,7 +50,21 @@ class StreamPresenter(private val view: StreamView) {
     }
 
     fun loadStreams(streamType: StreamFragment.StreamType) {
-        streamRepository.getStreams(streamType)
+        Single.concatArrayEager(
+            repository.getStreamsFromDb(streamType),
+            repository.getStreamsFromApi(streamType)
+                .doOnEvent { streamModels, _ ->
+                    repository.replaceDataInDb(streamModels, streamType)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({}, { e -> view.showError(e) })
+                        .apply { compositeDisposable.add(this) }
+                }
+        )
+            .materialize()
+            .filter { !it.isOnError }
+            .dematerialize { streamModels -> streamModels }
+            .map { streamModels -> streamModels.toUi(streamType) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -58,7 +72,6 @@ class StreamPresenter(private val view: StreamView) {
                     firstLoadedItems = streams
                     displayedItems = streams
                     view.showItems(streams)
-                    Log.d("database", "=====  Streams Loaded   ==== ")
                 },
                 { error ->
                     view.stopLoading()
@@ -166,61 +179,4 @@ class StreamPresenter(private val view: StreamView) {
             }
         }
     }
-
-
-//    fun loadStreamsFromDataBase(streamType: StreamFragment.StreamType) {
-//        view.repository().getStreams(streamType)
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .doAfterSuccess {
-//                Log.d("database", "=====  Streams Loaded From DATABASE end.  ==== ")
-//                view.repository().deleteStreamsAndTopics(streamType)
-//                Log.d("database", "streams delete from DB")
-//            }
-//            .subscribe(
-//                { streams ->
-//                    firstLoadedItems = streams
-//                    displayedItems = streams
-//                    view.showItems(streams)
-//                    if (streams.isNotEmpty()) view.stopLoading()
-//                    Log.d("database", "=====  Streams Loaded From DATABASE  ==== ")
-//
-//                },
-//                { error -> view.showError(error) },
-//            ).apply { compositeDisposable.add(this) }
-//    }
-//
-//    fun loadStreams(streamType: StreamFragment.StreamType) {
-//        when (streamType) {
-//            StreamFragment.StreamType.SUBSCRIBED -> api.getStreamsSubs()
-//            StreamFragment.StreamType.ALL_STREAMS -> api.getStreamsAll()
-//        }
-//            .flatMap { response ->
-//                Observable.fromIterable(response.streams)
-//                    .flatMapSingle { str ->
-//                        Single.zip(
-//                            Single.just(str),
-//                            api.getTopics(str.streamId),
-//                            ::createStreamUi,
-//                            )
-//                    }.toList()
-//            }
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .doAfterSuccess { view.stopLoading() }
-//            .subscribe(
-//                { streams ->
-//                    firstLoadedItems = streams
-//                    displayedItems = streams
-//                    view.showItems(streams)
-//                    Log.d("database", "=====  Streams Loaded From Network  ==== ")
-//                    Log.d("database", "=====  Streams Loaded From Network end...  ==== ")
-//                    Log.d("database", "                         ----")
-//                },
-//                { error ->
-//                    view.stopLoading()
-//                    view.showError(error)
-//                }).apply { compositeDisposable.add(this) }
-//    }
-
 }

@@ -8,7 +8,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import ru.gorshenev.themesstyles.data.network.Network
 import ru.gorshenev.themesstyles.data.network.ZulipApi
-import ru.gorshenev.themesstyles.data.network.model.GetUserPresence
+import ru.gorshenev.themesstyles.data.network.model.GetUserPresenceResponse
 import ru.gorshenev.themesstyles.data.network.model.PeopleStatusResponse
 import ru.gorshenev.themesstyles.data.network.model.UserResponse
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
@@ -65,7 +65,7 @@ class PeoplePresenter(private val view: PeopleView) {
             ).apply { compositeDisposable.add(this) }
     }
 
-    private fun createPeopleUiWithStatus(user: UserResponse, presence: GetUserPresence) =
+    private fun createPeopleUiWithStatus(user: UserResponse, presence: GetUserPresenceResponse) =
         PeopleUi(
             id = user.userId,
             name = user.firstName,
@@ -74,7 +74,7 @@ class PeoplePresenter(private val view: PeopleView) {
             status = getStatus(presence)
         )
 
-    private fun getStatus(presence: GetUserPresence): PeopleUi.PeopleStatus {
+    private fun getStatus(presence: GetUserPresenceResponse): PeopleUi.PeopleStatus {
         return when (presence.presence.aggregated.status) {
             PeopleStatusResponse.ONLINE -> PeopleUi.PeopleStatus.ONLINE
             PeopleStatusResponse.IDLE -> PeopleUi.PeopleStatus.IDLE
