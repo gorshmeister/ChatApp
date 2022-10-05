@@ -41,17 +41,17 @@ enum class PeopleStatusResponse {
 @Serializable
 data class GetOneUserResponse(
     @SerialName("user")
-    val members: User
+    val members: UserResponse
 )
 
 @Serializable
 data class GetUserResponse(
     @SerialName("members")
-    val members: List<User>
+    val members: List<UserResponse>
 )
 
 @Serializable
-data class User(
+data class UserResponse(
     @SerialName("user_id")
     val userId: Int,
     @SerialName("full_name")
@@ -67,12 +67,13 @@ data class User(
 
 @Serializable
 data class GetStreamResponse(
-    @JsonNames("subscriptions", "streams")
-    val streams: List<Stream>,
+    @SerialName("streams")
+    @JsonNames("subscriptions")
+    val streams: List<StreamResponse>
 )
 
 @Serializable
-data class Stream(
+data class StreamResponse(
     @SerialName("stream_id")
     val streamId: Int,
     @SerialName("name")
@@ -85,11 +86,11 @@ data class Stream(
 @Serializable
 data class GetTopicResponse(
     @SerialName("topics")
-    val topics: List<Topic>
+    val topics: List<TopicResponse>
 )
 
 @Serializable
-data class Topic(
+data class TopicResponse(
     @SerialName("max_id")
     val maxId: Int,
     @SerialName("name")
@@ -115,17 +116,17 @@ data class CreateReactionResponse(
 @Serializable
 data class GetOneMessageResponse(
     @SerialName("message")
-    val message: Message
+    val message: MessageResponse
 )
 
 @Serializable
 data class GetMessageResponse(
     @SerialName("messages")
-    val messages: List<Message>
+    val messages: List<MessageResponse>
 )
 
 @Serializable
-data class Message(
+data class MessageResponse(
     @SerialName("id")
     val msgId: Int,
     @SerialName("sender_full_name")
@@ -139,13 +140,13 @@ data class Message(
     @SerialName("avatar_url")
     val avatarUrl: String?,
     @SerialName("reactions")
-    val reactions: List<Reaction>,
+    val reactions: List<ReactionResponse>,
     @SerialName("subject")
     val subject: String
 )
 
 @Serializable
-data class Reaction(
+data class ReactionResponse(
     @SerialName("emoji_name")
     val emojiName: String,
     @SerialName("emoji_code")
@@ -203,7 +204,6 @@ enum class ReactionAddOrRemove {
 }
 
 
-
 @Serializable
 data class GetEventsResponse(
     @SerialName("events")
@@ -217,7 +217,7 @@ data class Event(
     @SerialName("type")
     val type: String,
     @SerialName("message")
-    val message: Message,
+    val message: MessageResponse,
 )
 
 

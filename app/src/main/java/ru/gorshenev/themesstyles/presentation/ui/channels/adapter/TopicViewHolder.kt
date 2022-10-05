@@ -3,6 +3,7 @@ package ru.gorshenev.themesstyles.presentation.ui.channels.adapter
 import android.content.res.Resources
 import android.graphics.Color
 import android.view.View
+import androidx.core.graphics.toColorInt
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.ItemChannelsTopicBinding
@@ -24,7 +25,7 @@ class TopicViewHolder(
     }
 
     override fun bind(item: TopicUi) {
-        itemView.setBackgroundColor(item.color)
+        itemView.setBackgroundColor(item.color.toColorInt())
         binding.tvTopic.text = item.name
         currentId = item.id
     }

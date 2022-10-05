@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
@@ -13,6 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
+import ru.gorshenev.themesstyles.data.database.AppDataBase
+import ru.gorshenev.themesstyles.data.network.Network
+import ru.gorshenev.themesstyles.data.network.ZulipApi
+import ru.gorshenev.themesstyles.data.repositories.ChatRepository
 import ru.gorshenev.themesstyles.databinding.FragmentChatBinding
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
@@ -29,8 +34,9 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
 
     private val presenter: ChatPresenter = ChatPresenter(this)
 
-    private var areTheMessagesUploaded = false
+    private val topicName: String by lazy { arguments?.getString(TPC_NAME).toString() }
 
+    private val streamName: String by lazy { arguments?.getString(STR_NAME).toString() }
 
     private val holderFactory: HolderFactory = ChatHolderFactory(
         longClick = { messageId ->
@@ -49,13 +55,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.registerMessageQueue()
-        presenter.registerReactionQueue()
         initViews()
         initInputField()
         initSendingMessages()
         initStreamAndTopicNames()
-        presenter.loadMessages()
+        presenter.loadMessagesFromDatabase(streamName, topicName)
+        presenter.loadMessagesFromApi()
     }
 
     override fun onDestroyView() {
@@ -69,23 +74,17 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
             requireActivity().window.statusBarColor =
                 getColor(requireContext(), R.color.colorPrimaryBlue)
 
-            val layoutManager = LinearLayoutManager(requireContext())
-            layoutManager.stackFromEnd = true
-
+            val layoutManager = rvItems.layoutManager as? LinearLayoutManager
 
             rvItems.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    if (areTheMessagesUploaded) {
-                        if (layoutManager.findLastVisibleItemPosition() == adapter.items.size - 1) {
-//                        if (layoutManager.findLastCompletelyVisibleItemPosition() == adapter.items.size - 1) {
-                            uploadMoreMessages()
-                        }
+                    val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
+                    if (position == 5 && dy != 0) {
+                        presenter.uploadMoreMessages()
                     }
                 }
             })
-            rvItems.layoutManager = layoutManager
-
 
             rvItems.adapter = adapter
 
@@ -95,7 +94,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
             ) { _, result ->
                 val resultPick =
                     result.get(BottomSheet.RESULT_EMOJI_PICK) as BottomSheet.EmojiPickResult
-                presenter.addReactionFromBottomSheet(
+                presenter.onEmojiClick(
                     emojiName = resultPick.emojiName,
                     messageId = resultPick.messageId
                 )
@@ -128,29 +127,30 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
 
     private fun initStreamAndTopicNames() {
         with(binding) {
-            val topicName = arguments?.getString(TPC_NAME).toString()
-            val streamName = arguments?.getString(STR_NAME).toString()
-            presenter.setStreamAndTopicNames(streamName, topicName)
-
             toolbar.title = streamName
             tvTopicName.text = getString(R.string.topic_name, topicName)
 
+            activity?.onBackPressedDispatcher?.addCallback(
+                viewLifecycleOwner,
+                object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        onBackPress()
+                    }
+                })
             toolbar.setNavigationOnClickListener {
-                parentFragmentManager.popBackStack()
-
-                requireActivity().window.statusBarColor =
-                    getColor(requireContext(), R.color.colorPrimaryBlack)
+                onBackPress()
             }
         }
     }
 
+    private fun onBackPress() {
+        parentFragmentManager.popBackStack()
+        requireActivity().window.statusBarColor =
+            getColor(requireContext(), R.color.colorPrimaryBlack)
+    }
 
     override fun scrollMsgsToTheEnd() {
         binding.rvItems.smoothScrollToPosition(adapter.itemCount)
-    }
-
-    override fun uploadMoreMessages() {
-        presenter.uploadMoreMessages()
     }
 
     override fun showToast() {
@@ -174,7 +174,6 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
     }
 
     override fun stopLoading() {
-        areTheMessagesUploaded = true
         binding.shimmerChat.apply {
             visibility = View.GONE
             hideShimmer()

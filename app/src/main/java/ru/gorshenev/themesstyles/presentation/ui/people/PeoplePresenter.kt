@@ -10,7 +10,7 @@ import ru.gorshenev.themesstyles.data.network.Network
 import ru.gorshenev.themesstyles.data.network.ZulipApi
 import ru.gorshenev.themesstyles.data.network.model.GetUserPresence
 import ru.gorshenev.themesstyles.data.network.model.PeopleStatusResponse
-import ru.gorshenev.themesstyles.data.network.model.User
+import ru.gorshenev.themesstyles.data.network.model.UserResponse
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.people.items.PeopleUi
 import java.util.concurrent.TimeUnit
@@ -65,7 +65,7 @@ class PeoplePresenter(private val view: PeopleView) {
             ).apply { compositeDisposable.add(this) }
     }
 
-    private fun createPeopleUiWithStatus(user: User, presence: GetUserPresence) =
+    private fun createPeopleUiWithStatus(user: UserResponse, presence: GetUserPresence) =
         PeopleUi(
             id = user.userId,
             name = user.firstName,

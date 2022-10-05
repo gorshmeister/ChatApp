@@ -2,6 +2,7 @@ package ru.gorshenev.themesstyles.data.network
 
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.serialization.ExperimentalSerializationApi
 import retrofit2.http.*
 import ru.gorshenev.themesstyles.data.network.model.*
 

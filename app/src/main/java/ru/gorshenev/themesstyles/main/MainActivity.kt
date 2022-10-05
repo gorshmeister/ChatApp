@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
 //        registerNetworkCallback()
     }
 
+
     private fun initViews() {
         with(binding) {
             bottomNavigation.setOnItemSelectedListener { item ->
