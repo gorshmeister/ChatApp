@@ -1,6 +1,5 @@
 package ru.gorshenev.themesstyles.data.network
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.*
 import ru.gorshenev.themesstyles.data.network.model.*
@@ -20,24 +19,24 @@ interface ZulipApi {
     fun getMessage(
         @Path("message_id") id: Int,
         @Query("apply_markdown") applyMarkdown: Boolean = false,
-    ): Observable<GetOneMessageResponse>
+    ): Single<GetOneMessageResponse>
 
     @GET("messages")
     fun getMessages(
         @Query("anchor") anchor: Long,
         @Query("num_before") numBefore: Int,
-        @Query("num_after") numAfter: Int,
+        @Query("num_after") numAfter: Int = 0,
         @Query("narrow") narrow: String,
         @Query("client_gravatar") clientGravatar: Boolean,
         @Query("apply_markdown") applyMarkdown: Boolean,
-    ): Observable<GetMessageResponse>
+    ): Single<GetMessageResponse>
 
     @POST("messages")
     fun sendMessage(
         @Query("type") type: String = "stream",
         @Query("to") to: String,
         @Query("topic") topic: String,
-        @Query("content") content: String
+        @Query("content") content: String,
     ): Single<CreateMessageResponse>
 
 
@@ -69,18 +68,18 @@ interface ZulipApi {
         @Query("event_types") types: String,
         @QueryMap narrow: Map<String, String>,
         @Query("slim_presence") slimPresence: Boolean = true,
-    ): Observable<CreateQueueResponse>
+    ): Single<CreateQueueResponse>
 
     @GET("events")
     fun getEventsFromQueue(
         @Query("queue_id") queueId: String,
-        @Query("last_event_id") lastId: Int
-    ): Observable<GetMessageEventsResponse>
+        @Query("last_event_id") lastId: Int,
+    ): Single<GetMessageEventsResponse>
 
     @GET("events")
     fun getEmojiEventsFromQueue(
         @Query("queue_id") queueId: String,
-        @Query("last_event_id") lastId: Int
-    ): Observable<GetEmojiEventsResponse>
+        @Query("last_event_id") lastId: Int,
+    ): Single<GetEmojiEventsResponse>
 }
 

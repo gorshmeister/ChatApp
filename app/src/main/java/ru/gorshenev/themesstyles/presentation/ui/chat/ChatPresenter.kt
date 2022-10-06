@@ -1,7 +1,5 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat
 
-import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -42,31 +40,16 @@ class ChatPresenter(private val view: ChatView) {
     fun loadMessages(stream: String, topic: String) {
         streamName = stream
         topicName = topic
-
-        Observable.concatArrayEager(
-            repository.getMessagesFromDb(streamName, topicName)
-                .map { messageModels -> messageModels.toUi() },
-
-            repository.getMessagesFromApi()
-                .map { messageResponse ->
-                    Observable.fromIterable(messageResponse.messages)
-                        .concatMapCompletable {
-                            repository.addToDatabase(it, topicName)
-                        }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({}, { e -> view.showError(e) })
-                        .apply { compositeDisposable.add(this) }
-
-                    messageResponse.messages.toDomain().toUi()
-                }
+        repository.getMessages(
+            streamName = streamName,
+            topicName = topicName,
+            anchorMessageId = ChatRepository.DEFAULT_MESSAGE_ANCHOR,
+            numBefore = ChatRepository.DEFAULT_NUM_BEFORE,
+            onlyRemote = false
         )
             .debounce(400, TimeUnit.MILLISECONDS)
-            .materialize()
-            .filter { !it.isOnError }
-            .dematerialize { it }
             .doOnSubscribe { isLoading = true }
-            .subscribeOn(Schedulers.io())
+            .map { it.toUi() }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { messages ->
@@ -82,12 +65,18 @@ class ChatPresenter(private val view: ChatView) {
                     view.showError(err)
                 },
             ).apply { compositeDisposable.add(this) }
-
     }
 
     fun uploadMoreMessages() {
         if (isLoading) return
-        repository.uploadMoreMessages(displayedItems.first().id.toLong())
+        repository.getMessages(
+            streamName = streamName,
+            topicName = topicName,
+            anchorMessageId = displayedItems.first().id.toLong(),
+            numBefore = ChatRepository.MORE_NUM_BEFORE,
+            onlyRemote = true
+
+        )
             .doOnSubscribe { isLoading = true }
             .map { messageModels -> messageModels.toUi() }
             .map { messages -> (displayedItems + messages).distinctBy { it.id }.sortedBy { it.id } }
@@ -108,7 +97,7 @@ class ChatPresenter(private val view: ChatView) {
     private var lastMessageQueueId = -1
 
     private fun registerMessageQueue() {
-        repository.registerMessageQueue()
+        repository.registerMessageQueue(streamName, topicName)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { getMessageFromQueue(it.queueId, lastMessageQueueId) },
@@ -120,34 +109,29 @@ class ChatPresenter(private val view: ChatView) {
         currentMessageQueueId = queueId
         msgDisposable = repository.getQueueMessages(currentMessageQueueId, lastId)
             .retry()
-            .doOnNext { response -> lastMessageQueueId = response.events.last().id }
-            .map { eventsResponse ->
-                Single.just(eventsResponse.events.first().message)
-                    .flatMapCompletable { repository.addToDatabase(it, topicName) }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({}, { e -> view.showError(e) })
-                    .apply { compositeDisposable.add(this) }
-                eventsResponse.events.map { it.message }.toDomain().toUi()
-            }
-            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSuccess { response ->
+                lastMessageQueueId = response.events.last().id
+                val items = response.events.map { it.message }.toDomain().toUi()
+                displayedItems = displayedItems + items
+                view.showItems(displayedItems)
+                view.scrollMsgsToTheEnd()
+            }
+            .flatMapCompletable { repository.saveMessage(topicName, it.events.first().message) }
             .subscribe(
-                { items ->
-                    displayedItems = displayedItems + items
-                    view.showItems(displayedItems)
-                    view.scrollMsgsToTheEnd()
+                {
                     msgDisposable?.dispose()
                     getMessageFromQueue(currentMessageQueueId, lastMessageQueueId)
                 },
-                { err -> view.showError(err) })
+                { view.showError(it) }
+            )
     }
-
 
     private lateinit var currentReactionQueueId: String
     private var lastReactionQueueId = -1
 
     private fun registerReactionQueue() {
-        repository.registerReactionQueue()
+        repository.registerReactionQueue(streamName, topicName)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { getReactionEventsFromQueue(it.queueId, lastReactionQueueId) },
@@ -156,69 +140,54 @@ class ChatPresenter(private val view: ChatView) {
     }
 
     private fun getReactionEventsFromQueue(queueId: String, lastId: Int) {
-        var messageId = 0
         currentReactionQueueId = queueId
-
         reactionDisposable = repository.getQueueReactions(currentReactionQueueId, lastId)
             .retry()
-            .concatMap { response ->
-                lastReactionQueueId = response.events.first().id
-                messageId = response.events.first().messageId
-                repository.getMessage(messageId)
+            .flatMap {
+                val event = it.events.first()
+                lastReactionQueueId = event.id
+                repository.getMessage(event.messageId)
             }
-            .map { response ->
-                Single.just(response.message)
-                    .flatMapCompletable { repository.addToDatabase(it, topicName) }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({}, { e -> view.showError(e) })
-                    .apply { compositeDisposable.add(this) }
-
-                updateMessage(
-                    displayedItems,
-                    messageId,
-                    listOf(response.message).toDomain().toUi().first()
-                )
-            }
-            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { items ->
-                    displayedItems = items
-                    view.showItems(displayedItems)
+            .flatMapCompletable {
+                updateMessage(listOf(it.message).toDomain().toUi().single(), displayedItems)
+                repository.saveMessage(topicName, it.message)
+            }.subscribe(
+                {
                     reactionDisposable?.dispose()
                     getReactionEventsFromQueue(currentReactionQueueId, lastReactionQueueId)
                 },
-                { err -> view.showError(err) }
+                { view.showError(it) }
             )
     }
 
     private fun updateMessage(
-        items: List<ViewTyped>,
-        messageId: Int,
-        updatedMessage: ViewTyped
-    ): List<ViewTyped> {
-        return items.map { item ->
+        newMessage: ViewTyped,
+        currentItems: List<ViewTyped>,
+    ) {
+        val updatedItems = currentItems.map { item ->
             when (item) {
                 is MessageRightUi -> {
-                    if (item.id == messageId) {
-                        item.copy(emojis = (updatedMessage as MessageRightUi).emojis)
+                    if (item.id == newMessage.id) {
+                        item.copy(emojis = (newMessage as MessageRightUi).emojis)
                     } else
                         item
                 }
                 is MessageLeftUi -> {
-                    if (item.id == messageId) {
-                        item.copy(emojis = (updatedMessage as MessageLeftUi).emojis)
+                    if (item.id == newMessage.id) {
+                        item.copy(emojis = (newMessage as MessageLeftUi).emojis)
                     } else
                         item
                 }
                 else -> item
             }
         }
+        displayedItems = updatedItems
+        view.showItems(displayedItems)
     }
 
     fun onEmojiClick(emojiName: String, messageId: Int) {
-        repository.onEmojiClick(emojiName, messageId)
-            .subscribeOn(Schedulers.io())
+        repository.updateEmoji(emojiName, messageId)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {},
@@ -227,8 +196,7 @@ class ChatPresenter(private val view: ChatView) {
     }
 
     fun sendMessage(message: String) {
-        repository.sendMessage(message)
-            .subscribeOn(Schedulers.io())
+        repository.sendMessage(message, streamName, topicName)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ },
                 { err -> view.showError(err) }

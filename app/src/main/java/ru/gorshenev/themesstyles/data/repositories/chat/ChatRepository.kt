@@ -1,34 +1,89 @@
 package ru.gorshenev.themesstyles.data.repositories.chat
 
-import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import ru.gorshenev.themesstyles.data.database.dao.MessageDao
-import ru.gorshenev.themesstyles.data.database.entities.MessageEntity
+import ru.gorshenev.themesstyles.data.database.entities.MessageWithReactions
 import ru.gorshenev.themesstyles.data.network.ZulipApi
 import ru.gorshenev.themesstyles.data.network.model.*
 import ru.gorshenev.themesstyles.data.repositories.chat.ChatMapper.toDomain
 import ru.gorshenev.themesstyles.data.repositories.chat.ChatMapper.toEntity
 import ru.gorshenev.themesstyles.domain.model.chat.MessageModel
 
-class ChatRepository(private val messageDao: MessageDao, private val api: ZulipApi) {
+class ChatRepository(
+    private val messageDao: MessageDao,
+    private val api: ZulipApi,
+    private val executionScheduler: Scheduler = Schedulers.io(),
+) {
 
-    private lateinit var streamName: String
-    private lateinit var topicName: String
+    fun getMessage(messageId: Int) = api.getMessage(messageId).subscribeOn(executionScheduler)
 
-    fun getMessagesFromDb(strName: String, tpcName: String): Observable<List<MessageModel>> {
-        streamName = strName
-        topicName = tpcName
-        return messageDao.getMessages(topicName)
-            .map { messageWithReactions -> messageWithReactions.toDomain() }
-            .subscribeOn(Schedulers.io())
+    fun getMessages(
+        streamName: String,
+        topicName: String,
+        anchorMessageId: Long,
+        numBefore: Int,
+        onlyRemote: Boolean,
+    ): Observable<List<MessageModel>> {
+        val remoteMessages = getMessagesRemote(streamName, topicName, anchorMessageId, numBefore)
+        return if (onlyRemote) {
+            remoteMessages.map { it.messages.toDomain() }.toObservable()
+        } else {
+            Single.concatArrayEager(
+                getMessagesLocal(topicName).map { it.toDomain() },
+                remoteMessages.doOnSuccess { replaceLocalMessages(topicName, it.messages) }.map { it.messages.toDomain() }
+            ).subscribeOn(executionScheduler).toObservable()
+        }
     }
 
-    fun getMessagesFromApi(): Observable<GetMessageResponse> {
+    fun sendMessage(message: String, streamName: String, topicName: String): Single<CreateMessageResponse> {
+        return api.sendMessage(
+            to = streamName,
+            topic = topicName,
+            content = message
+        ).subscribeOn(executionScheduler)
+    }
+
+    fun saveMessage(topicName: String, newMessage: MessageResponse): Completable {
+        return messageDao.getMessages(topicName).flatMapCompletable { localMessages ->
+            val isMessageExists = localMessages.any { it.msgId == newMessage.msgId }
+            Completable.fromCallable {
+                when {
+                    isMessageExists -> {
+                        messageDao.updateMessageReactions(
+                            newMessage.msgId,
+                            newMessage.reactions.toEntity(newMessage.msgId, topicName)
+                        )
+                    }
+                    localMessages.size < 50 -> {
+                        messageDao.insertMessageWithReactions(
+                            newMessage.toEntity(topicName),
+                            newMessage.reactions.toEntity(newMessage.msgId, topicName)
+                        )
+                    }
+                    else -> {
+                        messageDao.deleteFirstAndAddNewMessage(
+                            localMessages.first().msgId,
+                            newMessage.toEntity(topicName),
+                            newMessage.reactions.toEntity(newMessage.msgId, topicName)
+                        )
+                    }
+                }
+            }.subscribeOn(executionScheduler)
+        }
+    }
+
+    private fun getMessagesRemote(
+        streamName: String,
+        topicName: String,
+        anchorMessageId: Long,
+        numBefore: Int,
+    ): Single<GetMessageResponse> {
         val narrow = Json.encodeToString(
             listOf(
                 Narrow("stream", streamName),
@@ -36,143 +91,78 @@ class ChatRepository(private val messageDao: MessageDao, private val api: ZulipA
             )
         )
         return api.getMessages(
-            anchor = 10000000000000000,
-            numBefore = 50,
-            numAfter = 0,
+            anchor = anchorMessageId,
+            numBefore = numBefore,
             narrow = narrow,
             clientGravatar = false,
             applyMarkdown = false
         )
     }
 
-    fun uploadMoreMessages(firstMessageIdInDb: Long): Observable<List<MessageModel>> {
-        val narrow = Json.encodeToString(
-            listOf(
-                Narrow("stream", streamName),
-                Narrow("topic", topicName)
-            )
-        )
-        return api.getMessages(
-            firstMessageIdInDb,
-            20,
-            0,
-            narrow,
-            clientGravatar = false,
-            applyMarkdown = false
-        )
-            .map { messageResponse -> messageResponse.messages.toDomain() }
+    private fun getMessagesLocal(topicName: String): Single<List<MessageWithReactions>> {
+        return messageDao.getMessagesWithReactions(topicName)
     }
 
-    fun registerMessageQueue(): Observable<CreateQueueResponse> {
+    private fun replaceLocalMessages(topicName: String, remoteMessages: List<MessageResponse>) {
+        val messageEntities = remoteMessages.map { it.toEntity(topicName) }
+        val reactionEntities = remoteMessages.flatMap { it.reactions.toEntity(it.msgId, topicName) }
+        /* can be placed in the dao as a transaction,
+        but the signature of transaction method does not guarantee
+        that the entities actually have that topic name
+         */
+        messageDao.deleteMessages(topicName)
+        messageDao.insertMessages(messageEntities)
+        messageDao.insertReactions(reactionEntities)
+    }
+
+    fun registerMessageQueue(streamName: String, topicName: String): Single<CreateQueueResponse> {
         val narrow = (mapOf("stream" to streamName, "topic" to topicName))
         val type = Json.encodeToString(listOf("message"))
-
-        return api.getQueue(type, narrow)
-            .subscribeOn(Schedulers.io())
+        return api.getQueue(type, narrow).subscribeOn(executionScheduler)
     }
 
     fun getQueueMessages(
         currentMessageQueueId: String,
-        lastId: Int
-    ): Observable<GetMessageEventsResponse> {
-        return api.getEventsFromQueue(currentMessageQueueId, lastId)
+        lastId: Int,
+    ): Single<GetMessageEventsResponse> {
+        return api.getEventsFromQueue(currentMessageQueueId, lastId).subscribeOn(executionScheduler)
     }
 
-    fun registerReactionQueue(): Observable<CreateQueueResponse> {
-        val narrow = (mapOf("stream" to streamName, "topic" to topicName))
-        val type = Json.encodeToString(listOf("reaction"))
-
-        return api.getQueue(type, narrow)
-            .subscribeOn(Schedulers.io())
-    }
-
-    fun getQueueReactions(queueId: String, lastId: Int): Observable<GetEmojiEventsResponse> {
-        return api.getEmojiEventsFromQueue(queueId, lastId)
-    }
-
-    fun getMessage(messageId: Int) = api.getMessage(messageId)
-
-
-    fun onEmojiClick(emojiName: String, messageId: Int): Observable<CreateReactionResponse> {
+    fun updateEmoji(emojiName: String, messageId: Int): Single<CreateReactionResponse> {
         return api.getMessage(id = messageId, applyMarkdown = true)
             .map { response ->
                 response.message.reactions.filter { reaction -> reaction.emojiName == emojiName }
                     .any { it.userId == Reactions.MY_USER_ID }
             }
-            .concatMapSingle { isMyClick -> updateEmoji(messageId, emojiName, isMyClick) }
-            .subscribeOn(Schedulers.io())
+            .flatMap { isAlreadyClicked -> updateEmoji(messageId, emojiName, isAlreadyClicked) }
+            .subscribeOn(executionScheduler)
+    }
+
+    fun registerReactionQueue(streamName: String, topicName: String): Single<CreateQueueResponse> {
+        val narrow = (mapOf("stream" to streamName, "topic" to topicName))
+        val type = Json.encodeToString(listOf("reaction"))
+        return api.getQueue(type, narrow).subscribeOn(executionScheduler)
+    }
+
+    fun getQueueReactions(queueId: String, lastId: Int): Single<GetEmojiEventsResponse> {
+        return api.getEmojiEventsFromQueue(queueId, lastId).subscribeOn(executionScheduler)
     }
 
     private fun updateEmoji(
         msgId: Int,
         emojiName: String,
-        isMyClick: Boolean = false
+        isAlreadyClicked: Boolean = false,
     ): Single<CreateReactionResponse> {
         return when {
-            isMyClick -> api.deleteEmoji(msgId = msgId, emojiName)
+            isAlreadyClicked -> api.deleteEmoji(msgId = msgId, emojiName)
             else -> api.addEmoji(msgId = msgId, emojiName)
         }
     }
 
-    fun sendMessage(message: String): Single<CreateMessageResponse> {
-        return api.sendMessage(
-            to = streamName,
-            topic = topicName,
-            content = message
-        )
-            .subscribeOn(Schedulers.io())
-    }
-
-    private fun updateDb(
-        messagesInDb: List<MessageEntity>, newMessage: MessageResponse, topicName: String
-    ): Completable {
-        val msgDoesNotExist = messagesInDb.all { it.msgId != newMessage.msgId }
-        val msgExist = messagesInDb.any { it.msgId == newMessage.msgId }
-
-        return when {
-            messagesInDb.isEmpty() || msgDoesNotExist && messagesInDb.size != 50 -> {
-                Completable.fromCallable {
-                    messageDao.insertMessageWithReactions(
-                        newMessage.toEntity(topicName),
-                        newMessage.reactions.toEntity(newMessage.msgId, topicName)
-                    )
-                }
-            }
-
-            msgExist -> {
-                Completable.fromCallable {
-                    messageDao.updateMessageReactions(
-                        newMessage.msgId,
-                        newMessage.reactions.toEntity(newMessage.msgId, topicName)
-                    )
-                }
-            }
-
-            msgDoesNotExist && messagesInDb.size == 50 -> {
-                Completable.fromCallable {
-                    messageDao.deleteFirstAndAddNewMessage(
-                        messagesInDb.first().msgId,
-                        newMessage.toEntity(topicName),
-                        newMessage.reactions.toEntity(newMessage.msgId, topicName)
-                    )
-                }
-            }
-
-            else -> {
-                Log.d("database", "add to data ERROR")
-                Completable.error(Error("add to data ERROR"))
-            }
-        }
-    }
-
-
-    fun addToDatabase(
-        newMessage: MessageResponse, topicName: String
-    ): Completable {
-        return messageDao.getMessagesFromTopic(topicName)
-            .flatMapCompletable { messageEntityList ->
-                updateDb(messageEntityList, newMessage, topicName)
-            }
+    companion object {
+        const val DEFAULT_MESSAGE_ANCHOR: Long = 10000000000000000
+        const val DEFAULT_NUM_BEFORE: Int = 50
+        const val MORE_NUM_BEFORE: Int = 20
     }
 
 }
