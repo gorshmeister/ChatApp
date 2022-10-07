@@ -1,7 +1,7 @@
 package ru.gorshenev.themesstyles.data.repositories.chat
 
 import ru.gorshenev.themesstyles.data.database.entities.MessageEntity
-import ru.gorshenev.themesstyles.data.database.entities.MessageWithReactions
+import ru.gorshenev.themesstyles.data.database.entities.MessageWithReactionsEntity
 import ru.gorshenev.themesstyles.data.database.entities.ReactionEntity
 import ru.gorshenev.themesstyles.data.network.model.MessageResponse
 import ru.gorshenev.themesstyles.data.network.model.ReactionResponse
@@ -17,7 +17,7 @@ import ru.gorshenev.themesstyles.utils.Utils.toEmojiCode
 object ChatMapper {
 
     @JvmName("toDomainMessageWithReactions")
-    fun List<MessageWithReactions>.toDomain(): List<MessageModel> {
+    fun List<MessageWithReactionsEntity>.toDomain(): List<MessageModel> {
         return this.map { msgWithReact ->
             val messageEntity: MessageEntity = msgWithReact.message
             val reactionEntities = msgWithReact.reactions
@@ -57,7 +57,6 @@ object ChatMapper {
 
                 val updItem = sameEmojiModel.copy(
                     listUsersId = sameEmojiModel.listUsersId + listOf(reaction.userId),
-                    counter = sameEmojiModel.counter + 1,
                     isSelected = reaction.userId == Reactions.MY_USER_ID
                 )
                 list.add(index, updItem)
@@ -67,7 +66,6 @@ object ChatMapper {
                     name = reaction.emojiName,
                     code = reaction.emojiCode.toEmojiCode(),
                     listUsersId = listOf(reaction.userId),
-                    counter = +1,
                     isSelected = reaction.userId == Reactions.MY_USER_ID
                 )
             }
@@ -75,29 +73,28 @@ object ChatMapper {
         return list.toList()
     }
 
+
     @JvmName("toUiMessageModel")
     fun List<MessageModel>.toUi(): List<ViewTyped> {
         return this.map { messageModel ->
 
-            when (messageModel.myMessage) {
-                true -> {
-                    MessageRightUi(
-                        id = messageModel.id,
-                        text = messageModel.text,
-                        time = messageModel.time,
-                        emojis = messageModel.emojis.toUi()
-                    )
-                }
-                else -> {
-                    MessageLeftUi(
-                        id = messageModel.id,
-                        name = messageModel.name,
-                        text = messageModel.text,
-                        emojis = messageModel.emojis.toUi(),
-                        time = messageModel.time,
-                        avatar = messageModel.avatar
-                    )
-                }
+            if (messageModel.myMessage) {
+                MessageRightUi(
+                    id = messageModel.id,
+                    text = messageModel.text,
+                    time = messageModel.time,
+                    emojis = messageModel.emojis.toUi()
+                )
+            }
+            else {
+                MessageLeftUi(
+                    id = messageModel.id,
+                    name = messageModel.name,
+                    text = messageModel.text,
+                    emojis = messageModel.emojis.toUi(),
+                    time = messageModel.time,
+                    avatar = messageModel.avatar
+                )
             }
         }
     }
@@ -114,6 +111,7 @@ object ChatMapper {
             )
         }
     }
+
 
     @JvmName("toDomainMessageResponse")
     fun List<MessageResponse>.toDomain(): List<MessageModel> {
@@ -153,7 +151,6 @@ object ChatMapper {
 
                 val updItem = sameEmojiModel.copy(
                     listUsersId = sameEmojiModel.listUsersId + listOf(reaction.userId),
-                    counter = sameEmojiModel.counter + 1,
                     isSelected = reaction.userId == Reactions.MY_USER_ID
                 )
                 list.add(index, updItem)
@@ -163,7 +160,6 @@ object ChatMapper {
                     name = reaction.emojiName,
                     code = reaction.emojiCode.toEmojiCode(),
                     listUsersId = listOf(reaction.userId),
-                    counter = +1,
                     isSelected = reaction.userId == Reactions.MY_USER_ID
                 )
             }
@@ -197,4 +193,5 @@ object ChatMapper {
             )
         }
     }
+
 }

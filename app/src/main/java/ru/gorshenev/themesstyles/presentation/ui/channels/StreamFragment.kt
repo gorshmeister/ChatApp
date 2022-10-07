@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
@@ -94,7 +96,16 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
     }
 
     override fun showItems(items: List<ViewTyped>) {
-        adapter.items = items
+        with(binding) {
+            if (items.isEmpty()) {
+                emptyState.tvEmptyState.isVisible = true
+                rvStreams.isGone = true
+            } else {
+                emptyState.tvEmptyState.isGone = true
+                rvStreams.isVisible = true
+                adapter.items = items
+            }
+        }
     }
 
     enum class StreamType {

@@ -4,7 +4,7 @@ import androidx.room.*
 import io.reactivex.Observable
 import io.reactivex.Single
 import ru.gorshenev.themesstyles.data.database.entities.MessageEntity
-import ru.gorshenev.themesstyles.data.database.entities.MessageWithReactions
+import ru.gorshenev.themesstyles.data.database.entities.MessageWithReactionsEntity
 import ru.gorshenev.themesstyles.data.database.entities.ReactionEntity
 
 @Dao
@@ -12,7 +12,7 @@ interface MessageDao {
 
     @Transaction
     @Query("SELECT * FROM message WHERE topicName in (:topic)")
-    fun getMessages(topic: String): Observable<List<MessageWithReactions>>
+    fun getMessages(topic: String): Single<List<MessageWithReactionsEntity>>
 
     @Query("SELECT * FROM message WHERE topicName in (:topic)")
     fun getMessagesFromTopic(topic: String): Single<List<MessageEntity>>

@@ -20,7 +20,7 @@ interface ZulipApi {
     fun getMessage(
         @Path("message_id") id: Int,
         @Query("apply_markdown") applyMarkdown: Boolean = false,
-    ): Observable<GetOneMessageResponse>
+    ): Single<GetOneMessageResponse>
 
     @GET("messages")
     fun getMessages(
@@ -29,8 +29,8 @@ interface ZulipApi {
         @Query("num_after") numAfter: Int,
         @Query("narrow") narrow: String,
         @Query("client_gravatar") clientGravatar: Boolean,
-        @Query("apply_markdown") applyMarkdown: Boolean,
-    ): Observable<GetMessageResponse>
+        @Query("apply_markdown") applyMarkdown: Boolean
+    ): Single<GetMessageResponse>
 
     @POST("messages")
     fun sendMessage(
@@ -69,18 +69,18 @@ interface ZulipApi {
         @Query("event_types") types: String,
         @QueryMap narrow: Map<String, String>,
         @Query("slim_presence") slimPresence: Boolean = true,
-    ): Observable<CreateQueueResponse>
+    ): Single<CreateQueueResponse>
 
     @GET("events")
     fun getEventsFromQueue(
         @Query("queue_id") queueId: String,
         @Query("last_event_id") lastId: Int
-    ): Observable<GetMessageEventsResponse>
+    ): Single<GetMessageEventsResponse>
 
     @GET("events")
     fun getEmojiEventsFromQueue(
         @Query("queue_id") queueId: String,
         @Query("last_event_id") lastId: Int
-    ): Observable<GetEmojiEventsResponse>
+    ): Single<GetEmojiEventsResponse>
 }
 

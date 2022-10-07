@@ -13,7 +13,7 @@ data class StreamEntity(
     @ColumnInfo(name = "strType") val type: StreamFragment.StreamType
 )
 
-data class StreamWithTopics(
+data class StreamWithTopicsEntity(
     @Embedded
     val stream: StreamEntity,
     @Relation(parentColumn = "streamId", entityColumn = "stream_id")

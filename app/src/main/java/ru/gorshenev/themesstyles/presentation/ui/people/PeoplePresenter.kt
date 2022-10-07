@@ -95,33 +95,30 @@ class PeoplePresenter(private val view: PeopleView) {
         cachedItems: List<ViewTyped>,
         searchText: String
     ): Single<List<ViewTyped>> {
+        val peopleUiList = cachedItems.filterIsInstance<PeopleUi>()
+
         return Single.fromCallable {
-            return@fromCallable when {
-                searchText.isEmpty() -> cachedItems
-                else -> cachedItems.filter { item ->
-                    item is PeopleUi && (item.name.contains(
-                        searchText,
-                        true
-                    ) || item.email.contains(searchText, true))
+            peopleUiList.filter { people ->
+                val nameContainsSearchText = people.name.contains(searchText, true)
+                val emailContainsSearchText = people.email.contains(searchText, true)
+
+                when (true) {
+                    searchText.isNotEmpty() -> nameContainsSearchText || emailContainsSearchText
+                    else -> true
                 }
             }
         }
+//        return Single.fromCallable {
+//            return@fromCallable when {
+//                searchText.isEmpty() -> cachedItems
+//                else -> cachedItems.filter { item ->
+//                    item is PeopleUi && (item.name.contains(
+//                        searchText,
+//                        true
+//                    ) || item.email.contains(searchText, true))
+//                }
+//            }
+//        }
     }
-
-    //    fun loadPeople(count: Int) {
-//        PeopleDataSource.getPeople(count)
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .doOnSubscribe { view.showLoading() }
-//            .subscribe(
-//                { people ->
-//                    view.showItems(people)
-//                    cachedItems = people
-//                },
-//                { error -> view.showError(error) },
-//                { view.stopLoading() })
-//            .apply { compositeDisposable.add(this) }
-//    }
-
 
 }

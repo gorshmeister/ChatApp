@@ -1,7 +1,7 @@
 package ru.gorshenev.themesstyles.data.repositories.stream
 
 import ru.gorshenev.themesstyles.data.database.entities.StreamEntity
-import ru.gorshenev.themesstyles.data.database.entities.StreamWithTopics
+import ru.gorshenev.themesstyles.data.database.entities.StreamWithTopicsEntity
 import ru.gorshenev.themesstyles.data.database.entities.TopicEntity
 import ru.gorshenev.themesstyles.data.network.model.StreamResponse
 import ru.gorshenev.themesstyles.data.network.model.TopicResponse
@@ -12,50 +12,49 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
 
 object StreamMapper {
-    fun List<StreamWithTopics>.toDomain(): List<StreamModel> {
-        return this.map { stream ->
-            val topics = stream.topics
-                .map { topicEntity ->
-                    TopicModel(
-                        id = topicEntity.maxId,
-                        name = topicEntity.name,
-                        color = topicEntity.color,
-                        type = when {
-                            topicEntity.color != "#2A9D8F" -> StreamFragment.StreamType.SUBSCRIBED
-                            else -> StreamFragment.StreamType.ALL_STREAMS
-                        }
-                    )
-                }
-
+    @JvmName("toDomainStreamWithTopics")
+    fun List<StreamWithTopicsEntity>.toDomain(): List<StreamModel> {
+        return this.map { streamWithTopics ->
             StreamModel(
-                id = stream.stream.streamId,
-                name = stream.stream.name,
-                topics = topics,
+                id = streamWithTopics.stream.streamId,
+                name = streamWithTopics.stream.name,
+                topics = streamWithTopics.topics.toDomain()
             )
         }
     }
 
+    private fun List<TopicEntity>.toDomain(): List<TopicModel> {
+        return this.map { topic ->
+            TopicModel(
+                id = topic.maxId,
+                name = topic.name,
+                color = topic.color,
+                type = topic.type
+            )
+        }
+    }
+
+
     fun StreamResponse.toDomain(
-        topicResponses: List<TopicResponse>
+        topicResponse: List<TopicResponse>,
+        type: StreamFragment.StreamType
     ): StreamModel {
         return StreamModel(
             id = this.streamId,
             name = this.name,
-            topics = topicResponses.map { it.toDomain(this.color) },
+            topics = topicResponse.map { it.toDomain(this.color, type) }
         )
     }
 
-    fun TopicResponse.toDomain(color: String): TopicModel {
+    fun TopicResponse.toDomain(color: String, type: StreamFragment.StreamType): TopicModel {
         return TopicModel(
             id = this.maxId,
             name = this.name,
             color = color,
-            type = when {
-                color != "#2A9D8F" -> StreamFragment.StreamType.SUBSCRIBED
-                else -> StreamFragment.StreamType.ALL_STREAMS
-            }
+            type = type
         )
     }
+
 
     fun List<StreamModel>.toEntity(type: StreamFragment.StreamType): List<StreamEntity> {
         return this.map { streamModel ->
@@ -83,6 +82,7 @@ object StreamMapper {
         }
     }
 
+
     @JvmName("toUiStreamModel")
     fun List<StreamModel>.toUi(strType: StreamFragment.StreamType): List<StreamUi> {
         return this.map { streamModel ->
@@ -90,7 +90,7 @@ object StreamMapper {
                 id = streamModel.id,
                 name = streamModel.name,
                 topics = streamModel.topics.toUi(strType),
-                isExpanded = streamModel.isExpanded
+                isExpanded = false
             )
         }
     }
@@ -98,12 +98,11 @@ object StreamMapper {
     private fun List<TopicModel>.toUi(strType: StreamFragment.StreamType): List<TopicUi> {
         return this.filter { it.type == strType }
             .map { topicModel ->
-            TopicUi(
-                id = topicModel.id,
-                name = topicModel.name,
-                color = topicModel.color
-            )
-        }
+                TopicUi(
+                    id = topicModel.id,
+                    name = topicModel.name,
+                    color = topicModel.color
+                )
+            }
     }
-
 }

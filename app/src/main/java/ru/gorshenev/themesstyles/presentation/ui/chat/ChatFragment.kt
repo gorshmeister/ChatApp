@@ -7,6 +7,8 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -153,7 +155,16 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
     }
 
     override fun showItems(items: List<ViewTyped>) {
-        adapter.items = items
+        with(binding) {
+            if (items.isEmpty()) {
+                emptyState.tvEmptyState.isVisible = true
+                rvItems.isGone = true
+            } else {
+                emptyState.tvEmptyState.isGone = true
+                rvItems.isVisible = true
+                adapter.items = items
+            }
+        }
     }
 
     override fun showError(error: Throwable?) {

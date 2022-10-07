@@ -33,32 +33,13 @@ class StreamPresenter(private val view: StreamView) {
     private var displayedItems: List<ViewTyped> = listOf()
 
 
-    init {
-        searchSubject
-            .distinctUntilChanged()
-            .debounce(500, TimeUnit.MILLISECONDS)
-            .switchMapSingle { text -> initStreamSearch(firstLoadedItems, text) }
-            .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { filteredItems ->
-                    view.showItems(filteredItems)
-                    displayedItems = filteredItems
-                },
-                { error -> view.showError(error) })
-            .apply { compositeDisposable.add(this) }
-    }
-
     fun loadStreams(streamType: StreamFragment.StreamType) {
         Single.concatArrayEager(
             repository.getStreamsFromDb(streamType),
             repository.getStreamsFromApi(streamType)
-                .doOnEvent { streamModels, _ ->
+                .flatMap { streamModels ->
                     repository.replaceDataInDb(streamModels, streamType)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({}, { e -> view.showError(e) })
-                        .apply { compositeDisposable.add(this) }
+                        .toSingle { streamModels }
                 }
         )
             .materialize()
@@ -72,12 +53,12 @@ class StreamPresenter(private val view: StreamView) {
                     firstLoadedItems = streams
                     displayedItems = streams
                     view.showItems(streams)
+                    view.stopLoading()
                 },
                 { error ->
                     view.stopLoading()
                     view.showError(error)
                 },
-                { view.stopLoading() }
             ).apply { compositeDisposable.add(this) }
     }
 
@@ -106,6 +87,22 @@ class StreamPresenter(private val view: StreamView) {
 
     fun searchStream(query: String) {
         searchSubject.onNext(query)
+    }
+
+    init {
+        searchSubject
+            .distinctUntilChanged()
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .switchMapSingle { text -> initStreamSearch(firstLoadedItems, text) }
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { filteredItems ->
+                    view.showItems(filteredItems)
+                    displayedItems = filteredItems
+                },
+                { error -> view.showError(error) })
+            .apply { compositeDisposable.add(this) }
     }
 
     fun onClear() {
@@ -148,34 +145,63 @@ class StreamPresenter(private val view: StreamView) {
         cachedItems: List<ViewTyped>,
         searchText: String
     ): Single<List<ViewTyped>> {
+        val text = searchText.filter { !it.isDigit() }
         val digits = searchText.filter { it.isDigit() }
+        val streamUiList = cachedItems.filterIsInstance<StreamUi>()
 
         return Single.fromCallable {
-            when {
-                digits.isNotEmpty() -> {
-                    val text = searchText.filter { !it.isDigit() }
+            streamUiList.filter { stream ->
 
-                    cachedItems.filter { item ->
-                        item is StreamUi &&
-                                (item.name.contains(text, true) && item.name.contains(
-                                    digits,
-                                    true
-                                ) ||
-                                        (item.topics.any {
-                                            it.name.contains(text, true) && it.name.contains(
-                                                digits,
-                                                true
-                                            )
-                                        }))
-                    }
+                val nameContainsText = stream.name.contains(text, true)
+                val nameContainsDigits = stream.name.contains(digits, true)
+                val topicContainsTextOrDigit = stream.topics.any {
+                    it.name.contains(text, true) && it.name.contains(digits, true)
                 }
-                searchText.isNotEmpty() -> {
-                    cachedItems.filter { item ->
-                        item is StreamUi && (item.name.contains(searchText, true) ||
-                                item.topics.any { it.name.contains(searchText, true) })
+                val nameContainsSearchText = stream.name.contains(searchText, true)
+                val topicContainsSearchText =
+                    stream.topics.any { it.name.contains(searchText, true) }
+
+                when (true) {
+
+                    digits.isNotEmpty() -> {
+                        nameContainsText && nameContainsDigits || topicContainsTextOrDigit
                     }
+
+                    searchText.isNotEmpty() -> {
+                        nameContainsSearchText || topicContainsSearchText
+                    }
+
+                    else -> true
                 }
-                else -> cachedItems
+
+//                return Single.fromCallable {
+//            when {
+//                digits.isNotEmpty() -> {
+//                    val text = searchText.filter { !it.isDigit() }
+//
+//                    cachedItems.filter { item ->
+//
+//                        item is StreamUi &&
+//                                (item.name.contains(text, true) && item.name.contains(
+//                                    digits,
+//                                    true
+//                                ) ||
+//                                        (item.topics.any {
+//                                            it.name.contains(text, true) && it.name.contains(
+//                                                digits,
+//                                                true
+//                                            )
+//                                        }))
+//                    }
+//                }
+//                searchText.isNotEmpty() -> {
+//                    cachedItems.filter { item ->
+//                        item is StreamUi && (item.name.contains(searchText, true) ||
+//                                item.topics.any { it.name.contains(searchText, true) })
+//                    }
+//                }
+//                else -> cachedItems
+//            }
             }
         }
     }

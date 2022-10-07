@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+    <include
+        android:id="@+id/emptyState"
+        layout="@layout/view_empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp" />
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_channels"
@@ -15,15 +22,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <include layout="@layout/item_channels_stream_shimmer" />
+
             <include layout="@layout/item_channels_stream_shimmer" />
+
             <include layout="@layout/item_channels_stream_shimmer" />
+
             <include layout="@layout/item_channels_stream_shimmer" />
+
             <include layout="@layout/item_channels_stream_shimmer" />
+
             <include layout="@layout/item_channels_stream_shimmer" />
+
             <include layout="@layout/item_channels_stream_shimmer" />
+
             <include layout="@layout/item_channels_stream_shimmer" />
+
             <include layout="@layout/item_channels_stream_shimmer" />
+
             <include layout="@layout/item_channels_stream_shimmer" />
         </LinearLayout>
     </com.facebook.shimmer.ShimmerFrameLayout>
@@ -36,4 +53,4 @@
         tools:listitem="@layout/item_channels_stream" />
 
 
-</LinearLayout>
+</FrameLayout>

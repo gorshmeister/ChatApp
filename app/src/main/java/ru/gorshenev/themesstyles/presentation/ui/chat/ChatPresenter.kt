@@ -43,22 +43,17 @@ class ChatPresenter(private val view: ChatView) {
         streamName = stream
         topicName = topic
 
-        Observable.concatArrayEager(
-            repository.getMessagesFromDb(streamName, topicName)
+        Single.concatArrayEager(
+            repository.getMessagesFromDb(topicName)
                 .map { messageModels -> messageModels.toUi() },
 
-            repository.getMessagesFromApi()
-                .map { messageResponse ->
+            repository.getMessagesFromApi(streamName, topicName)
+                .flatMap { messageResponse ->
                     Observable.fromIterable(messageResponse.messages)
                         .concatMapCompletable {
                             repository.addToDatabase(it, topicName)
                         }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({}, { e -> view.showError(e) })
-                        .apply { compositeDisposable.add(this) }
-
-                    messageResponse.messages.toDomain().toUi()
+                        .toSingle { messageResponse.messages.toDomain().toUi() }
                 }
         )
             .debounce(400, TimeUnit.MILLISECONDS)
@@ -72,7 +67,7 @@ class ChatPresenter(private val view: ChatView) {
                 { messages ->
                     displayedItems = messages
                     view.showItems(displayedItems)
-                    if (displayedItems.isNotEmpty()) view.stopLoading()
+                    view.stopLoading()
                     isLoading = false
                     registerMessageQueue()
                     registerReactionQueue()
@@ -82,12 +77,13 @@ class ChatPresenter(private val view: ChatView) {
                     view.showError(err)
                 },
             ).apply { compositeDisposable.add(this) }
-
     }
 
     fun uploadMoreMessages() {
         if (isLoading) return
-        repository.uploadMoreMessages(displayedItems.first().id.toLong())
+        val firstMessageId = displayedItems.first().id.toLong()
+
+        repository.uploadMoreMessages(firstMessageId, streamName, topicName)
             .doOnSubscribe { isLoading = true }
             .map { messageModels -> messageModels.toUi() }
             .map { messages -> (displayedItems + messages).distinctBy { it.id }.sortedBy { it.id } }
@@ -108,7 +104,7 @@ class ChatPresenter(private val view: ChatView) {
     private var lastMessageQueueId = -1
 
     private fun registerMessageQueue() {
-        repository.registerMessageQueue()
+        repository.registerMessageQueue(streamName, topicName)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { getMessageFromQueue(it.queueId, lastMessageQueueId) },
@@ -120,14 +116,11 @@ class ChatPresenter(private val view: ChatView) {
         currentMessageQueueId = queueId
         msgDisposable = repository.getQueueMessages(currentMessageQueueId, lastId)
             .retry()
-            .doOnNext { response -> lastMessageQueueId = response.events.last().id }
-            .map { eventsResponse ->
+            .doOnEvent { response, _ -> lastMessageQueueId = response.events.last().id }
+            .flatMap { eventsResponse ->
                 Single.just(eventsResponse.events.first().message)
                     .flatMapCompletable { repository.addToDatabase(it, topicName) }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({}, { e -> view.showError(e) })
-                    .apply { compositeDisposable.add(this) }
-                eventsResponse.events.map { it.message }.toDomain().toUi()
+                    .toSingle { eventsResponse.events.map { it.message }.toDomain().toUi() }
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -147,7 +140,7 @@ class ChatPresenter(private val view: ChatView) {
     private var lastReactionQueueId = -1
 
     private fun registerReactionQueue() {
-        repository.registerReactionQueue()
+        repository.registerReactionQueue(streamName, topicName)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { getReactionEventsFromQueue(it.queueId, lastReactionQueueId) },
@@ -161,23 +154,18 @@ class ChatPresenter(private val view: ChatView) {
 
         reactionDisposable = repository.getQueueReactions(currentReactionQueueId, lastId)
             .retry()
-            .concatMap { response ->
+            .flatMap { response ->
                 lastReactionQueueId = response.events.first().id
                 messageId = response.events.first().messageId
                 repository.getMessage(messageId)
             }
-            .map { response ->
+            .flatMap { response ->
                 Single.just(response.message)
                     .flatMapCompletable { repository.addToDatabase(it, topicName) }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({}, { e -> view.showError(e) })
-                    .apply { compositeDisposable.add(this) }
-
-                updateMessage(
-                    displayedItems,
-                    messageId,
-                    listOf(response.message).toDomain().toUi().first()
-                )
+                    .toSingle { response.message }
+            }
+            .map { message ->
+                updateMessage(displayedItems, messageId, listOf(message).toDomain().toUi().first())
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -226,8 +214,8 @@ class ChatPresenter(private val view: ChatView) {
             ).apply { compositeDisposable.add(this) }
     }
 
-    fun sendMessage(message: String) {
-        repository.sendMessage(message)
+    fun sendMessage(messageText: String) {
+        repository.sendMessage(messageText, streamName, topicName)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ },

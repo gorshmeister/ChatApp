@@ -31,7 +31,7 @@ class StreamRepository(private val streamDao: StreamDao, private val api: ZulipA
                             Single.just(str),
                             api.getTopics(str.streamId),
                         ) { stream, topicResponse ->
-                            stream.toDomain(topicResponse.topics)
+                            stream.toDomain(topicResponse.topics, streamType)
                         }
                     }.toList()
             }

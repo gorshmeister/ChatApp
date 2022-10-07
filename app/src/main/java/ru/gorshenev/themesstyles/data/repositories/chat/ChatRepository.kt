@@ -1,6 +1,5 @@
 package ru.gorshenev.themesstyles.data.repositories.chat
 
-import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -17,18 +16,14 @@ import ru.gorshenev.themesstyles.domain.model.chat.MessageModel
 
 class ChatRepository(private val messageDao: MessageDao, private val api: ZulipApi) {
 
-    private lateinit var streamName: String
-    private lateinit var topicName: String
 
-    fun getMessagesFromDb(strName: String, tpcName: String): Observable<List<MessageModel>> {
-        streamName = strName
-        topicName = tpcName
+    fun getMessagesFromDb(topicName: String): Single<List<MessageModel>> {
         return messageDao.getMessages(topicName)
             .map { messageWithReactions -> messageWithReactions.toDomain() }
             .subscribeOn(Schedulers.io())
     }
 
-    fun getMessagesFromApi(): Observable<GetMessageResponse> {
+    fun getMessagesFromApi(streamName: String, topicName: String): Single<GetMessageResponse> {
         val narrow = Json.encodeToString(
             listOf(
                 Narrow("stream", streamName),
@@ -45,7 +40,11 @@ class ChatRepository(private val messageDao: MessageDao, private val api: ZulipA
         )
     }
 
-    fun uploadMoreMessages(firstMessageIdInDb: Long): Observable<List<MessageModel>> {
+    fun uploadMoreMessages(
+        firstMessageId: Long,
+        streamName: String,
+        topicName: String
+    ): Single<List<MessageModel>> {
         val narrow = Json.encodeToString(
             listOf(
                 Narrow("stream", streamName),
@@ -53,7 +52,7 @@ class ChatRepository(private val messageDao: MessageDao, private val api: ZulipA
             )
         )
         return api.getMessages(
-            firstMessageIdInDb,
+            firstMessageId,
             20,
             0,
             narrow,
@@ -63,7 +62,10 @@ class ChatRepository(private val messageDao: MessageDao, private val api: ZulipA
             .map { messageResponse -> messageResponse.messages.toDomain() }
     }
 
-    fun registerMessageQueue(): Observable<CreateQueueResponse> {
+    fun registerMessageQueue(
+        streamName: String,
+        topicName: String
+    ): Single<CreateQueueResponse> {
         val narrow = (mapOf("stream" to streamName, "topic" to topicName))
         val type = Json.encodeToString(listOf("message"))
 
@@ -74,11 +76,14 @@ class ChatRepository(private val messageDao: MessageDao, private val api: ZulipA
     fun getQueueMessages(
         currentMessageQueueId: String,
         lastId: Int
-    ): Observable<GetMessageEventsResponse> {
+    ): Single<GetMessageEventsResponse> {
         return api.getEventsFromQueue(currentMessageQueueId, lastId)
     }
 
-    fun registerReactionQueue(): Observable<CreateQueueResponse> {
+    fun registerReactionQueue(
+        streamName: String,
+        topicName: String
+    ): Single<CreateQueueResponse> {
         val narrow = (mapOf("stream" to streamName, "topic" to topicName))
         val type = Json.encodeToString(listOf("reaction"))
 
@@ -86,39 +91,45 @@ class ChatRepository(private val messageDao: MessageDao, private val api: ZulipA
             .subscribeOn(Schedulers.io())
     }
 
-    fun getQueueReactions(queueId: String, lastId: Int): Observable<GetEmojiEventsResponse> {
+    fun getQueueReactions(queueId: String, lastId: Int): Single<GetEmojiEventsResponse> {
         return api.getEmojiEventsFromQueue(queueId, lastId)
     }
 
     fun getMessage(messageId: Int) = api.getMessage(messageId)
 
 
-    fun onEmojiClick(emojiName: String, messageId: Int): Observable<CreateReactionResponse> {
+    fun onEmojiClick(emojiName: String, messageId: Int): Single<CreateReactionResponse> {
         return api.getMessage(id = messageId, applyMarkdown = true)
             .map { response ->
                 response.message.reactions.filter { reaction -> reaction.emojiName == emojiName }
                     .any { it.userId == Reactions.MY_USER_ID }
             }
-            .concatMapSingle { isMyClick -> updateEmoji(messageId, emojiName, isMyClick) }
+            .flatMap { isAlreadyClicked ->
+                updateEmoji(messageId, emojiName, isAlreadyClicked)
+            }
             .subscribeOn(Schedulers.io())
     }
 
     private fun updateEmoji(
-        msgId: Int,
+        messageId: Int,
         emojiName: String,
-        isMyClick: Boolean = false
+        isAlreadyClicked: Boolean = false
     ): Single<CreateReactionResponse> {
         return when {
-            isMyClick -> api.deleteEmoji(msgId = msgId, emojiName)
-            else -> api.addEmoji(msgId = msgId, emojiName)
+            isAlreadyClicked -> api.deleteEmoji(msgId = messageId, emojiName)
+            else -> api.addEmoji(msgId = messageId, emojiName)
         }
     }
 
-    fun sendMessage(message: String): Single<CreateMessageResponse> {
+    fun sendMessage(
+        messageText: String,
+        streamName: String,
+        topicName: String
+    ): Single<CreateMessageResponse> {
         return api.sendMessage(
             to = streamName,
             topic = topicName,
-            content = message
+            content = messageText
         )
             .subscribeOn(Schedulers.io())
     }
@@ -126,19 +137,9 @@ class ChatRepository(private val messageDao: MessageDao, private val api: ZulipA
     private fun updateDb(
         messagesInDb: List<MessageEntity>, newMessage: MessageResponse, topicName: String
     ): Completable {
-        val msgDoesNotExist = messagesInDb.all { it.msgId != newMessage.msgId }
         val msgExist = messagesInDb.any { it.msgId == newMessage.msgId }
 
         return when {
-            messagesInDb.isEmpty() || msgDoesNotExist && messagesInDb.size != 50 -> {
-                Completable.fromCallable {
-                    messageDao.insertMessageWithReactions(
-                        newMessage.toEntity(topicName),
-                        newMessage.reactions.toEntity(newMessage.msgId, topicName)
-                    )
-                }
-            }
-
             msgExist -> {
                 Completable.fromCallable {
                     messageDao.updateMessageReactions(
@@ -148,10 +149,9 @@ class ChatRepository(private val messageDao: MessageDao, private val api: ZulipA
                 }
             }
 
-            msgDoesNotExist && messagesInDb.size == 50 -> {
+            messagesInDb.size < 50 -> {
                 Completable.fromCallable {
-                    messageDao.deleteFirstAndAddNewMessage(
-                        messagesInDb.first().msgId,
+                    messageDao.insertMessageWithReactions(
                         newMessage.toEntity(topicName),
                         newMessage.reactions.toEntity(newMessage.msgId, topicName)
                     )
@@ -159,8 +159,13 @@ class ChatRepository(private val messageDao: MessageDao, private val api: ZulipA
             }
 
             else -> {
-                Log.d("database", "add to data ERROR")
-                Completable.error(Error("add to data ERROR"))
+                Completable.fromCallable {
+                    messageDao.deleteFirstAndAddNewMessage(
+                        messagesInDb.first().msgId,
+                        newMessage.toEntity(topicName),
+                        newMessage.reactions.toEntity(newMessage.msgId, topicName)
+                    )
+                }
             }
         }
     }
