@@ -55,18 +55,18 @@ object ChatMapper {
                 val index = list.indexOf(sameEmojiModel)
                 list.remove(sameEmojiModel)
 
-                val updItem = sameEmojiModel.copy(
-                    listUsersId = sameEmojiModel.listUsersId + listOf(reaction.userId),
-                    isSelected = reaction.userId == Reactions.MY_USER_ID
-                )
+                val updItem =
+                    sameEmojiModel.copy(
+                        listUsersId = sameEmojiModel.listUsersId + listOf(reaction.userId)
+                    )
                 list.add(index, updItem)
-            } else {
+            }
+            else {
                 list += EmojiModel(
                     msgId = reaction.messageId,
                     name = reaction.emojiName,
                     code = reaction.emojiCode.toEmojiCode(),
                     listUsersId = listOf(reaction.userId),
-                    isSelected = reaction.userId == Reactions.MY_USER_ID
                 )
             }
         }
@@ -85,8 +85,7 @@ object ChatMapper {
                     time = messageModel.time,
                     emojis = messageModel.emojis.toUi()
                 )
-            }
-            else {
+            } else {
                 MessageLeftUi(
                     id = messageModel.id,
                     name = messageModel.name,
@@ -106,8 +105,6 @@ object ChatMapper {
                 name = emojiModel.name,
                 code = emojiModel.code,
                 listUsersId = emojiModel.listUsersId,
-                counter = emojiModel.listUsersId.size,
-                isSelected = emojiModel.isSelected
             )
         }
     }
@@ -151,7 +148,6 @@ object ChatMapper {
 
                 val updItem = sameEmojiModel.copy(
                     listUsersId = sameEmojiModel.listUsersId + listOf(reaction.userId),
-                    isSelected = reaction.userId == Reactions.MY_USER_ID
                 )
                 list.add(index, updItem)
             } else {
@@ -160,7 +156,6 @@ object ChatMapper {
                     name = reaction.emojiName,
                     code = reaction.emojiCode.toEmojiCode(),
                     listUsersId = listOf(reaction.userId),
-                    isSelected = reaction.userId == Reactions.MY_USER_ID
                 )
             }
         }

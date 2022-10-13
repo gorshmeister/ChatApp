@@ -1,6 +1,7 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat.adapter
 
 import android.view.View
+import androidx.core.view.size
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.gorshenev.themesstyles.presentation.ui.chat.views.EmojiView
 import ru.gorshenev.themesstyles.utils.Utils.px
@@ -36,7 +37,6 @@ class MessageRightViewHolder(
                         userId += emojiUi.listUsersId
                         isSelected = emojiUi.isSelected
                         setOnClickListener { onEmojiClick(emojiUi.name, emojiUi.code.toEmojiString(), item.id) }
-//                        setOnClickListener { onEmojiClick(emojiUi.code, item.id) }
                     }
                 }
             )
@@ -44,7 +44,7 @@ class MessageRightViewHolder(
             if (item.emojis.isNotEmpty()) {
                 flexbox.addViews(listOf(EmojiView(flexbox.context).apply {
                     text = "+"
-                    this.setSize(48.px, 29.px)
+                    this.setSize(45.px, 30.px)
                     setOnClickListener { onMessageClick(item.id) }
                 }))
             }

@@ -3,13 +3,13 @@
     <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
             <corners android:radius="10dp"/>
-            <solid android:color="#1C1C1C"/>
+            <solid android:color="@color/color_background_secondary"/>
         </shape>
     </item>
     <item>
         <selector>
-            <item android:state_selected="true" android:drawable="@drawable/bg_emoji_selected" />
-            <item android:drawable="@drawable/bg_emoji_not_selected"/>
+            <item android:state_selected="true" android:drawable="@drawable/bg_emoji_clicked" />
+            <item android:drawable="@drawable/bg_emoji_not_clicked"/>
         </selector>
     </item>
 </layer-list>

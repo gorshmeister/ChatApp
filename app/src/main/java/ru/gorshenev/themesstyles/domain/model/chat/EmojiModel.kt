@@ -4,6 +4,5 @@ data class EmojiModel(
     val msgId: Int,
     val name: String,
     val code: Int,
-    val listUsersId: List<Int>,
-    val isSelected: Boolean
+    val listUsersId: List<Int>
 )

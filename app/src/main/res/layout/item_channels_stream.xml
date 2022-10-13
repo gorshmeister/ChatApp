@@ -8,9 +8,9 @@
         android:layout_width="276dp"
         android:layout_height="wrap_content"
         android:layout_gravity="start|center"
-        android:layout_marginLeft="20dp"
-        android:text="#general"
-        android:textColor="#FAFAFA"
+        android:layout_marginStart="20dp"
+        android:text="@string/general"
+        android:textColor="@color/text_color"
         android:textColorHint="@color/white"
         android:textSize="18sp" />
 
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|center"
         android:background="@drawable/bg_arrow_up_down"
-        android:layout_marginRight="42dp"
+        android:layout_marginEnd="42dp"
         />
 
 </FrameLayout>

@@ -21,7 +21,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initViews()
+        if (savedInstanceState == null)
+            initViews()
 //        registerNetworkCallback()
     }
 
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.profile -> {
                         ProfileFragment()
                     }
-                    else -> throw Error("Unknown fragment!!@!@!@!")
+                    else -> throw Error(getString(R.string.Unknown_fragment))
                 }
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, selectedFragment)

@@ -2,31 +2,23 @@ package ru.gorshenev.themesstyles.presentation.ui.channels
 
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import ru.gorshenev.themesstyles.ChatApp
-import ru.gorshenev.themesstyles.data.database.AppDataBase
-import ru.gorshenev.themesstyles.data.network.Network
-import ru.gorshenev.themesstyles.data.network.ZulipApi
 import ru.gorshenev.themesstyles.data.repositories.stream.StreamMapper.toUi
 import ru.gorshenev.themesstyles.data.repositories.stream.StreamRepository
+import ru.gorshenev.themesstyles.presentation.ResourceProvider
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.presenter.RxPresenter
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
 import java.util.concurrent.TimeUnit
 
-class StreamPresenter(private val view: StreamView) {
-
-    private val db: AppDataBase by lazy { AppDataBase.getDataBase(ChatApp.appContext) }
-
-    private val api: ZulipApi = Network.api
-
-    private val repository: StreamRepository by lazy { StreamRepository(db.streamDao(), api) }
+class StreamPresenter(
+    private val repository: StreamRepository
+) :
+    RxPresenter<StreamView>(StreamView::class.java) {
 
     private val searchSubject: PublishSubject<String> = PublishSubject.create()
-
-    private val compositeDisposable = CompositeDisposable()
 
     private var firstLoadedItems: List<ViewTyped> = listOf()
 
@@ -59,7 +51,7 @@ class StreamPresenter(private val view: StreamView) {
                     view.stopLoading()
                     view.showError(error)
                 },
-            ).apply { compositeDisposable.add(this) }
+            ).disposeOnFinish()
     }
 
     fun onStreamClick(streamId: Int) {
@@ -73,40 +65,7 @@ class StreamPresenter(private val view: StreamView) {
                     view.showItems(expandedList)
                 },
                 { error -> view.showError(error) })
-            .apply { compositeDisposable.add(this) }
-    }
-
-    fun onTopicClick(topicId: Int) {
-        val topic = displayedItems.find { (it is TopicUi) && it.id == topicId } as? TopicUi
-        val stream =
-            displayedItems.find { (it is StreamUi) && it.topics.contains(topic) } as? StreamUi
-        if (topic != null && stream != null) {
-            view.goToChat(topic, stream)
-        }
-    }
-
-    fun searchStream(query: String) {
-        searchSubject.onNext(query)
-    }
-
-    init {
-        searchSubject
-            .distinctUntilChanged()
-            .debounce(500, TimeUnit.MILLISECONDS)
-            .switchMapSingle { text -> initStreamSearch(firstLoadedItems, text) }
-            .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { filteredItems ->
-                    view.showItems(filteredItems)
-                    displayedItems = filteredItems
-                },
-                { error -> view.showError(error) })
-            .apply { compositeDisposable.add(this) }
-    }
-
-    fun onClear() {
-        compositeDisposable.clear()
+            .disposeOnFinish()
     }
 
     private fun expandableStream(
@@ -141,6 +100,35 @@ class StreamPresenter(private val view: StreamView) {
         }
     }
 
+    fun onTopicClick(topicId: Int) {
+        val topic = displayedItems.find { (it is TopicUi) && it.id == topicId } as? TopicUi
+        val stream =
+            displayedItems.find { (it is StreamUi) && it.topics.contains(topic) } as? StreamUi
+        if (topic != null && stream != null) {
+            view.goToChat(topic, stream)
+        }
+    }
+
+    fun searchStream(query: String) {
+        searchSubject.onNext(query)
+    }
+
+    init {
+        searchSubject
+            .distinctUntilChanged()
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .switchMapSingle { text -> initStreamSearch(firstLoadedItems, text) }
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { filteredItems ->
+                    view.showItems(filteredItems)
+                    displayedItems = filteredItems
+                },
+                { error -> view.showError(error) })
+            .disposeOnFinish()
+    }
+
     private fun initStreamSearch(
         cachedItems: List<ViewTyped>,
         searchText: String
@@ -162,47 +150,19 @@ class StreamPresenter(private val view: StreamView) {
                     stream.topics.any { it.name.contains(searchText, true) }
 
                 when (true) {
-
                     digits.isNotEmpty() -> {
                         nameContainsText && nameContainsDigits || topicContainsTextOrDigit
                     }
-
                     searchText.isNotEmpty() -> {
                         nameContainsSearchText || topicContainsSearchText
                     }
-
                     else -> true
                 }
-
-//                return Single.fromCallable {
-//            when {
-//                digits.isNotEmpty() -> {
-//                    val text = searchText.filter { !it.isDigit() }
-//
-//                    cachedItems.filter { item ->
-//
-//                        item is StreamUi &&
-//                                (item.name.contains(text, true) && item.name.contains(
-//                                    digits,
-//                                    true
-//                                ) ||
-//                                        (item.topics.any {
-//                                            it.name.contains(text, true) && it.name.contains(
-//                                                digits,
-//                                                true
-//                                            )
-//                                        }))
-//                    }
-//                }
-//                searchText.isNotEmpty() -> {
-//                    cachedItems.filter { item ->
-//                        item is StreamUi && (item.name.contains(searchText, true) ||
-//                                item.topics.any { it.name.contains(searchText, true) })
-//                    }
-//                }
-//                else -> cachedItems
-//            }
             }
         }
+    }
+
+    fun onClear() {
+//        compositeDisposable.clear()
     }
 }

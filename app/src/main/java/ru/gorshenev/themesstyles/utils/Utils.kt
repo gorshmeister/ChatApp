@@ -1,7 +1,10 @@
 package ru.gorshenev.themesstyles.utils
 
 import android.content.res.Resources
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Single
@@ -56,6 +59,10 @@ object Utils {
             divider.setDrawable(it)
             addItemDecoration(divider)
         }
+    }
+
+    fun setStatusBarColor(fragment: Fragment, @ColorRes color: Int) {
+        fragment.requireActivity().window.statusBarColor = fragment.requireContext().getColor(color)
     }
 }
 

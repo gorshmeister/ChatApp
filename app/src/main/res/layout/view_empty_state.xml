@@ -8,9 +8,7 @@
     android:visibility="gone"
     android:gravity="center_horizontal"
     android:padding="30dp"
-    android:text="Что-то пошло не так... \n\n Проверьте подключение и попробуйте снова"
+    android:text="@string/something_wrong"
     android:textColor="@color/black"
     android:textSize="22sp">
-
-
 </TextView>

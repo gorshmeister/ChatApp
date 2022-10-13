@@ -26,7 +26,7 @@ interface ZulipApi {
     fun getMessages(
         @Query("anchor") anchor: Long,
         @Query("num_before") numBefore: Int,
-        @Query("num_after") numAfter: Int,
+        @Query("num_after") numAfter: Int = 0,
         @Query("narrow") narrow: String,
         @Query("client_gravatar") clientGravatar: Boolean,
         @Query("apply_markdown") applyMarkdown: Boolean

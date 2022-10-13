@@ -2,7 +2,6 @@ package ru.gorshenev.themesstyles.presentation.ui.channels
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -12,9 +11,11 @@ import com.google.android.material.tabs.TabLayoutMediator
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsBinding
 import ru.gorshenev.themesstyles.presentation.ui.channels.view_pager.PagerAdapter
+import ru.gorshenev.themesstyles.utils.Utils
 
 class ChannelsFragment : Fragment(R.layout.fragment_channels) {
     private val binding: FragmentChannelsBinding by viewBinding()
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -24,8 +25,7 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
 
     private fun initViews() {
         with(binding) {
-            requireActivity().window.statusBarColor =
-                getColor(requireContext(), R.color.colorPrimaryBlack)
+            Utils.setStatusBarColor(this@ChannelsFragment,R.color.color_background_primary)
 
             val pagerAdapter = PagerAdapter(parentFragmentManager, lifecycle)
             fragmentViewPager.adapter = pagerAdapter

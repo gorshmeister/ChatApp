@@ -10,7 +10,6 @@
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_profile"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="wrap_content">
 
         <LinearLayout
@@ -31,7 +30,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="26dp"
                 android:background="@color/shimmer_color"
-                android:text="Name Surname"
+                android:text="@string/name_surname"
                 android:textSize="32sp" />
 
             <TextView
@@ -40,7 +39,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:background="@color/shimmer_color"
-                android:text="online"
+                android:text="@string/online"
                 android:textSize="16sp"
                 />
 
@@ -75,7 +74,7 @@
         android:gravity="center"
         tools:visibility="visible"
         android:text="online"
-        android:textColor="#4AB54D"
+        android:textColor="@color/indicator_on"
         android:textSize="16sp"
         tools:text="online" />
 

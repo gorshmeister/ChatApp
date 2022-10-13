@@ -6,11 +6,12 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsStreamBinding
+import ru.gorshenev.themesstyles.di.GlobalDI
+import ru.gorshenev.themesstyles.presentation.MvpFragment
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
@@ -25,16 +26,20 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatFragment
 import ru.gorshenev.themesstyles.utils.Utils.setDivider
 
-class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
+class StreamFragment : MvpFragment<StreamView, StreamPresenter>(R.layout.fragment_channels_stream),
+    StreamView {
+
+    override fun getPresenter(): StreamPresenter = GlobalDI.INSTANSE.streamPresenter
+
+    override fun getMvpView(): StreamView = this
+
     private val binding: FragmentChannelsStreamBinding by viewBinding()
 
     private val streamType by lazy { arguments?.get(STR_TYPE) as StreamType }
 
-    private val presenter: StreamPresenter = StreamPresenter(this)
-
     private val holderFactory: HolderFactory = StreamsHolderFactory(
-        onStreamClick = { streamId -> presenter.onStreamClick(streamId) },
-        onTopicClick = { topicId -> presenter.onTopicClick(topicId) }
+        onStreamClick = { streamId -> getPresenter().onStreamClick(streamId) },
+        onTopicClick = { topicId -> getPresenter().onTopicClick(topicId) }
     )
 
     private val adapter = Adapter<ViewTyped>(holderFactory)
@@ -42,12 +47,12 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViews()
-        presenter.loadStreams(streamType)
+        getPresenter().loadStreams(streamType)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.onClear()
+//        getPresenter().onClear()
     }
 
 
@@ -61,7 +66,7 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream), StreamView {
                 this@StreamFragment
             ) { _, result ->
                 val searchText = result.getString(RESULT_STREAM, "")
-                presenter.searchStream(searchText?.toString().orEmpty())
+                getPresenter().searchStream(searchText?.toString().orEmpty())
             }
         }
     }

@@ -3,7 +3,6 @@ package ru.gorshenev.themesstyles.presentation.ui.chat
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -17,10 +16,12 @@ import ru.gorshenev.themesstyles.databinding.BottomSheetBinding
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.chat.adapter.BottomSheetHolderFactory
+import ru.gorshenev.themesstyles.utils.Utils
 import java.io.Serializable
 
 class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
     private val binding: BottomSheetBinding by viewBinding()
+
     private val compositeDisposable = CompositeDisposable()
 
     private val messageId: Int
@@ -42,8 +43,7 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().window.statusBarColor =
-            getColor(requireContext(), R.color.colorPrimaryBlue)
+        Utils.setStatusBarColor(this, R.color.color_primary)
 
         binding.rvEmojis.adapter = adapter
         loadEmojis()
@@ -65,13 +65,6 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
             )
             .apply { compositeDisposable.add(this) }
     }
-//    private fun loadEmojis() {
-//        ReactionsData.getEmojis()
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe { emojis -> adapter.items = emojis }
-//            .apply { compositeDisposable.add(this) }
-//    }
 
     companion object {
         const val TAG = "BottomSheet"

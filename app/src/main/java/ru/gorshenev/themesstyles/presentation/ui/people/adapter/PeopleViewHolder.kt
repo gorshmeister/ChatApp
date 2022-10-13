@@ -16,7 +16,6 @@ private val binding: ItemPeopleBinding by viewBinding()
     override fun bind(item: PeopleUi) {
         with(binding) {
             Glide.with(itemView).load(item.avatar).into(ivPeopleAvatar)
-//            ivPeopleAvatar.setImageResource(item.avatar)
             tvPeopleName.text = item.name
             tvPeopleEmail.text = item.email
             when (item.status) {

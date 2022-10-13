@@ -2,6 +2,7 @@ package ru.gorshenev.themesstyles.data.repositories.stream
 
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.gorshenev.themesstyles.data.database.dao.StreamDao
@@ -11,12 +12,14 @@ import ru.gorshenev.themesstyles.data.repositories.stream.StreamMapper.toEntity
 import ru.gorshenev.themesstyles.domain.model.channels.StreamModel
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamFragment
 
-class StreamRepository(private val streamDao: StreamDao, private val api: ZulipApi) {
+class StreamRepository(
+    private val streamDao: StreamDao,
+    private val api: ZulipApi,
+) {
 
     fun getStreamsFromDb(streamType: StreamFragment.StreamType): Single<List<StreamModel>> {
         return streamDao.getStreams(streamType)
             .map { streamWithTopics -> streamWithTopics.toDomain() }
-            .subscribeOn(Schedulers.io())
     }
 
     fun getStreamsFromApi(streamType: StreamFragment.StreamType): Single<List<StreamModel>> {

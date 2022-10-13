@@ -1,22 +1,23 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentChatBinding
+import ru.gorshenev.themesstyles.di.GlobalDI
+import ru.gorshenev.themesstyles.presentation.MvpFragment
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
@@ -24,13 +25,16 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Compa
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.TPC_NAME
 import ru.gorshenev.themesstyles.presentation.ui.chat.BottomSheet.Companion.PICKER_KEY
 import ru.gorshenev.themesstyles.presentation.ui.chat.adapter.ChatHolderFactory
+import ru.gorshenev.themesstyles.utils.Utils
 
-class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
+class ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), ChatView {
     private val binding: FragmentChatBinding by viewBinding()
 
-    private val bottomSheet: BottomSheet = BottomSheet()
+    override fun getPresenter(): ChatPresenter = GlobalDI.INSTANSE.chatPresenter
 
-    private val presenter: ChatPresenter = ChatPresenter(this)
+    override fun getMvpView(): ChatView = this
+
+    private val bottomSheet: BottomSheet = BottomSheet()
 
     private val topicName: String by lazy { arguments?.getString(TPC_NAME).toString() }
 
@@ -45,11 +49,10 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
             }
         },
         onEmojiClick = { emojiName, _, messageId ->
-            presenter.onEmojiClick(emojiName, messageId)
+            getPresenter().onEmojiClick(emojiName, messageId)
         }
     )
     private val adapter = Adapter<ViewTyped>(holderFactory)
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,19 +60,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
         initInputField()
         initSendingMessages()
         initStreamAndTopicNames()
-        presenter.loadMessages(streamName, topicName)
+        getPresenter().loadMessages(streamName, topicName)
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter.onClear()
-    }
-
 
     private fun initViews() {
         with(binding) {
-            requireActivity().window.statusBarColor =
-                getColor(requireContext(), R.color.colorPrimaryBlue)
+            Utils.setStatusBarColor(this@ChatFragment,R.color.color_primary)
 
             val layoutManager = rvItems.layoutManager as? LinearLayoutManager
 
@@ -78,7 +74,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
                     super.onScrolled(recyclerView, dx, dy)
                     val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
                     if (position == 5 && dy != 0) {
-                        presenter.uploadMoreMessages()
+                        getPresenter().uploadMoreMessages()
                     }
                 }
             })
@@ -91,7 +87,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
             ) { _, result ->
                 val resultPick =
                     result.get(BottomSheet.RESULT_EMOJI_PICK) as BottomSheet.EmojiPickResult
-                presenter.onEmojiClick(
+                getPresenter().onEmojiClick(
                     emojiName = resultPick.emojiName,
                     messageId = resultPick.messageId
                 )
@@ -114,7 +110,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
         with(binding) {
             btnSendMsg.setOnClickListener {
                 if (etMsgField.text.isNotBlank()) {
-                    presenter.sendMessage(etMsgField.text.toString())
+                    getPresenter().sendMessage(etMsgField.text.toString())
                 }
                 etMsgField.text.clear()
             }
@@ -142,8 +138,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ChatView {
 
     private fun onBackPress() {
         parentFragmentManager.popBackStack()
-        requireActivity().window.statusBarColor =
-            getColor(requireContext(), R.color.colorPrimaryBlack)
+        Utils.setStatusBarColor(this, R.color.color_background_primary)
     }
 
     override fun scrollMsgsToTheEnd() {

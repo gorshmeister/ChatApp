@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="EmojiView">
-        <attr name="ev_text" format="string"/>
-        <attr name="ev_textColor" format="color"/>
-        <attr name="ev_textSize" format="dimension"/>
-        <attr name="ev_padding" format="dimension"/>
-    </declare-styleable>
 
     <declare-styleable name="FlexboxLayout">
         <attr name="gap" format="dimension"/>

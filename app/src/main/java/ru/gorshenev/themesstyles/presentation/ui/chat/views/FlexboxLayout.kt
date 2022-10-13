@@ -23,9 +23,6 @@ class FlexboxLayout @JvmOverloads constructor(
                 recycle()
             }
         setWillNotDraw(true)
-//		repeat(6) {
-//			addView(EmojiView(context))
-//		}
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

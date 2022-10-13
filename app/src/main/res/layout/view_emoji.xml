@@ -7,16 +7,7 @@
 
     <TextView
         android:id="@+id/tvEmoji"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="😀 0"
-        android:textColor="#CCCCCC"
-        android:textSize="14sp"
-        android:paddingHorizontal="9dp"
-        android:paddingVertical="5dp"
-        android:background="@drawable/bg_emoji"
-        android:gravity="center"
-        android:textAlignment="center"
-        />
+        style="@style/Widget.MyApp.EmojiView"
+        tools:text="😀 0" />
 
 </merge>

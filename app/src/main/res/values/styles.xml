@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Widget.MyApp" parent="android:Widget" />
 
@@ -10,14 +10,77 @@
     </style>
 
     <style name="Widget.MyApp.EmojiView">
-        <item name="ev_textColor">@color/black</item>
-        <item name="ev_textSize">6sp</item>
-        <item name="ev_padding">6dp</item>
+        <item name="android:layout_width">45dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/bg_emoji</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_color_secondary</item>
     </style>
 
     <style name="Widget.MyApp.Flexbox">
         <item name="gap">8dp</item>
     </style>
+
+
+    <style name="Widget.MyApp.RightMessage_Text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxWidth">220dp</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Widget.MyApp.RightMessage_Time">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">bottom|end</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:textColor">@color/time_color_right</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="Widget.MyApp.RightMessage_Flexbox">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">7dp</item>
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:layout_marginBottom">7dp</item>
+    </style>
+
+
+    <style name="Widget.MyApp.LeftMessage_Avatar">
+        <item name="android:layout_width">38dp</item>
+        <item name="android:layout_height">38dp</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:src">@drawable/ic_launcher_background</item>
+        <item name="shapeAppearance">@style/ShapeAppearanceOverlay.App.CornerSize50Percent</item>
+    </style>
+
+    <style name="Widget.MyApp.LeftMessage_Name">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.MyApp.LeftMessage_Text" parent="Widget.MyApp.RightMessage_Text">
+        <item name="android:layout_marginTop">22dp</item>
+    </style>
+
+    <style name="Widget.MyApp.LeftMessage_Time" parent="Widget.MyApp.RightMessage_Time">
+        <item name="android:textColor">@color/time_color_left</item>
+        <item name="android:layout_marginTop">0dp</item>
+    </style>
+
+    <style name="Widget.MyApp.LeftMessage_Flexbox" parent="Widget.MyApp.RightMessage_Flexbox">
+        <item name="android:layout_marginEnd">0dp</item>
+    </style>
+
+
 
     <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
         <item name="cornerSize">50%</item>
@@ -28,22 +91,25 @@
     </style>
 
     <style name="CardViewLeft" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="contentPaddingLeft">13dp</item>
         <item name="contentPaddingRight">13dp</item>
         <item name="contentPaddingTop">10dp</item>
         <item name="contentPaddingBottom">10dp</item>
-        <item name="cardBackgroundColor">#1C1C1C</item>
+        <item name="cardBackgroundColor">@color/color_background_secondary</item>
         <item name="cardCornerRadius">18dp</item>
     </style>
 
     <style name="CardViewRight" parent="CardViewLeft">
         <item name="contentPaddingLeft">16dp</item>
         <item name="contentPaddingRight">16dp</item>
-        <item name="cardBackgroundColor">@color/colorPrimaryBlue</item>
+        <item name="android:layout_marginEnd">12dp</item>
+        <item name="cardBackgroundColor">?attr/colorPrimary</item>
     </style>
 
     <style name="Widget.MyApp.BottomSheet.Modal" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:backgroundTint">#1C1C1C</item>
+        <item name="android:backgroundTint">@color/color_background_secondary</item>
         <item name="shapeAppearance">@style/ShapeAppearance.MyApp.LargeComponent</item>
     </style>
 
@@ -56,15 +122,15 @@
     </style>
 
     <style name="ThemeOverlay.MyApp.BottomNavigationView" parent="">
-        <item name="colorPrimary">#1E1E1E</item>
-        <item name="colorOnPrimary">#FAFAFA</item>
+        <item name="colorPrimary">@color/color_background_primary</item>
+        <item name="colorOnPrimary">@color/text_color</item>
     </style>
 
     <style name="Widget.MyApp.TabLayout" parent="Widget.MaterialComponents.TabLayout.Colored">
         <item name="tabTextAppearance">@style/ThemeOverlay.MyApp.TabLayoutTextAppearance</item>
-        <item name="android:background">#1E1E1E</item>
-        <item name="tabIndicatorColor">#219653</item>
-        <item name="tabTextColor">@color/white</item>
+        <item name="android:background">@color/color_background_primary</item>
+        <item name="tabIndicatorColor">@color/tab_indicator_color</item>
+        <item name="tabTextColor">?attr/colorOnPrimary</item>
     </style>
 
     <style name="ThemeOverlay.MyApp.TabLayoutTextAppearance" parent="TextAppearance.AppCompat.Body1">

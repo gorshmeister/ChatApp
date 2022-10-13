@@ -3,31 +3,34 @@ package ru.gorshenev.themesstyles.presentation.ui.profile
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentProfileBinding
+import ru.gorshenev.themesstyles.di.GlobalDI
+import ru.gorshenev.themesstyles.presentation.MvpFragment
+import ru.gorshenev.themesstyles.utils.Utils
 
-class ProfileFragment : Fragment(R.layout.fragment_profile), ProfileView {
+class ProfileFragment : MvpFragment<ProfileView,ProfilePresenter>(R.layout.fragment_profile), ProfileView {
     private val binding: FragmentProfileBinding by viewBinding()
 
-    private val presenter = ProfilePresenter(this)
+    override fun getPresenter(): ProfilePresenter = GlobalDI.INSTANSE.profilePresenter
+
+    override fun getMvpView(): ProfileView = this
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().window.statusBarColor =
-            getColor(requireContext(), R.color.colorBackground)
+        Utils.setStatusBarColor(this@ProfileFragment, R.color.color_window_background)
 
-        presenter.uploadProfile()
+        getPresenter().uploadProfile()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.onClear()
+        getPresenter().onClear()
     }
 
     override fun showError(error: Throwable?) {
@@ -58,4 +61,5 @@ class ProfileFragment : Fragment(R.layout.fragment_profile), ProfileView {
             hideShimmer()
         }
     }
+
 }

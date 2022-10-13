@@ -16,11 +16,4 @@ class Adapter<T : ViewTyped>(holderFactory: HolderFactory) : BaseAdapter<T>(hold
             itemDiffResult.dispatchUpdatesTo(this)
         }
 
-//    override var items: List<T>
-//        get() = localItems
-//        set(newItems) {
-//            localItems.clear()
-//            localItems.addAll(newItems)
-//            notifyDataSetChanged()
-//        }
 }

@@ -1,9 +1,9 @@
 <resources>
     <style name="Theme.MyApp" parent="Theme.MaterialComponents.Light.NoActionBar">
 
-        <item name="android:windowBackground">#121212</item>
+        <item name="android:windowBackground">@color/color_window_background</item>
 
-        <item name="colorPrimary">#2A9D8F</item>
+        <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryVariant">?attr/colorPrimary</item>
         <item name="colorPrimaryDark">?attr/colorPrimaryVariant</item>
         <item name="colorOnPrimary">@color/white</item>

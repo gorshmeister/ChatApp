@@ -13,7 +13,7 @@
         android:layout_height="22dp"
         android:layout_gravity="top|center"
         android:gravity="center"
-        android:textColor="#999999"
+        android:textColor="@color/date_text_color"
         android:background="@drawable/bg_date"
         android:textSize="14sp"
         tools:text="1 Feb" />

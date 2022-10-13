@@ -16,7 +16,7 @@ abstract class HolderFactory : (ViewGroup, Int) -> BaseViewHolder<ViewTyped> {
         return when (viewType) {
             R.layout.item_date -> DateViewHolder(view)
             else -> checkNotNull(createViewHolder(view, viewType)) {
-                "unknown viewType=" + viewGroup.resources.getResourceName(viewType)
+                "Unknown viewType = " + viewGroup.resources.getResourceName(viewType)
             }
         } as BaseViewHolder<ViewTyped>
     }

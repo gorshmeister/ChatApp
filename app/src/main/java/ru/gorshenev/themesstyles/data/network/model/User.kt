@@ -22,9 +22,3 @@ data class UserResponse(
 data class GetOneUserResponse(
     @SerialName("user") val members: UserResponse
 )
-
-@Serializable
-data class Narrow(
-    val operator: String,
-    val operand: String
-)
