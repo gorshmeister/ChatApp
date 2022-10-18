@@ -1,6 +1,5 @@
 package ru.gorshenev.themesstyles.data.repositories.stream
 
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
@@ -19,25 +18,36 @@ class StreamRepository(
     private val executionScheduler: Scheduler = Schedulers.io()
 ) {
 
-    fun getStreams(streamType: StreamFragment.StreamType): Flowable<List<StreamModel>> {
-        return Single.concatArrayEager(
-            getStreamsFromDb(streamType),
-            getStreamsFromApi(streamType)
+    fun getStreams(streamType: StreamFragment.StreamType): Observable<List<StreamModel>> {
+        return Observable.mergeArrayDelayError(
+            getStreamsLocal(streamType),
+            getStreamsRemote(streamType)
         )
-            .debounce(400, TimeUnit.MILLISECONDS)
-            .materialize()
-            .filter { !it.isOnError }
-            .dematerialize { streamModels -> streamModels }
+            .debounce(400,TimeUnit.MILLISECONDS)
             .subscribeOn(executionScheduler)
+
+
+//        return Single.concatArrayEager(
+//            getStreamsLocal(streamType),
+//            getStreamsRemote(streamType)
+//        )
+//            .debounce(400, TimeUnit.MILLISECONDS)
+//            .materialize()
+//            .filter { !it.isOnError }
+//            .dematerialize { streamModels -> streamModels }
+//            .subscribeOn(executionScheduler)
     }
 
-    private fun getStreamsFromDb(streamType: StreamFragment.StreamType): Single<List<StreamModel>> {
+
+    private fun getStreamsLocal(streamType: StreamFragment.StreamType): Observable<List<StreamModel>> {
         return streamDao.getStreams(streamType)
             .map { streamWithTopics -> streamWithTopics.toDomain() }
+            .onErrorReturn { emptyList() }
+            .toObservable()
             .subscribeOn(executionScheduler)
     }
 
-    private fun getStreamsFromApi(streamType: StreamFragment.StreamType): Single<List<StreamModel>> {
+    private fun getStreamsRemote(streamType: StreamFragment.StreamType): Observable<MutableList<StreamModel>>? {
         return when (streamType) {
             StreamFragment.StreamType.SUBSCRIBED -> api.getStreamsSubs()
             StreamFragment.StreamType.ALL_STREAMS -> api.getStreamsAll()
@@ -54,6 +64,8 @@ class StreamRepository(
                     }.toList()
             }
             .doOnSuccess { replaceAllData(it, streamType) }
+            .onErrorReturn { emptyList<StreamModel>() }
+            .toObservable()
             .subscribeOn(executionScheduler)
     }
 

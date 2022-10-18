@@ -31,16 +31,20 @@ class ChatRepository(
         numBefore: Int,
         onlyRemote: Boolean
     ): Observable<List<MessageModel>> {
-        val remoteMessages = getMessagesRemote(streamName, topicName, anchorMessageId, numBefore)
+        val remoteMessages =
+            getMessagesRemote(streamName, topicName, anchorMessageId, numBefore)
+
         return if (onlyRemote) {
-            remoteMessages.map { it.messages.toDomain() }.toObservable()
-                .subscribeOn(executionScheduler)
+            remoteMessages.map { it.messages.toDomain() }.subscribeOn(executionScheduler)
         } else {
-            Single.concatArrayEager(
+            Observable.mergeArrayDelayError(
                 getMessagesLocal(topicName).map { it.toDomain() },
-                remoteMessages.doOnSuccess { replaceLocalMessages(topicName, it.messages) }
+                remoteMessages
+                    .doOnNext { replaceLocalMessages(topicName, it.messages) }
                     .map { it.messages.toDomain() }
-            ).toObservable().subscribeOn(executionScheduler)
+                    .onErrorReturn { emptyList() }
+            )
+                .subscribeOn(executionScheduler)
         }
     }
 
@@ -53,8 +57,11 @@ class ChatRepository(
     }
 
 
-    private fun getMessagesLocal(topicName: String): Single<List<MessageWithReactionsEntity>> {
+    private fun getMessagesLocal(topicName: String): Observable<List<MessageWithReactionsEntity>> {
         return messageDao.getMessagesWithReactions(topicName)
+            .onErrorReturn { emptyList() }
+            .toObservable()
+            .subscribeOn(executionScheduler)
     }
 
     private fun getMessagesRemote(
@@ -62,7 +69,7 @@ class ChatRepository(
         topicName: String,
         anchorMessageId: Long,
         numBefore: Int
-    ): Single<GetMessageResponse> {
+    ): Observable<GetMessageResponse> {
         val narrow = Json.encodeToString(
             listOf(
                 Narrow(STREAM, streamName),
@@ -75,7 +82,9 @@ class ChatRepository(
             narrow = narrow,
             clientGravatar = false,
             applyMarkdown = false
-        ).subscribeOn(executionScheduler)
+        )
+            .toObservable()
+            .subscribeOn(executionScheduler)
     }
 
     fun registerMessageQueue(streamName: String, topicName: String): Single<CreateQueueResponse> {

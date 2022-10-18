@@ -11,8 +11,9 @@ class ProfilePresenter(private val repository: ProfileRepository) :
         repository.getUser()
             .observeOn(AndroidSchedulers.mainThread())
             .doAfterSuccess { view?.stopLoading() }
+            .doOnError { view?.showEmptyState() }
             .subscribe(
-                { view?.setProfile(it.members.firstName, it.members.avatarUrl) },
+                { view?.setProfile(it.members) },
                 { err -> view?.showError(err) }
             ).disposeOnFinish()
     }

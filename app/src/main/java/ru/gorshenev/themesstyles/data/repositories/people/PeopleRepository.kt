@@ -28,6 +28,7 @@ class PeopleRepository(
                         )
                     }.toList()
             }
+            .onErrorReturn { emptyList() }
             .subscribeOn(executionScheduler)
     }
 

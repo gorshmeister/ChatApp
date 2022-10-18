@@ -27,7 +27,8 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.BottomSheet.Companion.PICK
 import ru.gorshenev.themesstyles.presentation.ui.chat.adapter.ChatHolderFactory
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 
-class ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), ChatView {
+class
+ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), ChatView {
     private val binding: FragmentChatBinding by viewBinding()
 
     private val topicName: String by lazy { arguments?.getString(TPC_NAME).toString() }

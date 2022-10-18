@@ -1,5 +1,6 @@
 package ru.gorshenev.themesstyles.presentation.ui.profile
 
+import ru.gorshenev.themesstyles.data.network.model.UserResponse
 import ru.gorshenev.themesstyles.presentation.ui.BaseView
 
 interface ProfileView : BaseView {
@@ -10,6 +11,8 @@ interface ProfileView : BaseView {
 //
 //    fun showError(error: Throwable?)
 
-    fun setProfile(name: String, avatarUrl: String)
+    fun setProfile(userResponse: UserResponse)
+
+    fun showEmptyState()
 
 }

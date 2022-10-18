@@ -3,6 +3,8 @@ package ru.gorshenev.themesstyles.presentation.ui.people
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
@@ -53,7 +55,17 @@ class PeopleFragment : MvpFragment<PeopleView, PeoplePresenter>(R.layout.fragmen
     }
 
     override fun showItems(items: List<ViewTyped>) {
-        adapter.items = items
+        with(binding) {
+            if (items.isEmpty()) {
+                emptyState.tvEmptyState.isVisible = true
+                rvPeople.isGone = true
+            } else {
+                emptyState.tvEmptyState.isGone = true
+                rvPeople.isVisible = true
+                adapter.items = items
+            }
+        }
+
     }
 
     override fun showError(error: Throwable?) {

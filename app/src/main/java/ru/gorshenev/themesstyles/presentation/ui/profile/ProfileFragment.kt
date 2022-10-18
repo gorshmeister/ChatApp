@@ -8,6 +8,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
+import ru.gorshenev.themesstyles.data.network.model.UserResponse
 import ru.gorshenev.themesstyles.databinding.FragmentProfileBinding
 import ru.gorshenev.themesstyles.di.GlobalDI
 import ru.gorshenev.themesstyles.presentation.base.MvpFragment
@@ -31,15 +32,20 @@ class ProfileFragment : MvpFragment<ProfileView, ProfilePresenter>(R.layout.frag
         getPresenter().uploadProfile()
     }
 
-    override fun setProfile(name: String, avatarUrl: String) {
+    override fun setProfile(userResponse: UserResponse) {
         with(binding) {
-            tvProfileName.text = name
+            tvProfileName.text = userResponse.firstName
             online.isVisible = true
             Glide.with(this@ProfileFragment)
-                .load(avatarUrl)
+                .load(userResponse.avatarUrl)
                 .placeholder(R.color.shimmer_color)
                 .into(ivProfileAvatar)
         }
+    }
+
+    override fun showEmptyState() {
+        stopLoading()
+        binding.emptyState.tvEmptyState.isVisible = true
     }
 
     override fun showError(error: Throwable?) {
