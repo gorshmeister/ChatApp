@@ -7,6 +7,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import ru.gorshenev.themesstyles.data.Errors
 import ru.gorshenev.themesstyles.data.database.dao.MessageDao
 import ru.gorshenev.themesstyles.data.database.entities.MessageWithReactionsEntity
 import ru.gorshenev.themesstyles.data.network.ZulipApi
@@ -46,21 +47,17 @@ class ChatRepository(
     private fun replaceLocalMessages(topicName: String, remoteMessages: List<MessageResponse>) {
         val messageEntities = remoteMessages.map { it.toEntity(topicName) }
         val reactionEntities = remoteMessages.flatMap { it.reactions.toEntity(it.msgId, topicName) }
-        /* can be placed in the dao as a transaction,
-        but the signature of transaction method does not guarantee
-        that the entities actually have that topic name
-         */
         messageDao.deleteMessages(topicName)
         messageDao.insertMessages(messageEntities)
         messageDao.insertReactions(reactionEntities)
     }
 
 
-    fun getMessagesLocal(topicName: String): Single<List<MessageWithReactionsEntity>> {
+    private fun getMessagesLocal(topicName: String): Single<List<MessageWithReactionsEntity>> {
         return messageDao.getMessagesWithReactions(topicName)
     }
 
-    fun getMessagesRemote(
+    private fun getMessagesRemote(
         streamName: String,
         topicName: String,
         anchorMessageId: Long,
@@ -104,22 +101,35 @@ class ChatRepository(
         return api.getEmojiEventsFromQueue(queueId, lastId).subscribeOn(executionScheduler)
     }
 
-    fun updateEmoji(emojiName: String, messageId: Int): Single<CreateReactionResponse> {
+    fun updateEmoji(
+        emojiName: String,
+        messageId: Int,
+        isBottomSheetClick: Boolean
+    ): Single<CreateReactionResponse> {
         return api.getMessage(id = messageId, applyMarkdown = true)
             .map { response ->
                 response.message.reactions.filter { reaction -> reaction.emojiName == emojiName }
                     .any { it.userId == Reactions.MY_USER_ID }
             }
-            .flatMap { isAlreadyClicked -> updateEmoji(messageId, emojiName, isAlreadyClicked) }
+            .flatMap { isAlreadyClicked ->
+                updateEmoji(
+                    messageId,
+                    emojiName,
+                    isAlreadyClicked,
+                    isBottomSheetClick
+                )
+            }
             .subscribeOn(executionScheduler)
     }
 
     private fun updateEmoji(
         messageId: Int,
         emojiName: String,
-        isAlreadyClicked: Boolean = false
+        isAlreadyClicked: Boolean = false,
+        isBottomSheetClick: Boolean
     ): Single<CreateReactionResponse> {
         return when {
+            isBottomSheetClick && isAlreadyClicked -> throw Errors.ReactionAlreadyExist()
             isAlreadyClicked -> api.deleteEmoji(msgId = messageId, emojiName)
             else -> api.addEmoji(msgId = messageId, emojiName)
         }
@@ -148,15 +158,15 @@ class ChatRepository(
                             newMessage.reactions.toEntity(newMessage.msgId, topicName)
                         )
                     }
-                    localMessages.size < 50 -> {
+                    localMessages.size < MAX_NUM_OF_MESSAGES_IN_DB -> {
                         messageDao.insertMessageWithReactions(
                             newMessage.toEntity(topicName),
                             newMessage.reactions.toEntity(newMessage.msgId, topicName)
                         )
                     }
                     else -> {
-                        messageDao.deleteFirstAndAddNewMessage(
-                            localMessages.first().msgId,
+                        messageDao.deleteMessage(localMessages.first().msgId)
+                        messageDao.insertMessageWithReactions(
                             newMessage.toEntity(topicName),
                             newMessage.reactions.toEntity(newMessage.msgId, topicName)
                         )
@@ -174,5 +184,6 @@ class ChatRepository(
         const val DEFAULT_MESSAGE_ANCHOR: Long = 10000000000000000
         const val DEFAULT_NUM_BEFORE: Int = 50
         const val MORE_NUM_BEFORE: Int = 20
+        const val MAX_NUM_OF_MESSAGES_IN_DB = 50
     }
 }

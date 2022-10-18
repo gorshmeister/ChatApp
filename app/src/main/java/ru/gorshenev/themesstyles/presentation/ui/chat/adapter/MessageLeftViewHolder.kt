@@ -5,7 +5,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupLeftBinding
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.BaseViewHolder
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.BaseViewHolder
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.EmojiUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageLeftUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.views.EmojiView

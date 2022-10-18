@@ -13,10 +13,11 @@ import io.reactivex.schedulers.Schedulers
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.data.repositories.chat.Reactions
 import ru.gorshenev.themesstyles.databinding.BottomSheetBinding
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
 import ru.gorshenev.themesstyles.presentation.ui.chat.adapter.BottomSheetHolderFactory
-import ru.gorshenev.themesstyles.utils.Utils
+import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 import java.io.Serializable
 
 class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
@@ -43,7 +44,7 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Utils.setStatusBarColor(this, R.color.color_primary)
+        this.setStatusBarColor(R.color.color_primary)
 
         binding.rvEmojis.adapter = adapter
         loadEmojis()
@@ -61,7 +62,12 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { reactions -> adapter.items = reactions },
-                { err -> Log.d("qweqwe", "BOTTOM_SHEET PROBLEM: $err") }
+                { err ->
+                    Log.d(
+                        ChannelsFragment.ERROR_LOG_TAG,
+                        getString(R.string.log_error, "Bottom_sheet Problems: ", err)
+                    )
+                }
             )
             .apply { compositeDisposable.add(this) }
     }

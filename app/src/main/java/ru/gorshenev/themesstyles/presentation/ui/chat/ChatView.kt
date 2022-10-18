@@ -1,19 +1,20 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat
 
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.ui.BaseView
 
-interface ChatView {
+interface ChatView : BaseView {
+
+//    fun showError(error: Throwable?)
+//
+//    fun showLoading()
+//
+//    fun stopLoading()
 
     fun showItems(items: List<ViewTyped>)
 
-    fun showError(error: Throwable?)
-
-    fun showLoading()
-
-    fun stopLoading()
-
     fun showToast()
 
-    fun scrollMsgsToTheEnd()
+    fun scrollToTheEnd()
 
 }

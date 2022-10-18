@@ -15,8 +15,8 @@ interface StreamDao {
     fun getStreams(streamType: StreamFragment.StreamType): Single<List<StreamWithTopicsEntity>>
 
 
-    @Query("DELETE FROM stream WHERE strType in (:strType)")
-    fun deleteStreams(strType: StreamFragment.StreamType)
+    @Query("DELETE FROM stream WHERE strType in (:streamType)")
+    fun deleteStreams(streamType: StreamFragment.StreamType)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertStreams(streams: List<StreamEntity>)

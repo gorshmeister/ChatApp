@@ -1,6 +1,5 @@
 package ru.gorshenev.themesstyles.data.network
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.*
 import ru.gorshenev.themesstyles.data.network.model.*

@@ -6,7 +6,7 @@ data class EmojiUi(
     val msgId: Int,
     val name: String,
     val code: Int,
-    val listUsersId: List<Int> = emptyList(),
+    val listUsersId: List<Int> = emptyList()
 ) {
     val counter: Int
         get() = listUsersId.size

@@ -10,11 +10,11 @@ import ru.gorshenev.themesstyles.data.database.entities.ReactionEntity
 interface MessageDao {
 
     @Transaction
-    @Query("SELECT * FROM message WHERE topicName in (:topic)")
-    fun getMessagesWithReactions(topic: String): Single<List<MessageWithReactionsEntity>>
+    @Query("SELECT * FROM message WHERE topicName in (:topicName)")
+    fun getMessagesWithReactions(topicName: String): Single<List<MessageWithReactionsEntity>>
 
-    @Query("SELECT * FROM message WHERE topicName in (:topic)")
-    fun getMessages(topic: String): Single<List<MessageEntity>>
+    @Query("SELECT * FROM message WHERE topicName in (:topicName)")
+    fun getMessages(topicName: String): Single<List<MessageEntity>>
 
 
     @Query("DELETE FROM reaction WHERE message_id in (:messageId)")
@@ -35,18 +35,6 @@ interface MessageDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertMessages(messages: List<MessageEntity>)
-
-
-    @Transaction
-    fun deleteFirstAndAddNewMessage(
-        messageId: Int,
-        messageEntity: MessageEntity,
-        reactions: List<ReactionEntity>
-    ) {
-        deleteMessage(messageId = messageId)
-        insertMessage(message = messageEntity)
-        insertReactions(reactions = reactions)
-    }
 
     @Transaction
     fun insertMessageWithReactions(

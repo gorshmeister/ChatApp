@@ -11,10 +11,10 @@ import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsStreamBinding
 import ru.gorshenev.themesstyles.di.GlobalDI
-import ru.gorshenev.themesstyles.presentation.MvpFragment
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.base.MvpFragment
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.RESULT_STREAM
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STREAM_SEARCH
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STR_NAME
@@ -28,12 +28,13 @@ import ru.gorshenev.themesstyles.utils.Utils.setDivider
 
 class StreamFragment : MvpFragment<StreamView, StreamPresenter>(R.layout.fragment_channels_stream),
     StreamView {
+    private val binding: FragmentChannelsStreamBinding by viewBinding()
 
-    override fun getPresenter(): StreamPresenter = GlobalDI.INSTANSE.streamPresenter
+    private val streamPresenter by lazy { StreamPresenter(GlobalDI.INSTANSE.streamRepository) }
+
+    override fun getPresenter(): StreamPresenter = streamPresenter
 
     override fun getMvpView(): StreamView = this
-
-    private val binding: FragmentChannelsStreamBinding by viewBinding()
 
     private val streamType by lazy { arguments?.get(STR_TYPE) as StreamType }
 
@@ -49,12 +50,6 @@ class StreamFragment : MvpFragment<StreamView, StreamPresenter>(R.layout.fragmen
         initViews()
         getPresenter().loadStreams(streamType)
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-//        getPresenter().onClear()
-    }
-
 
     private fun initViews() {
         with(binding) {
@@ -81,9 +76,17 @@ class StreamFragment : MvpFragment<StreamView, StreamPresenter>(R.layout.fragmen
             .commit()
     }
 
-    override fun showError(error: Throwable?) {
-        Snackbar.make(binding.root, "Something wrong! $error", Snackbar.LENGTH_SHORT).show()
-        Log.d("qweqwe", "STREAM PROBLEM: $error")
+    override fun showItems(items: List<ViewTyped>) {
+        with(binding) {
+            if (items.isEmpty()) {
+                emptyState.tvEmptyState.isVisible = true
+                rvStreams.isGone = true
+            } else {
+                emptyState.tvEmptyState.isGone = true
+                rvStreams.isVisible = true
+                adapter.items = items
+            }
+        }
     }
 
     override fun showLoading() {
@@ -100,17 +103,9 @@ class StreamFragment : MvpFragment<StreamView, StreamPresenter>(R.layout.fragmen
         }
     }
 
-    override fun showItems(items: List<ViewTyped>) {
-        with(binding) {
-            if (items.isEmpty()) {
-                emptyState.tvEmptyState.isVisible = true
-                rvStreams.isGone = true
-            } else {
-                emptyState.tvEmptyState.isGone = true
-                rvStreams.isVisible = true
-                adapter.items = items
-            }
-        }
+    override fun showError(error: Throwable?) {
+        Snackbar.make(binding.root, getString(R.string.error, error), Snackbar.LENGTH_SHORT).show()
+        Log.d(ChannelsFragment.ERROR_LOG_TAG, getString(R.string.log_error, "Stream Problems: ", error))
     }
 
     enum class StreamType {

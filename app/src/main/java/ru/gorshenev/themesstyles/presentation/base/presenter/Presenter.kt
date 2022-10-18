@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.presentation.presenter
+package ru.gorshenev.themesstyles.presentation.base.presenter
 
 interface Presenter<View> {
 

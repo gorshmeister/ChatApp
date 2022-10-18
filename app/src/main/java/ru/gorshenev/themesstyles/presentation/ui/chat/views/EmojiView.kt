@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
-import androidx.core.view.setPadding
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.ViewEmojiBinding
@@ -14,7 +13,7 @@ class EmojiView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-	defStyleRes: Int = R.style.Widget_MyApp_EmojiView,
+    defStyleRes: Int = R.style.Widget_MyApp_EmojiView,
 ) : LinearLayout(context, attrs, defStyleAttr, defStyleRes) {
     private val binding: ViewEmojiBinding by viewBinding()
 

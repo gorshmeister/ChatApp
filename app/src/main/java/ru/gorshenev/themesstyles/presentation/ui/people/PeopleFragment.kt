@@ -9,25 +9,28 @@ import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentPeopleBinding
 import ru.gorshenev.themesstyles.di.GlobalDI
-import ru.gorshenev.themesstyles.presentation.MvpFragment
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.Adapter
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.base.MvpFragment
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
 import ru.gorshenev.themesstyles.presentation.ui.people.adapter.PeopleHolderFactory
-import ru.gorshenev.themesstyles.utils.Utils
+import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 
 class PeopleFragment : MvpFragment<PeopleView, PeoplePresenter>(R.layout.fragment_people),
     PeopleView {
 
     private val binding: FragmentPeopleBinding by viewBinding()
 
+    private val peoplePresenter by lazy { PeoplePresenter(GlobalDI.INSTANSE.peopleRepository) }
+
+    override fun getPresenter(): PeoplePresenter = peoplePresenter
+
+    override fun getMvpView(): PeopleView = this
+
     private val holderFactory: HolderFactory = PeopleHolderFactory()
 
     private val adapter = Adapter<ViewTyped>(holderFactory)
-
-    override fun getPresenter(): PeoplePresenter = GlobalDI.INSTANSE.peoplePresenter
-
-    override fun getMvpView(): PeopleView = this
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,15 +40,9 @@ class PeopleFragment : MvpFragment<PeopleView, PeoplePresenter>(R.layout.fragmen
         getPresenter().loadPeople()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        getPresenter().onClear()
-    }
-
-
     private fun initViews() {
         with(binding) {
-            Utils.setStatusBarColor(this@PeopleFragment, R.color.color_background_primary)
+            this@PeopleFragment.setStatusBarColor(R.color.color_background_primary)
 
             rvPeople.adapter = adapter
 
@@ -60,8 +57,12 @@ class PeopleFragment : MvpFragment<PeopleView, PeoplePresenter>(R.layout.fragmen
     }
 
     override fun showError(error: Throwable?) {
-        Snackbar.make(binding.root, "Something wrong! $error", Snackbar.LENGTH_LONG).show()
-        Log.d("qweqwe", "PEOPLE PROBLEM: $error")
+        Snackbar.make(binding.root, getString(R.string.error, error), Snackbar.LENGTH_LONG)
+            .show()
+        Log.d(
+            ChannelsFragment.ERROR_LOG_TAG,
+            getString(R.string.log_error, "People Problems: ", error)
+        )
     }
 
     override fun showLoading() {

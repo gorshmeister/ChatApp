@@ -1,12 +1,11 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat.adapter
 
 import android.view.View
-import androidx.core.view.size
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.gorshenev.themesstyles.presentation.ui.chat.views.EmojiView
 import ru.gorshenev.themesstyles.utils.Utils.px
 import ru.gorshenev.themesstyles.utils.Utils.toEmojiString
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.BaseViewHolder
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.BaseViewHolder
 import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupRightBinding
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
 

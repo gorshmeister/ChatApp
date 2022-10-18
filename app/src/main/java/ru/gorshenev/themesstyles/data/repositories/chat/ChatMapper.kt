@@ -7,7 +7,7 @@ import ru.gorshenev.themesstyles.data.network.model.MessageResponse
 import ru.gorshenev.themesstyles.data.network.model.ReactionResponse
 import ru.gorshenev.themesstyles.domain.model.chat.EmojiModel
 import ru.gorshenev.themesstyles.domain.model.chat.MessageModel
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.EmojiUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageLeftUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
@@ -55,13 +55,11 @@ object ChatMapper {
                 val index = list.indexOf(sameEmojiModel)
                 list.remove(sameEmojiModel)
 
-                val updItem =
-                    sameEmojiModel.copy(
-                        listUsersId = sameEmojiModel.listUsersId + listOf(reaction.userId)
-                    )
+                val updItem = sameEmojiModel.copy(
+                    listUsersId = sameEmojiModel.listUsersId + listOf(reaction.userId)
+                )
                 list.add(index, updItem)
-            }
-            else {
+            } else {
                 list += EmojiModel(
                     msgId = reaction.messageId,
                     name = reaction.emojiName,
@@ -147,7 +145,7 @@ object ChatMapper {
                 list.remove(sameEmojiModel)
 
                 val updItem = sameEmojiModel.copy(
-                    listUsersId = sameEmojiModel.listUsersId + listOf(reaction.userId),
+                    listUsersId = sameEmojiModel.listUsersId + listOf(reaction.userId)
                 )
                 list.add(index, updItem)
             } else {

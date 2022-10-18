@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.presentation.base_recycler_view
+package ru.gorshenev.themesstyles.presentation.base.recycler_view
 
 import androidx.recyclerview.widget.DiffUtil
 import ru.gorshenev.themesstyles.utils.ItemDiffUtil

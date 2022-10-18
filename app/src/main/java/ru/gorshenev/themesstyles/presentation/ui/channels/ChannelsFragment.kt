@@ -11,7 +11,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsBinding
 import ru.gorshenev.themesstyles.presentation.ui.channels.view_pager.PagerAdapter
-import ru.gorshenev.themesstyles.utils.Utils
+import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 
 class ChannelsFragment : Fragment(R.layout.fragment_channels) {
     private val binding: FragmentChannelsBinding by viewBinding()
@@ -25,20 +25,22 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
 
     private fun initViews() {
         with(binding) {
-            Utils.setStatusBarColor(this@ChannelsFragment,R.color.color_background_primary)
+            this@ChannelsFragment.setStatusBarColor(R.color.color_background_primary)
 
             val pagerAdapter = PagerAdapter(parentFragmentManager, lifecycle)
             fragmentViewPager.adapter = pagerAdapter
 
-            pagerAdapter.update(listOf(
-                StreamFragment().apply {
-                    arguments = bundleOf(STR_TYPE to StreamFragment.StreamType.SUBSCRIBED)
-                },
-                StreamFragment().apply {
-                    arguments = bundleOf(STR_TYPE to StreamFragment.StreamType.ALL_STREAMS)
-                }))
+            pagerAdapter.update(
+                listOf(
+                    StreamFragment().apply {
+                        arguments = bundleOf(STR_TYPE to StreamFragment.StreamType.SUBSCRIBED)
+                    },
+                    StreamFragment().apply {
+                        arguments = bundleOf(STR_TYPE to StreamFragment.StreamType.ALL_STREAMS)
+                    })
+            )
 
-            val tabs = listOf("Subscribed", "All streams")
+            val tabs = listOf(getString(R.string.subscribed), getString(R.string.all_streams))
 
             TabLayoutMediator(tabLayout, fragmentViewPager) { tab, position ->
                 tab.text = tabs[position]
@@ -57,5 +59,6 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
         const val STR_NAME = "STR_NAME"
         const val TPC_NAME = "TPC_NAME"
         const val STR_TYPE = "STR_TYPE"
+        const val ERROR_LOG_TAG = "QWE123"
     }
 }

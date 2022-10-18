@@ -6,17 +6,14 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import ru.gorshenev.themesstyles.data.repositories.stream.StreamMapper.toUi
 import ru.gorshenev.themesstyles.data.repositories.stream.StreamRepository
-import ru.gorshenev.themesstyles.presentation.ResourceProvider
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.presenter.RxPresenter
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.base.presenter.RxPresenter
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
 import java.util.concurrent.TimeUnit
 
-class StreamPresenter(
-    private val repository: StreamRepository
-) :
-    RxPresenter<StreamView>(StreamView::class.java) {
+class StreamPresenter(private val repository: StreamRepository) :
+    RxPresenter<StreamView>() {
 
     private val searchSubject: PublishSubject<String> = PublishSubject.create()
 
@@ -26,30 +23,19 @@ class StreamPresenter(
 
 
     fun loadStreams(streamType: StreamFragment.StreamType) {
-        Single.concatArrayEager(
-            repository.getStreamsFromDb(streamType),
-            repository.getStreamsFromApi(streamType)
-                .flatMap { streamModels ->
-                    repository.replaceDataInDb(streamModels, streamType)
-                        .toSingle { streamModels }
-                }
-        )
-            .materialize()
-            .filter { !it.isOnError }
-            .dematerialize { streamModels -> streamModels }
+        repository.getStreams(streamType)
             .map { streamModels -> streamModels.toUi(streamType) }
-            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { streams ->
                     firstLoadedItems = streams
                     displayedItems = streams
-                    view.showItems(streams)
-                    view.stopLoading()
+                    view?.showItems(streams)
+                    view?.stopLoading()
                 },
                 { error ->
-                    view.stopLoading()
-                    view.showError(error)
+                    view?.stopLoading()
+                    view?.showError(error)
                 },
             ).disposeOnFinish()
     }
@@ -57,14 +43,14 @@ class StreamPresenter(
     fun onStreamClick(streamId: Int) {
         Single.just(streamId)
             .flatMap { id -> expandableStream(displayedItems, id) }
-            .subscribeOn(Schedulers.computation())
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { expandedList ->
                     displayedItems = expandedList
-                    view.showItems(expandedList)
+                    view?.showItems(expandedList)
                 },
-                { error -> view.showError(error) })
+                { error -> view?.showError(error) })
             .disposeOnFinish()
     }
 
@@ -105,7 +91,7 @@ class StreamPresenter(
         val stream =
             displayedItems.find { (it is StreamUi) && it.topics.contains(topic) } as? StreamUi
         if (topic != null && stream != null) {
-            view.goToChat(topic, stream)
+            view?.goToChat(topic, stream)
         }
     }
 
@@ -118,14 +104,14 @@ class StreamPresenter(
             .distinctUntilChanged()
             .debounce(500, TimeUnit.MILLISECONDS)
             .switchMapSingle { text -> initStreamSearch(firstLoadedItems, text) }
-            .subscribeOn(Schedulers.computation())
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { filteredItems ->
-                    view.showItems(filteredItems)
+                    view?.showItems(filteredItems)
                     displayedItems = filteredItems
                 },
-                { error -> view.showError(error) })
+                { error -> view?.showError(error) })
             .disposeOnFinish()
     }
 
@@ -162,7 +148,4 @@ class StreamPresenter(
         }
     }
 
-    fun onClear() {
-//        compositeDisposable.clear()
-    }
 }

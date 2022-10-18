@@ -1,17 +1,12 @@
 package ru.gorshenev.themesstyles.utils
 
 import android.content.res.Resources
-import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import io.reactivex.Single
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.ui.people.items.PeopleUi
-import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -61,8 +56,8 @@ object Utils {
         }
     }
 
-    fun setStatusBarColor(fragment: Fragment, @ColorRes color: Int) {
-        fragment.requireActivity().window.statusBarColor = fragment.requireContext().getColor(color)
+    fun Fragment.setStatusBarColor(@ColorRes color: Int) {
+        this.requireActivity().window.statusBarColor = this.requireContext().getColor(color)
     }
 }
 

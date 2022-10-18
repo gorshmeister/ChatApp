@@ -2,39 +2,36 @@ package ru.gorshenev.themesstyles.presentation.ui.people
 
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import ru.gorshenev.themesstyles.data.repositories.people.PeopleMapper.toUi
 import ru.gorshenev.themesstyles.data.repositories.people.PeopleRepository
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.presenter.RxPresenter
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.base.presenter.RxPresenter
 import ru.gorshenev.themesstyles.presentation.ui.people.items.PeopleUi
 import java.util.concurrent.TimeUnit
 
 class PeoplePresenter(private val repository: PeopleRepository) :
-    RxPresenter<PeopleView>(PeopleView::class.java) {
-
-    private val compositeDisposable = CompositeDisposable()
-
-    private var cachedItems: List<ViewTyped> = listOf()
+    RxPresenter<PeopleView>() {
 
     private val searchSubject: PublishSubject<String> = PublishSubject.create()
+
+    private var cachedItems: List<ViewTyped> = listOf()
 
 
     fun loadPeople() {
         repository.getUsers()
             .map { it.toUi() }
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { view.showLoading() }
-            .doAfterSuccess { view.stopLoading() }
+            .doOnSubscribe { view?.showLoading() }
+            .doAfterSuccess { view?.stopLoading() }
             .subscribe(
                 { people ->
-                    view.showItems(people)
+                    view?.showItems(people)
                     cachedItems = people
                 },
-                { error -> view.showError(error) },
-            ).apply { compositeDisposable.add(this) }
+                { error -> view?.showError(error) },
+            ).disposeOnFinish()
     }
 
     fun searchPeople(query: String) {
@@ -49,10 +46,9 @@ class PeoplePresenter(private val repository: PeopleRepository) :
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { filteredPeople -> view.showItems(filteredPeople) },
-                { error -> view.showError(error) }
-            )
-            .apply { compositeDisposable.add(this) }
+                { filteredPeople -> view?.showItems(filteredPeople) },
+                { error -> view?.showError(error) }
+            ).disposeOnFinish()
     }
 
     private fun initUserSearch(
@@ -72,10 +68,6 @@ class PeoplePresenter(private val repository: PeopleRepository) :
                 }
             }
         }
-    }
-
-    fun onClear() {
-        compositeDisposable.clear()
     }
 
 }

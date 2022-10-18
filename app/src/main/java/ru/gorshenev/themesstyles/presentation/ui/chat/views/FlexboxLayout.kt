@@ -35,7 +35,7 @@ class FlexboxLayout @JvmOverloads constructor(
         var widthLine = 0
         var counter = 0
 
-        children.forEachIndexed { index, it ->
+        children.forEach {
             if (counter > 4) {
                 widthLine = widthOffset
                 counter = 1

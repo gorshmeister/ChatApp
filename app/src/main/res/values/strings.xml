@@ -2,16 +2,21 @@
     <string name="app_name">ChatApp</string>
     <string name="topic_name">Topic: #%1$s</string>
     <string name="emoji_text">%1$s %2$d</string>
-    <string name="Unknown_fragment">Unknown fragment!</string>
-    <string name="tablayout">tabLayout</string>
-    <string name="to_write">Написать...</string>
+    <string name="error">Something wrong! %1$s </string>
+    <string name="log_error">%1$s %2$s</string>
+    <string name="unknown_fragment">Unknown fragment!</string>
+    <string name="tab_layout">tabLayout</string>
+    <string name="to_write">Написать…</string>
     <string name="name_surname">Name Surname</string>
     <string name="online">online</string>
     <string name="general">#general</string>
     <string name="stream">#Stream</string>
     <string name="email_example">darrel123@gmail.com</string>
-    <string name="search">Search...</string>
-    <string name="users">Users...</string>
+    <string name="search">Search…</string>
+    <string name="users">Users…</string>
     <string name="something_wrong">Что-то пошло не так... \n\n Проверьте подключение и попробуйте снова</string>
+    <string name="subscribed">Subscribed</string>
+    <string name="all_streams">All streams</string>
+    <string name="reaction_already_exists">Реакция уже существует!</string>
 
 </resources>

@@ -1,6 +1,6 @@
-package ru.gorshenev.themesstyles.presentation
+package ru.gorshenev.themesstyles.presentation.base
 
-import ru.gorshenev.themesstyles.presentation.presenter.Presenter
+import ru.gorshenev.themesstyles.presentation.base.presenter.Presenter
 
 class MvpHelper<View, P : Presenter<View>>(
     private val callback: ViewCallback<View, P>

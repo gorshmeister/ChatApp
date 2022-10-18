@@ -1,10 +1,10 @@
-package ru.gorshenev.themesstyles.presentation.presenter
+package ru.gorshenev.themesstyles.presentation.base.presenter
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-abstract class RxPresenter<V> protected constructor(viewClass: Class<V>) :
-    BasePresenter<V>(viewClass) {
+abstract class RxPresenter<V> protected constructor() :
+    BasePresenter<V>() {
     private val disposables = CompositeDisposable()
 
     override fun detachView(isFinishing: Boolean) {

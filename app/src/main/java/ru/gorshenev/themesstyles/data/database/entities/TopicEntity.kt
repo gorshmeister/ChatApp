@@ -21,6 +21,6 @@ data class TopicEntity(
     @ColumnInfo(name = "stream_id") val streamId: Int,
     @ColumnInfo(name = "max_id") val maxId: Int,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "color") val color: String,
+    @ColumnInfo(name = "color") val color: Int,
     @ColumnInfo(name = "type") val type: StreamFragment.StreamType
 )

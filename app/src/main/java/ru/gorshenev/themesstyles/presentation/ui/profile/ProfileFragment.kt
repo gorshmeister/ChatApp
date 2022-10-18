@@ -10,42 +10,45 @@ import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentProfileBinding
 import ru.gorshenev.themesstyles.di.GlobalDI
-import ru.gorshenev.themesstyles.presentation.MvpFragment
-import ru.gorshenev.themesstyles.utils.Utils
+import ru.gorshenev.themesstyles.presentation.base.MvpFragment
+import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
+import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 
-class ProfileFragment : MvpFragment<ProfileView,ProfilePresenter>(R.layout.fragment_profile), ProfileView {
+class ProfileFragment : MvpFragment<ProfileView, ProfilePresenter>(R.layout.fragment_profile),
+    ProfileView {
     private val binding: FragmentProfileBinding by viewBinding()
 
-    override fun getPresenter(): ProfilePresenter = GlobalDI.INSTANSE.profilePresenter
+    private val profilePresenter by lazy { ProfilePresenter(GlobalDI.INSTANSE.profileRepository) }
+
+    override fun getPresenter(): ProfilePresenter = profilePresenter
 
     override fun getMvpView(): ProfileView = this
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Utils.setStatusBarColor(this@ProfileFragment, R.color.color_window_background)
-
+        this@ProfileFragment.setStatusBarColor(R.color.color_window_background)
         getPresenter().uploadProfile()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        getPresenter().onClear()
-    }
-
-    override fun showError(error: Throwable?) {
-        Snackbar.make(binding.root, "Something wrong! $error", Snackbar.LENGTH_LONG).show()
-        Log.d("qweqwe", "PROFILE PROBLEM: $error")
     }
 
     override fun setProfile(name: String, avatarUrl: String) {
         with(binding) {
             tvProfileName.text = name
             online.isVisible = true
-            Glide.with(this@ProfileFragment).load(avatarUrl)
+            Glide.with(this@ProfileFragment)
+                .load(avatarUrl)
                 .placeholder(R.color.shimmer_color)
                 .into(ivProfileAvatar)
         }
+    }
+
+    override fun showError(error: Throwable?) {
+        Snackbar.make(binding.root, getString(R.string.error, error), Snackbar.LENGTH_LONG)
+            .show()
+        Log.d(
+            ChannelsFragment.ERROR_LOG_TAG,
+            getString(R.string.log_error, "Profile problems: ", error)
+        )
     }
 
     override fun showLoading() {

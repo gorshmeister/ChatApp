@@ -1,11 +1,11 @@
 package ru.gorshenev.themesstyles.domain.model.channels
 
-import ru.gorshenev.themesstyles.R
+import androidx.annotation.ColorInt
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamFragment
 
 data class TopicModel(
     val id: Int,
     val name: String,
-    val color: String = R.color.color_primary.toString(),
+    @ColorInt val color: Int = 0,
     val type: StreamFragment.StreamType
 )

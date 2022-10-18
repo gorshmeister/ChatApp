@@ -1,8 +1,8 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat.adapter
 
 import android.view.View
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.BaseViewHolder
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.HolderFactory
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.BaseViewHolder
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.R
 
 class BottomSheetHolderFactory(

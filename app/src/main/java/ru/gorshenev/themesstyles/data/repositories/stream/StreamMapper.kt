@@ -1,5 +1,6 @@
 package ru.gorshenev.themesstyles.data.repositories.stream
 
+import androidx.core.graphics.toColorInt
 import ru.gorshenev.themesstyles.data.database.entities.StreamEntity
 import ru.gorshenev.themesstyles.data.database.entities.StreamWithTopicsEntity
 import ru.gorshenev.themesstyles.data.database.entities.TopicEntity
@@ -50,7 +51,7 @@ object StreamMapper {
         return TopicModel(
             id = this.maxId,
             name = this.name,
-            color = color,
+            color = color.toColorInt(),
             type = type
         )
     }

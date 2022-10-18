@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.presentation.base_recycler_view
+package ru.gorshenev.themesstyles.presentation.base.recycler_view
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +8,10 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.adapter.DateViewHolder
 
 abstract class HolderFactory : (ViewGroup, Int) -> BaseViewHolder<ViewTyped> {
 
+    companion object {
+        const val UNKNOWN_VIEW_TYPE = "Unknown viewType = "
+    }
+
     abstract fun createViewHolder(view: View, viewType: Int): BaseViewHolder<*>?
 
     override fun invoke(viewGroup: ViewGroup, viewType: Int): BaseViewHolder<ViewTyped> {
@@ -16,7 +20,7 @@ abstract class HolderFactory : (ViewGroup, Int) -> BaseViewHolder<ViewTyped> {
         return when (viewType) {
             R.layout.item_date -> DateViewHolder(view)
             else -> checkNotNull(createViewHolder(view, viewType)) {
-                "Unknown viewType = " + viewGroup.resources.getResourceName(viewType)
+                UNKNOWN_VIEW_TYPE + viewGroup.resources.getResourceName(viewType)
             }
         } as BaseViewHolder<ViewTyped>
     }

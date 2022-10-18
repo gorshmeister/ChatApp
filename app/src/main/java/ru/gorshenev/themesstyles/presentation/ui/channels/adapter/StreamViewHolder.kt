@@ -3,7 +3,7 @@ package ru.gorshenev.themesstyles.presentation.ui.channels.adapter
 import android.view.View
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.BaseViewHolder
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.BaseViewHolder
 import ru.gorshenev.themesstyles.databinding.ItemChannelsStreamBinding
 
 class StreamViewHolder(

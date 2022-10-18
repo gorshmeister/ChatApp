@@ -1,8 +1,8 @@
-package ru.gorshenev.themesstyles.presentation
+package ru.gorshenev.themesstyles.presentation.base
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import ru.gorshenev.themesstyles.presentation.presenter.Presenter
+import ru.gorshenev.themesstyles.presentation.base.presenter.Presenter
 
 abstract class MvpFragment<View, P : Presenter<View>>(contentLayoutId: Int) :
     Fragment(contentLayoutId), ViewCallback<View, P> {
