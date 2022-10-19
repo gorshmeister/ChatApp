@@ -1,5 +1,6 @@
 package ru.gorshenev.themesstyles.data.database.entities
 
+import androidx.annotation.ColorInt
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -21,6 +22,6 @@ data class TopicEntity(
     @ColumnInfo(name = "stream_id") val streamId: Int,
     @ColumnInfo(name = "max_id") val maxId: Int,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "color") val color: Int,
+    @ColumnInfo(name = "color") @ColorInt val color: Int,
     @ColumnInfo(name = "type") val type: StreamFragment.StreamType
 )

@@ -62,14 +62,8 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { reactions -> adapter.items = reactions },
-                { err ->
-                    Log.d(
-                        ChannelsFragment.ERROR_LOG_TAG,
-                        getString(R.string.log_error, "Bottom_sheet Problems: ", err)
-                    )
-                }
-            )
-            .apply { compositeDisposable.add(this) }
+                { Log.d(ChannelsFragment.ERROR_LOG_TAG, "Bottom_sheet Problems:  $it") }
+            ).apply { compositeDisposable.add(this) }
     }
 
     companion object {

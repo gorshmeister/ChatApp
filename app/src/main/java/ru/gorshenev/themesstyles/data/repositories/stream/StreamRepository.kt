@@ -25,17 +25,6 @@ class StreamRepository(
         )
             .debounce(400,TimeUnit.MILLISECONDS)
             .subscribeOn(executionScheduler)
-
-
-//        return Single.concatArrayEager(
-//            getStreamsLocal(streamType),
-//            getStreamsRemote(streamType)
-//        )
-//            .debounce(400, TimeUnit.MILLISECONDS)
-//            .materialize()
-//            .filter { !it.isOnError }
-//            .dematerialize { streamModels -> streamModels }
-//            .subscribeOn(executionScheduler)
     }
 
 
@@ -47,7 +36,7 @@ class StreamRepository(
             .subscribeOn(executionScheduler)
     }
 
-    private fun getStreamsRemote(streamType: StreamFragment.StreamType): Observable<MutableList<StreamModel>>? {
+    private fun getStreamsRemote(streamType: StreamFragment.StreamType): Observable<MutableList<StreamModel>> {
         return when (streamType) {
             StreamFragment.StreamType.SUBSCRIBED -> api.getStreamsSubs()
             StreamFragment.StreamType.ALL_STREAMS -> api.getStreamsAll()

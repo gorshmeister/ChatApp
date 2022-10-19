@@ -10,7 +10,7 @@ class Adapter<T : ViewTyped>(holderFactory: HolderFactory) : BaseAdapter<T>(hold
         get() = localItems
         set(newItems) {
             val itemDiffUtilCallback = ItemDiffUtil(localItems, newItems)
-            val itemDiffResult = DiffUtil.calculateDiff(itemDiffUtilCallback,true)
+            val itemDiffResult = DiffUtil.calculateDiff(itemDiffUtilCallback, true)
             localItems.clear()
             localItems.addAll(newItems)
             itemDiffResult.dispatchUpdatesTo(this)

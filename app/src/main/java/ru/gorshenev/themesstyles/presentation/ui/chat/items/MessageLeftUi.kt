@@ -8,7 +8,7 @@ data class MessageLeftUi(
     val avatar: String?,
     val name: String,
     val text: String,
-    val time: String ,
+    val time: String,
     val emojis: List<EmojiUi>,
     override val viewType: Int = R.layout.view_message_left,
 ) : ViewTyped

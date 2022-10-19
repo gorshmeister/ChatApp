@@ -191,10 +191,7 @@ class ChatPresenter(private val repository: ChatRepository) :
                 {},
                 { err ->
                     when (err) {
-                        is Errors.ReactionAlreadyExist -> {
-                            view?.showError(err)
-                            view?.showToast()
-                        }
+                        is Errors.ReactionAlreadyExist -> view?.showReactionExistsToast()
                         else -> view?.showError(err)
                     }
                 },

@@ -2,12 +2,12 @@ package ru.gorshenev.themesstyles.presentation.ui.chat.adapter
 
 import android.view.View
 import by.kirich1409.viewbindingdelegate.viewBinding
+import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupRightBinding
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.BaseViewHolder
+import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.views.EmojiView
 import ru.gorshenev.themesstyles.utils.Utils.px
 import ru.gorshenev.themesstyles.utils.Utils.toEmojiString
-import ru.gorshenev.themesstyles.presentation.base.recycler_view.BaseViewHolder
-import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupRightBinding
-import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
 
 class MessageRightViewHolder(
     view: View,
@@ -35,7 +35,9 @@ class MessageRightViewHolder(
                         messageId = emojiUi.msgId
                         userId += emojiUi.listUsersId
                         isSelected = emojiUi.isSelected
-                        setOnClickListener { onEmojiClick(emojiUi.name, emojiUi.code.toEmojiString(), item.id) }
+                        setOnClickListener {
+                            onEmojiClick(emojiUi.name, emojiUi.code.toEmojiString(), item.id)
+                        }
                     }
                 }
             )

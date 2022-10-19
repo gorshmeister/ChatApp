@@ -30,9 +30,10 @@ object Utils {
         val current = Calendar.getInstance().time
         return formatter.format(current)
     }
+
     fun getTimeFromUnix(time: Long): String {
         val formatter = SimpleDateFormat("kk:mm", Locale.getDefault())
-        return formatter.format(time*1000)
+        return formatter.format(time * 1000)
     }
 
     fun getCurrentDate(): String {
@@ -40,10 +41,11 @@ object Utils {
         val current = Calendar.getInstance().time
         return formatter.format(current)
     }
+
     fun getDateFromUnix(time: Long): String {
         val formatter = SimpleDateFormat("d MMM", Locale.getDefault())
 //        val current = Calendar.getInstance().time
-        return formatter.format(time*1000)
+        return formatter.format(time * 1000)
     }
 
     fun RecyclerView.setDivider() {
@@ -57,7 +59,8 @@ object Utils {
     }
 
     fun Fragment.setStatusBarColor(@ColorRes color: Int) {
-        this.requireActivity().window.statusBarColor = this.requireContext().getColor(color)
+        val activity = this.requireActivity()
+        activity.window.statusBarColor = activity.getColor(color)
     }
 }
 

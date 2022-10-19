@@ -26,11 +26,14 @@ interface StreamDao {
 
 
     @Transaction
-    fun replaceAll(streams: List<StreamEntity>, topics: List<TopicEntity>, strType: StreamFragment.StreamType){
+    fun replaceAll(
+        streams: List<StreamEntity>,
+        topics: List<TopicEntity>,
+        strType: StreamFragment.StreamType
+    ) {
         deleteStreams(strType)
         insertStreams(streams)
         insertTopics(topics)
     }
-
 
 }

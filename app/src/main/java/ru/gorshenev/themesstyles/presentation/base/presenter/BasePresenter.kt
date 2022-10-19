@@ -19,6 +19,4 @@ abstract class BasePresenter<View> protected constructor() : Presenter<View> {
         realView = null
     }
 
-    fun hasView(): Boolean = view != null
-
 }

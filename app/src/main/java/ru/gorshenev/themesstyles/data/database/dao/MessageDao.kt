@@ -40,7 +40,7 @@ interface MessageDao {
     fun insertMessageWithReactions(
         messageEntity: MessageEntity,
         reactions: List<ReactionEntity>
-    ){
+    ) {
         insertMessage(messageEntity)
         insertReactions(reactions)
     }
@@ -49,7 +49,7 @@ interface MessageDao {
     fun updateMessageReactions(
         messageId: Int,
         reactions: List<ReactionEntity>
-    ){
+    ) {
         deleteMessageReactions(messageId)
         insertReactions(reactions)
     }

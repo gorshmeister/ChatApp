@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.presentation.ui
+package ru.gorshenev.themesstyles.presentation.base
 
 interface BaseView {
     fun showError(error: Throwable?)

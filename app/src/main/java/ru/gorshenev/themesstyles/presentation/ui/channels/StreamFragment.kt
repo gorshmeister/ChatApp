@@ -105,7 +105,7 @@ class StreamFragment : MvpFragment<StreamView, StreamPresenter>(R.layout.fragmen
 
     override fun showError(error: Throwable?) {
         Snackbar.make(binding.root, getString(R.string.error, error), Snackbar.LENGTH_SHORT).show()
-        Log.d(ChannelsFragment.ERROR_LOG_TAG, getString(R.string.log_error, "Stream Problems: ", error))
+        Log.d(ChannelsFragment.ERROR_LOG_TAG, "Stream Problems: $error")
     }
 
     enum class StreamType {

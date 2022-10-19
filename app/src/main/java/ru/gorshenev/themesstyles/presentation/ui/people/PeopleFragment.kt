@@ -71,10 +71,7 @@ class PeopleFragment : MvpFragment<PeopleView, PeoplePresenter>(R.layout.fragmen
     override fun showError(error: Throwable?) {
         Snackbar.make(binding.root, getString(R.string.error, error), Snackbar.LENGTH_LONG)
             .show()
-        Log.d(
-            ChannelsFragment.ERROR_LOG_TAG,
-            getString(R.string.log_error, "People Problems: ", error)
-        )
+        Log.d(ChannelsFragment.ERROR_LOG_TAG, "People Problems: $error")
     }
 
     override fun showLoading() {

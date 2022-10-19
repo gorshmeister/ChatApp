@@ -6,8 +6,8 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import ru.gorshenev.themesstyles.data.repositories.people.PeopleMapper.toUi
 import ru.gorshenev.themesstyles.data.repositories.people.PeopleRepository
-import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.base.presenter.RxPresenter
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.people.items.PeopleUi
 import java.util.concurrent.TimeUnit
 

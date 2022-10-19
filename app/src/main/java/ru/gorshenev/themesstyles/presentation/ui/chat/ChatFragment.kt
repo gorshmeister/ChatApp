@@ -76,7 +76,7 @@ ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), Cha
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
-                    if (position == START_LOADING_POSITION && dy != DEFAULT_SCROLL_POSITION) {
+                    if (position == START_LOADING_POSITION && dy != ZERO_SCROLL_POSITION) {
                         getPresenter().uploadMoreMessages()
                     }
                 }
@@ -148,8 +148,9 @@ ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), Cha
         binding.rvItems.smoothScrollToPosition(adapter.itemCount)
     }
 
-    override fun showToast() {
-        Toast.makeText(context, getString(R.string.reaction_already_exists), Toast.LENGTH_SHORT).show()
+    override fun showReactionExistsToast() {
+        Toast.makeText(context, getString(R.string.reaction_already_exists), Toast.LENGTH_SHORT)
+            .show()
     }
 
     override fun showItems(items: List<ViewTyped>) {
@@ -167,7 +168,7 @@ ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), Cha
 
     override fun showError(error: Throwable?) {
         Snackbar.make(binding.root, getString(R.string.error, error), Snackbar.LENGTH_SHORT).show()
-        Log.d(ChannelsFragment.ERROR_LOG_TAG, getString(R.string.log_error, "Chat Problems:", error))
+        Log.d(ChannelsFragment.ERROR_LOG_TAG, "Chat Problems: $error")
     }
 
     override fun showLoading() {
@@ -186,7 +187,7 @@ ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), Cha
 
     companion object {
         const val START_LOADING_POSITION = 5
-        const val DEFAULT_SCROLL_POSITION = 0
+        const val ZERO_SCROLL_POSITION = 0
     }
 
 }

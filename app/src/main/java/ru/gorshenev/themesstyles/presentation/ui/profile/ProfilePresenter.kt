@@ -13,7 +13,7 @@ class ProfilePresenter(private val repository: ProfileRepository) :
             .doAfterSuccess { view?.stopLoading() }
             .doOnError { view?.showEmptyState() }
             .subscribe(
-                { view?.setProfile(it.members) },
+                { view?.setProfile(name = it.members.firstName, avatarUrl = it.members.avatarUrl) },
                 { err -> view?.showError(err) }
             ).disposeOnFinish()
     }

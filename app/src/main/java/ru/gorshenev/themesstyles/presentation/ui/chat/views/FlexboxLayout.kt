@@ -26,9 +26,9 @@ class FlexboxLayout @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-		children.forEach {
+        children.forEach {
             measureChildWithMargins(it, widthMeasureSpec, 0, heightMeasureSpec, 0)
-		}
+        }
 
         var widthOffset = 0
         var numberOfLine = 0
@@ -57,7 +57,7 @@ class FlexboxLayout @JvmOverloads constructor(
                 )
             }
             widthOffset += it.measuredWidth + gap
-		}
+        }
 
         val childrenHeight = children.map { it.measuredHeight }.maxOrNull() ?: 0
         val height = childrenHeight * (numberOfLine + 1) + (gap * numberOfLine)
