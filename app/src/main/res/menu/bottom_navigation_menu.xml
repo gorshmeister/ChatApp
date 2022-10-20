@@ -4,18 +4,18 @@
         android:id="@+id/channels"
         android:enabled="true"
         android:icon="@drawable/icon_channels"
-        android:title="Channels"/>
+        android:title="@string/channels"/>
 
     <item
         android:id="@+id/people"
         android:enabled="true"
         android:icon="@drawable/icon_people"
-        android:title="People"/>
+        android:title="@string/people"/>
 
     <item
         android:id="@+id/profile"
         android:enabled="true"
         android:icon="@drawable/icon_profile"
-        android:title="Profile"/>
+        android:title="@string/profile"/>
 
 </menu>

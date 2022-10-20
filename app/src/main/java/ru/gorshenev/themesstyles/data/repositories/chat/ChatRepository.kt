@@ -113,7 +113,7 @@ class ChatRepository(
     fun updateEmoji(
         emojiName: String,
         messageId: Int,
-        onEmojiConflict: Boolean
+        throwOnConflict: Boolean
     ): Single<CreateReactionResponse> {
         return api.getMessage(id = messageId, applyMarkdown = true)
             .map { response ->
@@ -125,7 +125,7 @@ class ChatRepository(
                     messageId,
                     emojiName,
                     isAlreadyClicked,
-                    onEmojiConflict
+                    throwOnConflict
                 )
             }
             .subscribeOn(executionScheduler)
@@ -135,10 +135,10 @@ class ChatRepository(
         messageId: Int,
         emojiName: String,
         isAlreadyClicked: Boolean = false,
-        onEmojiConflict: Boolean
+        throwOnConflict: Boolean
     ): Single<CreateReactionResponse> {
         return when {
-            onEmojiConflict && isAlreadyClicked -> throw Errors.ReactionAlreadyExist()
+            throwOnConflict && isAlreadyClicked -> throw Errors.ReactionAlreadyExist()
             isAlreadyClicked -> api.deleteEmoji(messageId, emojiName)
             else -> api.addEmoji(messageId, emojiName)
         }

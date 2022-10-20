@@ -17,5 +17,8 @@
     <string name="subscribed">Subscribed</string>
     <string name="all_streams">All streams</string>
     <string name="reaction_already_exists">Реакция уже существует!</string>
+    <string name="channels">Channels</string>
+    <string name="people">People</string>
+    <string name="profile">Profile</string>
 
 </resources>

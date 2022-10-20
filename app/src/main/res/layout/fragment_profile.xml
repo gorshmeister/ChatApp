@@ -7,6 +7,7 @@
     android:layout_marginTop="140dp"
     android:orientation="vertical">
 
+
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_profile"
         android:layout_width="match_parent"
@@ -52,37 +53,44 @@
         android:layout_height="wrap_content" />
 
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_profile_avatar"
-        android:layout_width="186dp"
-        android:layout_height="186dp"
-        android:layout_gravity="center"
-        app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize15dp"
-        tools:src="@drawable/ic_launcher_background" />
-
-    <TextView
-        android:id="@+id/tv_profile_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="32sp"
-        tools:text="@tools:sample/full_names" />
-
-    <TextView
-        android:id="@+id/online"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="online"
-        android:textColor="@color/indicator_on"
-        android:textSize="16sp"
         android:visibility="gone"
-        tools:text="online"
-        tools:visibility="visible" />
+        android:id="@+id/profileContent"
+        android:orientation="vertical">
+
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_profile_avatar"
+            android:layout_width="186dp"
+            android:layout_height="186dp"
+            android:layout_gravity="center"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize15dp"
+            tools:src="@drawable/ic_launcher_background" />
+
+        <TextView
+            android:id="@+id/tv_profile_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/online"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/online"
+            android:textColor="@color/indicator_on"
+            android:textSize="16sp"
+            />
+    </LinearLayout>
 
 
 </LinearLayout>

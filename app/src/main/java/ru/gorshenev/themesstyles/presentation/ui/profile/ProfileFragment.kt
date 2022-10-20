@@ -40,21 +40,16 @@ class ProfileFragment : MvpFragment<ProfileView, ProfilePresenter>(R.layout.frag
                 .placeholder(R.color.shimmer_color)
                 .into(ivProfileAvatar)
 
-            tvProfileName.isVisible = true
-            ivProfileAvatar.isVisible = true
-            online.isVisible = true
+            profileContent.isVisible = true
             emptyState.tvEmptyState.isGone = true
         }
     }
 
     override fun showEmptyState() {
         with(binding) {
-            tvProfileName.isGone = true
-            ivProfileAvatar.isGone = true
-            online.isGone = true
+            profileContent.isGone = true
             stopLoading()
             emptyState.tvEmptyState.isVisible = true
-
         }
     }
 
