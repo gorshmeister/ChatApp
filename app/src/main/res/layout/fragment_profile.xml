@@ -53,14 +53,6 @@
         android:layout_height="wrap_content" />
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:id="@+id/profileContent"
-        android:orientation="vertical">
-
-
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_profile_avatar"
             android:layout_width="186dp"
@@ -90,7 +82,5 @@
             android:textColor="@color/indicator_on"
             android:textSize="16sp"
             />
-    </LinearLayout>
-
 
 </LinearLayout>
