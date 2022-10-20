@@ -1,17 +1,11 @@
 package ru.gorshenev.themesstyles.presentation.ui.profile
 
-import java.lang.Error
+import ru.gorshenev.themesstyles.presentation.base.BaseView
 
-interface ProfileView {
-
-    fun showLoading()
-
-    fun stopLoading()
-
-    fun showError(error: Throwable?)
+interface ProfileView : BaseView {
 
     fun setProfile(name: String, avatarUrl: String)
 
-
+    fun showEmptyState()
 
 }

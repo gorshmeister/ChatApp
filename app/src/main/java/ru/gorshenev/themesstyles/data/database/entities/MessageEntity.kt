@@ -15,7 +15,7 @@ data class MessageEntity(
     @ColumnInfo(name = "subject") val subject: String
 )
 
-data class MessageWithReactions(
+data class MessageWithReactionsEntity(
     @Embedded
     val message: MessageEntity,
     @Relation(parentColumn = "msgId", entityColumn = "message_id")

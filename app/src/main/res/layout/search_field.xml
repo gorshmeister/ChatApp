@@ -8,21 +8,21 @@
         android:id="@+id/et_search"
         android:layout_width="310dp"
         android:layout_height="56dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:backgroundTint="#1E1E1E"
         android:fontFamily="sans-serif-thin"
-        android:hint="Search..."
+        android:hint="@string/search"
         android:maxLines="1"
-        android:paddingLeft="30dp"
+        android:paddingStart="30dp"
         android:textColor="@color/white"
-        android:textColorHint="#FFFFFF"
+        android:textColorHint="@color/white"
         android:textSize="24sp"
         android:textStyle="bold" />
 
     <View
         android:layout_width="310dp"
         android:layout_height="1dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="55dp"
         android:background="@drawable/draw_search_field" />
 
@@ -31,7 +31,7 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_gravity="end|center"
-        android:layout_marginRight="28dp"
+        android:layout_marginEnd="28dp"
         android:src="@drawable/icon_search" />
 
 </FrameLayout>

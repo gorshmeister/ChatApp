@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,54 +7,31 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_msg_avatar"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="10dp"
-        android:src="@drawable/ic_launcher_background"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+        style="@style/Widget.MyApp.LeftMessage_Avatar"
         tools:src="@tools:sample/avatars" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/background"
-        style="@style/CardViewLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        style="@style/CardViewLeft">
 
         <TextView
             android:id="@+id/tv_msg_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#2A9D8F"
-            android:textSize="14sp"
-            android:textStyle="bold"
+            style="@style/Widget.MyApp.LeftMessage_Name"
             tools:text="@tools:sample/full_names" />
 
         <TextView
             android:id="@+id/tv_msg_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:maxWidth="220dp"
-            android:textColor="@color/text_color"
-            android:textSize="16sp"
+            style="@style/Widget.MyApp.LeftMessage_Text"
             tools:text="sdafadfkajdhsf" />
 
         <TextView
             android:id="@+id/tv_msg_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:textColor="@color/time_color"
-            android:textSize="11sp"
+            style="@style/Widget.MyApp.LeftMessage_Time"
             tools:text="@tools:sample/date/hhmm" />
     </androidx.cardview.widget.CardView>
 
     <ru.gorshenev.themesstyles.presentation.ui.chat.views.FlexboxLayout
         android:id="@+id/flexbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:layout_marginBottom="7dp" />
+        style="@style/Widget.MyApp.LeftMessage_Flexbox" />
 
 </merge>

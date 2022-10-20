@@ -7,16 +7,15 @@ import okhttp3.Response
 
 object Interceptor : Interceptor {
 
+    private const val AUTHORIZATION = "Authorization"
     private const val EMAIL = "gorshmeister@gmail.com"
     private const val API_KEY = "Q449RzIFTSEeCOMGFclHxoiC8AtPRJft"
 
     override fun intercept(chain: Interceptor.Chain): Response {
-       val request: Request = chain.request()
-       val authRequest: Request = request.newBuilder()
-           .header("Authorization",
-               Credentials.basic(EMAIL, API_KEY)
-           ).build()
+        val request: Request = chain.request()
+        val authRequest: Request = request.newBuilder()
+            .header(AUTHORIZATION, Credentials.basic(EMAIL, API_KEY)).build()
 
-       return chain.proceed(authRequest)
-   }
+        return chain.proceed(authRequest)
+    }
 }

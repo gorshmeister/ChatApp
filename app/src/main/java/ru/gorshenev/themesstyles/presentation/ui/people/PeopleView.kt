@@ -1,15 +1,9 @@
 package ru.gorshenev.themesstyles.presentation.ui.people
 
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
-import java.lang.Error
+import ru.gorshenev.themesstyles.presentation.base.BaseView
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 
-interface PeopleView {
-
-    fun showLoading()
-
-    fun stopLoading()
-
-    fun showError(error: Throwable?)
+interface PeopleView : BaseView {
 
     fun showItems(items: List<ViewTyped>)
 }

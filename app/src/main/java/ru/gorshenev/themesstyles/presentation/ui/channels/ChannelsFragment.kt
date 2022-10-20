@@ -2,7 +2,6 @@ package ru.gorshenev.themesstyles.presentation.ui.channels
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -12,9 +11,11 @@ import com.google.android.material.tabs.TabLayoutMediator
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsBinding
 import ru.gorshenev.themesstyles.presentation.ui.channels.view_pager.PagerAdapter
+import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 
 class ChannelsFragment : Fragment(R.layout.fragment_channels) {
     private val binding: FragmentChannelsBinding by viewBinding()
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -24,21 +25,22 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
 
     private fun initViews() {
         with(binding) {
-            requireActivity().window.statusBarColor =
-                getColor(requireContext(), R.color.colorPrimaryBlack)
+            this@ChannelsFragment.setStatusBarColor(R.color.color_background_primary)
 
             val pagerAdapter = PagerAdapter(parentFragmentManager, lifecycle)
             fragmentViewPager.adapter = pagerAdapter
 
-            pagerAdapter.update(listOf(
-                StreamFragment().apply {
-                    arguments = bundleOf(STR_TYPE to StreamFragment.StreamType.SUBSCRIBED)
-                },
-                StreamFragment().apply {
-                    arguments = bundleOf(STR_TYPE to StreamFragment.StreamType.ALL_STREAMS)
-                }))
+            pagerAdapter.update(
+                listOf(
+                    StreamFragment().apply {
+                        arguments = bundleOf(STR_TYPE to StreamFragment.StreamType.SUBSCRIBED)
+                    },
+                    StreamFragment().apply {
+                        arguments = bundleOf(STR_TYPE to StreamFragment.StreamType.ALL_STREAMS)
+                    })
+            )
 
-            val tabs = listOf("Subscribed", "All streams")
+            val tabs = listOf(getString(R.string.subscribed), getString(R.string.all_streams))
 
             TabLayoutMediator(tabLayout, fragmentViewPager) { tab, position ->
                 tab.text = tabs[position]
@@ -57,5 +59,6 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
         const val STR_NAME = "STR_NAME"
         const val TPC_NAME = "TPC_NAME"
         const val STR_TYPE = "STR_TYPE"
+        const val ERROR_LOG_TAG = "QWE123"
     }
 }

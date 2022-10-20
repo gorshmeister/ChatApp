@@ -1,10 +1,9 @@
 package ru.gorshenev.themesstyles.data.database.dao
 
 import androidx.room.*
-import io.reactivex.Completable
 import io.reactivex.Single
 import ru.gorshenev.themesstyles.data.database.entities.StreamEntity
-import ru.gorshenev.themesstyles.data.database.entities.StreamWithTopics
+import ru.gorshenev.themesstyles.data.database.entities.StreamWithTopicsEntity
 import ru.gorshenev.themesstyles.data.database.entities.TopicEntity
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamFragment
 
@@ -13,21 +12,28 @@ interface StreamDao {
 
     @Transaction
     @Query("SELECT * FROM stream WHERE strType LIKE :streamType")
-    fun getStreams(streamType: StreamFragment.StreamType): Single<List<StreamWithTopics>>
+    fun getStreams(streamType: StreamFragment.StreamType): Single<List<StreamWithTopicsEntity>>
 
 
-
-    @Query("DELETE FROM stream WHERE strType in (:strType)")
-    fun deleteStreams(strType: StreamFragment.StreamType): Completable
-
-    @Query("DELETE FROM topic WHERE type in (:type)")
-    fun deleteTopics(type: StreamFragment.StreamType): Completable
-
+    @Query("DELETE FROM stream WHERE strType in (:streamType)")
+    fun deleteStreams(streamType: StreamFragment.StreamType)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(stream: StreamEntity): Completable
+    fun insertStreams(streams: List<StreamEntity>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(topics: List<TopicEntity>): Completable
+    fun insertTopics(topics: List<TopicEntity>)
+
+
+    @Transaction
+    fun replaceAll(
+        streams: List<StreamEntity>,
+        topics: List<TopicEntity>,
+        strType: StreamFragment.StreamType
+    ) {
+        deleteStreams(strType)
+        insertStreams(streams)
+        insertTopics(topics)
+    }
 
 }

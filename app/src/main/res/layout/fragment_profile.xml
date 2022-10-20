@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_marginTop="140dp"
     android:layout_height="match_parent"
+    android:layout_marginTop="140dp"
     android:orientation="vertical">
+
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_profile"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="wrap_content">
 
         <LinearLayout
@@ -23,7 +23,7 @@
                 android:layout_height="186dp"
                 android:layout_gravity="center"
                 android:background="@color/shimmer_color"
-                app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize15dp"/>
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize15dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -31,7 +31,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="26dp"
                 android:background="@color/shimmer_color"
-                android:text="Name Surname"
+                android:text="@string/name_surname"
                 android:textSize="32sp" />
 
             <TextView
@@ -40,44 +40,47 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:background="@color/shimmer_color"
-                android:text="online"
-                android:textSize="16sp"
-                />
+                android:text="@string/online"
+                android:textSize="16sp" />
 
         </LinearLayout>
     </com.facebook.shimmer.ShimmerFrameLayout>
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_profile_avatar"
-        android:layout_width="186dp"
-        android:layout_height="186dp"
-        android:layout_gravity="center"
-        app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize15dp"
-        tools:src="@drawable/ic_launcher_background" />
-
-    <TextView
-        android:id="@+id/tv_profile_name"
+    <include
+        android:id="@+id/emptyState"
+        layout="@layout/view_empty_state"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="32sp"
-        tools:text="@tools:sample/full_names" />
+        android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/online"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:gravity="center"
-        tools:visibility="visible"
-        android:text="online"
-        android:textColor="#4AB54D"
-        android:textSize="16sp"
-        tools:text="online" />
 
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_profile_avatar"
+            android:layout_width="186dp"
+            android:layout_height="186dp"
+            android:layout_gravity="center"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize15dp"
+            tools:src="@drawable/ic_launcher_background" />
+
+        <TextView
+            android:id="@+id/tv_profile_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/online"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/online"
+            android:textColor="@color/indicator_on"
+            android:textSize="16sp"
+            />
 
 </LinearLayout>

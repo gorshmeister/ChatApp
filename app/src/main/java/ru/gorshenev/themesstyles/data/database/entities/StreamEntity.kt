@@ -1,5 +1,6 @@
 package ru.gorshenev.themesstyles.data.database.entities
 
+import androidx.annotation.ColorInt
 import androidx.room.*
 import ru.gorshenev.themesstyles.data.database.AppDataBase
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamFragment
@@ -9,13 +10,13 @@ data class StreamEntity(
     @PrimaryKey(autoGenerate = true) val primaryKey: Int = 0,
     @ColumnInfo(name = "streamId") val streamId: Int,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "color") val color: String = "#2A9D8F",
+    @ColumnInfo(name = "color") @ColorInt val color: Int = 0,
     @ColumnInfo(name = "strType") val type: StreamFragment.StreamType
 )
 
-data class StreamWithTopics(
+data class StreamWithTopicsEntity(
     @Embedded
-    var stream: StreamEntity,
+    val stream: StreamEntity,
     @Relation(parentColumn = "streamId", entityColumn = "stream_id")
-    var topics: List<TopicEntity> = ArrayList()
+    val topics: List<TopicEntity> = ArrayList()
 )

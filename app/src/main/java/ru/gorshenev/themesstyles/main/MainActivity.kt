@@ -21,7 +21,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initViews()
+        if (savedInstanceState == null)
+            initViews()
 //        registerNetworkCallback()
     }
 
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.profile -> {
                         ProfileFragment()
                     }
-                    else -> throw Error("Unknown fragment!!@!@!@!")
+                    else -> throw Error(getString(R.string.unknown_fragment))
                 }
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, selectedFragment)
@@ -48,9 +49,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             supportFragmentManager.addOnBackStackChangedListener {
-                bottomNavigation.isVisible = supportFragmentManager.backStackEntryCount == 0
+                bottomNavigation.isVisible =
+                    supportFragmentManager.backStackEntryCount == BACK_STACK_IS_EMPTY
             }
         }
+    }
+
+    companion object {
+        const val BACK_STACK_IS_EMPTY = 0
     }
 
     private fun registerNetworkCallback() {

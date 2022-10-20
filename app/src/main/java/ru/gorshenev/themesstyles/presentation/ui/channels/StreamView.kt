@@ -1,20 +1,13 @@
 package ru.gorshenev.themesstyles.presentation.ui.channels
 
-import ru.gorshenev.themesstyles.data.database.AppDataBase
-import ru.gorshenev.themesstyles.data.repositories.StreamRepository
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.base.BaseView
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
 
-interface StreamView {
-
-    fun showLoading()
-
-    fun stopLoading()
+interface StreamView : BaseView {
 
     fun showItems(items: List<ViewTyped>)
-
-    fun showError(error: Throwable?)
 
     fun goToChat(topic: TopicUi, stream: StreamUi)
 

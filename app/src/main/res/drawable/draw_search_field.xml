@@ -3,6 +3,6 @@
     android:shape="rectangle">
 
     <size android:height="2dp" />
-    <solid android:color="#323232" />
+    <solid android:color="@color/search_field_draw" />
 
 </shape>

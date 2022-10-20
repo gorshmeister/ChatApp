@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:windowBackground"
     android:clickable="true"
-    android:focusable="true"
-    android:background="?android:windowBackground">
+    android:focusable="true">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -22,15 +22,25 @@
         android:id="@+id/tv_topic_name"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="#1C1C1C"
+        android:background="@color/color_background_secondary"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
-        android:textColor="#CCCCCC"
+        android:textColor="@color/text_color_secondary"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:text="Topic: #topic_name" />
+
+    <include
+        android:id="@+id/emptyState"
+        layout="@layout/view_empty_state"
+        android:layout_marginTop="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_topic_name" />
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_chat"
@@ -77,6 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="62dp"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -90,29 +101,30 @@
         android:id="@+id/et_msgField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="12dp"
         android:layout_marginBottom="6dp"
         android:background="@drawable/bg_input_field"
         android:ems="10"
-        android:hint="Написать..."
+        android:hint="@string/to_write"
         android:inputType="textPersonName"
         android:minHeight="48dp"
-        android:paddingLeft="21dp"
-        android:paddingRight="10dp"
-        android:textColor="#CCCCCC"
-        android:textColorHint="#CCCCCC"
+        android:paddingStart="21dp"
+        android:paddingEnd="10dp"
+        android:textColor="@color/text_color_secondary"
+        android:textColorHint="@color/text_color_secondary"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_sendMsg"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="Написать..." />
+        tools:text="@string/to_write"
+        />
 
     <ImageView
         android:id="@+id/btn_sendMsg"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="12dp"
         android:src="@drawable/icon_input_field_plus"
         app:layout_constraintBottom_toBottomOf="parent"

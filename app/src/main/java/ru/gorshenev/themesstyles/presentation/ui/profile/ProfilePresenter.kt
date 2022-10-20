@@ -1,38 +1,21 @@
 package ru.gorshenev.themesstyles.presentation.ui.profile
 
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import ru.gorshenev.themesstyles.data.network.Network
-import ru.gorshenev.themesstyles.data.repositories.Reactions.MY_USER_ID
-import java.util.concurrent.TimeUnit
+import ru.gorshenev.themesstyles.data.repositories.profile.ProfileRepository
+import ru.gorshenev.themesstyles.presentation.base.presenter.RxPresenter
 
-class ProfilePresenter(private val view: ProfileView) {
-
-    private val compositeDisposable = CompositeDisposable()
-
-    private val api = Network.api
-
+class ProfilePresenter(private val repository: ProfileRepository) :
+    RxPresenter<ProfileView>() {
 
     fun uploadProfile() {
-        api.getUser(MY_USER_ID)
-            .delay(2, TimeUnit.SECONDS)
-            .subscribeOn(Schedulers.io())
+        repository.getUser()
             .observeOn(AndroidSchedulers.mainThread())
-//            .doAfterSuccess { view.stopLoading() }
+            .doAfterSuccess { view?.stopLoading() }
+            .doOnError { view?.showEmptyState() }
             .subscribe(
-                { response ->
-                    view.setProfile(
-                        name = response.members.firstName,
-                        avatarUrl = response.members.avatarUrl
-                    )
-                },
-                { err -> view.showError(err) }
-            )
-            .apply { compositeDisposable.add(this) }
+                { view?.setProfile(name = it.members.firstName, avatarUrl = it.members.avatarUrl) },
+                { err -> view?.showError(err) }
+            ).disposeOnFinish()
     }
 
-    fun onClear() {
-        compositeDisposable.clear()
-    }
 }

@@ -1,7 +1,7 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat.items
 
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 
 data class ReactionsUi(
     val category: String,

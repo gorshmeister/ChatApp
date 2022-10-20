@@ -1,14 +1,12 @@
 package ru.gorshenev.themesstyles.utils
 
 import android.content.res.Resources
+import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import io.reactivex.Single
 import ru.gorshenev.themesstyles.R
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.ui.people.items.PeopleUi
-import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -32,9 +30,10 @@ object Utils {
         val current = Calendar.getInstance().time
         return formatter.format(current)
     }
+
     fun getTimeFromUnix(time: Long): String {
         val formatter = SimpleDateFormat("kk:mm", Locale.getDefault())
-        return formatter.format(time*1000)
+        return formatter.format(time * 1000)
     }
 
     fun getCurrentDate(): String {
@@ -42,10 +41,11 @@ object Utils {
         val current = Calendar.getInstance().time
         return formatter.format(current)
     }
+
     fun getDateFromUnix(time: Long): String {
         val formatter = SimpleDateFormat("d MMM", Locale.getDefault())
 //        val current = Calendar.getInstance().time
-        return formatter.format(time*1000)
+        return formatter.format(time * 1000)
     }
 
     fun RecyclerView.setDivider() {
@@ -56,6 +56,11 @@ object Utils {
             divider.setDrawable(it)
             addItemDecoration(divider)
         }
+    }
+
+    fun Fragment.setStatusBarColor(@ColorRes color: Int) {
+        val activity = this.requireActivity()
+        activity.window.statusBarColor = activity.getColor(color)
     }
 }
 

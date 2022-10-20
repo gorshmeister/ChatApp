@@ -7,39 +7,21 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/background"
-        style="@style/CardViewRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp">
+        style="@style/CardViewRight">
 
         <TextView
             android:id="@+id/tv_msg_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxWidth="220dp"
-            android:textColor="@color/text_color"
-            android:textSize="16sp"
+            style="@style/Widget.MyApp.RightMessage_Text"
             tools:text="Text text text" />
 
         <TextView
             android:id="@+id/tv_msg_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginTop="20dp"
-            android:textColor="#E5E5E5"
-            android:textSize="11sp"
+            style="@style/Widget.MyApp.RightMessage_Time"
             tools:text="@tools:sample/date/hhmm" />
     </androidx.cardview.widget.CardView>
 
     <ru.gorshenev.themesstyles.presentation.ui.chat.views.FlexboxLayout
         android:id="@+id/flexbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="7dp" />
+        style="@style/Widget.MyApp.RightMessage_Flexbox" />
 
-    <!--//todo
-    Удалить -> marginRight="4dp" у flexbox, поставить в CusVieGrRight gap    -->
 </merge>

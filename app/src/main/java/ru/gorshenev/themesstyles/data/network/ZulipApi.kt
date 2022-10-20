@@ -1,8 +1,6 @@
 package ru.gorshenev.themesstyles.data.network
 
-import io.reactivex.Observable
 import io.reactivex.Single
-import kotlinx.serialization.ExperimentalSerializationApi
 import retrofit2.http.*
 import ru.gorshenev.themesstyles.data.network.model.*
 
@@ -14,24 +12,24 @@ interface ZulipApi {
     fun getUsers(): Single<GetUserResponse>
 
     @GET("users/{user_id_or_email}/presence")
-    fun getUserPresence(@Path("user_id_or_email") id: Int): Single<GetUserPresence>
+    fun getUserPresence(@Path("user_id_or_email") id: Int): Single<GetUserPresenceResponse>
 
 
     @GET("messages/{message_id}")
     fun getMessage(
         @Path("message_id") id: Int,
         @Query("apply_markdown") applyMarkdown: Boolean = false,
-    ): Observable<GetOneMessageResponse>
+    ): Single<GetOneMessageResponse>
 
     @GET("messages")
     fun getMessages(
         @Query("anchor") anchor: Long,
         @Query("num_before") numBefore: Int,
-        @Query("num_after") numAfter: Int,
+        @Query("num_after") numAfter: Int = 0,
         @Query("narrow") narrow: String,
         @Query("client_gravatar") clientGravatar: Boolean,
-        @Query("apply_markdown") applyMarkdown: Boolean,
-    ): Observable<GetMessageResponse>
+        @Query("apply_markdown") applyMarkdown: Boolean
+    ): Single<GetMessageResponse>
 
     @POST("messages")
     fun sendMessage(
@@ -40,6 +38,7 @@ interface ZulipApi {
         @Query("topic") topic: String,
         @Query("content") content: String
     ): Single<CreateMessageResponse>
+
 
     @POST("messages/{message_id}/reactions")
     fun addEmoji(
@@ -69,18 +68,18 @@ interface ZulipApi {
         @Query("event_types") types: String,
         @QueryMap narrow: Map<String, String>,
         @Query("slim_presence") slimPresence: Boolean = true,
-    ): Observable<CreateQueueResponse>
+    ): Single<CreateQueueResponse>
 
     @GET("events")
     fun getEventsFromQueue(
         @Query("queue_id") queueId: String,
         @Query("last_event_id") lastId: Int
-    ): Observable<GetEventsResponse>
+    ): Single<GetMessageEventsResponse>
 
     @GET("events")
     fun getEmojiEventsFromQueue(
         @Query("queue_id") queueId: String,
         @Query("last_event_id") lastId: Int
-    ): Observable<GetEmojiEventsResponse>
+    ): Single<GetEmojiEventsResponse>
 }
 

@@ -5,7 +5,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.ViewCustomViewGroupLeftBinding
-import ru.gorshenev.themesstyles.presentation.base_recycler_view.BaseViewHolder
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.BaseViewHolder
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.EmojiUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageLeftUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.views.EmojiView
@@ -31,7 +31,6 @@ class MessageLeftViewHolder(
                 ivMsgAvatar.setImageResource(R.drawable.ic_launcher_background)
             else
                 Glide.with(itemView).load(item.avatar).into(ivMsgAvatar)
-//            ivMsgAvatar.setImageResource(item.avatar)
             tvMsgName.text = item.name
             tvMsgText.text = item.text
             tvMsgTime.text = item.time
@@ -45,14 +44,16 @@ class MessageLeftViewHolder(
                         messageId = emojiUi.msgId
                         userId += emojiUi.listUsersId
                         isSelected = emojiUi.isSelected
-                        setOnClickListener { onEmojiClick(emojiUi.name, emojiUi.code.toEmojiString(), item.id) }
+                        setOnClickListener {
+                            onEmojiClick(emojiUi.name, emojiUi.code.toEmojiString(), item.id)
+                        }
                     }
                 }
             )
             if (item.emojis.isNotEmpty()) {
                 flexbox.addViews(listOf(EmojiView(flexbox.context).apply {
                     text = "+"
-                    this.setSize(48.px, 29.px)
+                    this.setSize(45.px, 30.px)
                     setOnClickListener { onMessageClick(item.id) }
                 }))
             }
