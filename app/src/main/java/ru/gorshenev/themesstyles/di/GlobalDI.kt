@@ -7,10 +7,6 @@ import ru.gorshenev.themesstyles.data.repositories.chat.ChatRepository
 import ru.gorshenev.themesstyles.data.repositories.people.PeopleRepository
 import ru.gorshenev.themesstyles.data.repositories.profile.ProfileRepository
 import ru.gorshenev.themesstyles.data.repositories.stream.StreamRepository
-import ru.gorshenev.themesstyles.mvi.Store
-import ru.gorshenev.themesstyles.mvi.UiState
-import ru.gorshenev.themesstyles.mvi.mvi_profile.ProfileMiddleware
-import ru.gorshenev.themesstyles.mvi.mvi_profile.ProfileReducer
 
 class GlobalDI private constructor(private val applicationContext: Context) {
 
@@ -26,12 +22,6 @@ class GlobalDI private constructor(private val applicationContext: Context) {
 
     val profileRepository by lazy { ProfileRepository(api) }
 
-
-    val profileStore = (Store(
-        ProfileReducer(),
-        listOf(ProfileMiddleware(profileRepository)),
-        UiState(loading = true, data = null, error = null)
-    ))
 
     companion object {
         lateinit var INSTANSE: GlobalDI

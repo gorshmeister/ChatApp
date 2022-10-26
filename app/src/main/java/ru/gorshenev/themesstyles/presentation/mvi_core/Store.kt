@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.mvi
+package ru.gorshenev.themesstyles.presentation.mvi_core
 
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
@@ -6,11 +6,12 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import ru.gorshenev.themesstyles.utils.Utils.plusAssign
 
-class Store<A : Any, S : Any>(
+class Store<A : BaseAction, S : BaseState, E : UiEffects>(
     private val reducer: Reducer<S, A>,
     private val middlewares: List<Middleware<A, S>>,
-    private val initialState: S
+    initialState: S
 ) {
     private val state = BehaviorRelay.createDefault(initialState)
     private val actions = PublishRelay.create<A>()
@@ -33,17 +34,17 @@ class Store<A : Any, S : Any>(
     }
 
 
-    fun bind(view: MviView<A, S>): Disposable {
+    fun bind(view: MviView<A, S, E>): Disposable {
         val disposable = CompositeDisposable()
         disposable += state
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::render)
+        disposable += view.effects
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view::handleUiEffects)
         disposable += view.actions.subscribe(actions::accept)
 
         return disposable
     }
 }
 
-private operator fun CompositeDisposable.plusAssign(disposable: Disposable) {
-    this.add(disposable)
-}

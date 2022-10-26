@@ -6,6 +6,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import ru.gorshenev.themesstyles.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -62,5 +64,10 @@ object Utils {
         val activity = this.requireActivity()
         activity.window.statusBarColor = activity.getColor(color)
     }
+
+    operator fun CompositeDisposable.plusAssign(disposable: Disposable) {
+        this.add(disposable)
+    }
+
 }
 

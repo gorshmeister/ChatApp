@@ -15,43 +15,61 @@ import io.reactivex.Observable
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentProfileBinding
 import ru.gorshenev.themesstyles.di.GlobalDI
-import ru.gorshenev.themesstyles.mvi.Action
-import ru.gorshenev.themesstyles.mvi.MviView
-import ru.gorshenev.themesstyles.MyViewModelFactory
-import ru.gorshenev.themesstyles.mvi.UiState
-import ru.gorshenev.themesstyles.mvi.mvi_profile.MviViewModel
+import ru.gorshenev.themesstyles.presentation.mvi_core.*
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 
-class ProfileFragment : Fragment(R.layout.fragment_profile), MviView<Action, UiState> {
+class ProfileFragment : Fragment(R.layout.fragment_profile),
+    MviView<ProfileAction, ProfileState, UiEffects> {
     private val binding: FragmentProfileBinding by viewBinding()
 
-    private val profileStore = GlobalDI.INSTANSE.profileStore
+    private val profileRepository = GlobalDI.INSTANSE.profileRepository
 
-    private val profileViewModel: MviViewModel<Action, UiState> by viewModels {
-        MyViewModelFactory(profileStore)
+    private val profileStore: Store<ProfileAction, ProfileState, UiEffects> =
+        Store(
+            reducer = ProfileReducer(),
+            middlewares = listOf(ProfileMiddleware(profileRepository)),
+            initialState = ProfileState(isLoading = false, data = null, error = null)
+        )
+
+    private val profileViewModel: MviViewModel<ProfileAction, ProfileState, UiEffects> by viewModels {
+        MviViewModelFactory(profileStore)
     }
 
-    private val _actions = PublishRelay.create<Action>()
+    private val _actions = PublishRelay.create<ProfileAction>()
+
+    companion object {
+        val uiEffect = PublishRelay.create<UiEffects>()
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this@ProfileFragment.setStatusBarColor(R.color.color_window_background)
 
-        _actions.accept(Action.UploadProfile)
         profileViewModel.bind(this)
+        _actions.accept(ProfileAction.UploadProfile)
     }
 
-    override fun render(state: UiState) {
-        if (state.loading) showLoading() else stopLoading()
-
-        if (state.error != null) showError(state.error)
-
-        if (state.data != null) setProfile(state.data.first, state.data.second)
-    }
-
-    override val actions: Observable<Action>
+    override val actions: Observable<ProfileAction>
         get() = _actions
+
+    override val effects: Observable<UiEffects>
+        get() = uiEffect
+
+    override fun render(state: ProfileState) {
+        when {
+            state.isLoading -> showLoading()
+            state.error != null -> displayEmptyState()
+            state.data != null -> displayDownloadedProfile(state.data)
+        }
+    }
+
+    override fun handleUiEffects(effect: UiEffects) {
+        when (effect) {
+            is UiEffects.SnackBar -> displayError(effect.error)
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -59,22 +77,23 @@ class ProfileFragment : Fragment(R.layout.fragment_profile), MviView<Action, UiS
     }
 
 
-    fun setProfile(name: String, avatarUrl: String) {
+    private fun displayDownloadedProfile(profile: Profile) {
         with(binding) {
-            tvProfileName.text = name
             Glide.with(this@ProfileFragment)
-                .load(avatarUrl)
+                .load(profile.avatar)
                 .placeholder(R.color.shimmer_color)
                 .into(ivProfileAvatar)
+            tvProfileName.text = profile.name
 
             ivProfileAvatar.isVisible = true
             tvProfileName.isVisible = true
             online.isVisible = true
+            stopLoading()
             emptyState.tvEmptyState.isGone = true
         }
     }
 
-    fun showEmptyState() {
+    private fun displayEmptyState() {
         with(binding) {
             ivProfileAvatar.isGone = true
             tvProfileName.isGone = true
@@ -84,20 +103,20 @@ class ProfileFragment : Fragment(R.layout.fragment_profile), MviView<Action, UiS
         }
     }
 
-    fun showError(error: Throwable?) {
+    private fun displayError(error: Throwable?) {
         Snackbar.make(binding.root, getString(R.string.error, error), Snackbar.LENGTH_LONG)
             .show()
         Log.d(ChannelsFragment.ERROR_LOG_TAG, "Profile problems: $error")
     }
 
-    fun showLoading() {
+    private fun showLoading() {
         binding.shimmerProfile.apply {
             visibility = View.VISIBLE
             showShimmer(true)
         }
     }
 
-    fun stopLoading() {
+    private fun stopLoading() {
         binding.shimmerProfile.apply {
             visibility = View.GONE
             hideShimmer()

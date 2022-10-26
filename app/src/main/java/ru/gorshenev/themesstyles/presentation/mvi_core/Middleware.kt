@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.mvi
+package ru.gorshenev.themesstyles.presentation.mvi_core
 
 import io.reactivex.Observable
 
