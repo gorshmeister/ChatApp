@@ -1,28 +1,26 @@
 package ru.gorshenev.themesstyles.presentation.ui.profile
 
 import ru.gorshenev.themesstyles.presentation.mvi_core.Reducer
+import ru.gorshenev.themesstyles.presentation.mvi_core.UiEffects
 
-class ProfileReducer : Reducer<ProfileState, ProfileAction> {
+class ProfileReducer : Reducer<ProfileAction, ProfileState, UiEffects> {
 
-    override fun reduce(state: ProfileState, action: ProfileAction): ProfileState {
-
+    override fun reduceToState(action: ProfileAction, state: ProfileState): ProfileState {
         return when (action) {
-            ProfileInternalAction.ProfileLoadingAction -> state.copy(
-                isLoading = true,
-                data = null,
-                error = null
+            ProfileInternalAction.StartLoading -> ProfileState.Loading
+            is ProfileInternalAction.DownloadSuccessful -> ProfileState.Result(
+                profileName = action.profileName,
+                avatarUrl = action.avatarUrl
             )
-            is ProfileInternalAction.ProfileSuccessAction -> state.copy(
-                isLoading = false,
-                data = Profile(action.name,action.avatar),
-                error = null,
-            )
-            is ProfileInternalAction.ProfileFailureAction -> state.copy(
-                isLoading = false,
-                data = null,
-                error = action.error,
-            )
-            ProfileAction.UploadProfile -> state
+            is ProfileInternalAction.DownloadFailure -> ProfileState.Error
+            else -> state
+        }
+    }
+
+    override fun reduceToEffect(action: ProfileAction, state: ProfileState): UiEffects? {
+        return when (action) {
+            is ProfileInternalAction.DownloadFailure -> UiEffects.SnackBar(action.error)
+            else -> null
         }
     }
 }

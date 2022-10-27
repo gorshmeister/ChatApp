@@ -9,11 +9,15 @@ class MviViewModel<A : BaseAction, S : BaseState, E : UiEffects>(private val sto
 
     private var stateBinding: Disposable? = null
 
+    fun accept(action: A) {
+        store.accept(action)
+    }
+
     override fun onCleared() {
         wiring.dispose()
     }
 
-    fun bind(view: MviView<A, S, E>) {
+    fun bind(view: MviView<S, E>) {
         stateBinding = store.bind(view)
     }
 

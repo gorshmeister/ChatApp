@@ -1,5 +1,6 @@
 package ru.gorshenev.themesstyles.presentation.mvi_core
 
-interface Reducer<S, A> {
-    fun reduce(state: S, action: A): S
+interface Reducer<A, S, E> {
+    fun reduceToState(action: A, state: S): S
+    fun reduceToEffect(action: A, state: S): E?
 }

@@ -10,8 +10,6 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Observable
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentProfileBinding
 import ru.gorshenev.themesstyles.di.GlobalDI
@@ -20,26 +18,17 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 
 class ProfileFragment : Fragment(R.layout.fragment_profile),
-    MviView<ProfileAction, ProfileState, UiEffects> {
+    MviView<ProfileState, UiEffects> {
     private val binding: FragmentProfileBinding by viewBinding()
 
-    private val profileRepository = GlobalDI.INSTANSE.profileRepository
-
-    private val profileStore: Store<ProfileAction, ProfileState, UiEffects> =
-        Store(
-            reducer = ProfileReducer(),
-            middlewares = listOf(ProfileMiddleware(profileRepository)),
-            initialState = ProfileState(isLoading = false, data = null, error = null)
-        )
-
     private val profileViewModel: MviViewModel<ProfileAction, ProfileState, UiEffects> by viewModels {
+        val profileStore: Store<ProfileAction, ProfileState, UiEffects> =
+            Store(
+                reducer = ProfileReducer(),
+                middlewares = listOf(ProfileMiddleware(GlobalDI.INSTANSE.profileRepository)),
+                initialState = ProfileState.Loading
+            )
         MviViewModelFactory(profileStore)
-    }
-
-    private val _actions = PublishRelay.create<ProfileAction>()
-
-    companion object {
-        val uiEffect = PublishRelay.create<UiEffects>()
     }
 
 
@@ -48,20 +37,17 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
         this@ProfileFragment.setStatusBarColor(R.color.color_window_background)
 
         profileViewModel.bind(this)
-        _actions.accept(ProfileAction.UploadProfile)
+        profileViewModel.accept(ProfileAction.UploadProfile)
     }
 
-    override val actions: Observable<ProfileAction>
-        get() = _actions
-
-    override val effects: Observable<UiEffects>
-        get() = uiEffect
-
     override fun render(state: ProfileState) {
-        when {
-            state.isLoading -> showLoading()
-            state.error != null -> displayEmptyState()
-            state.data != null -> displayDownloadedProfile(state.data)
+        when (state) {
+            ProfileState.Error -> displayEmptyState()
+            ProfileState.Loading -> showLoading()
+            is ProfileState.Result -> displayDownloadedProfile(
+                profileName = state.profileName,
+                avatarUrl = state.avatarUrl
+            )
         }
     }
 
@@ -77,13 +63,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
     }
 
 
-    private fun displayDownloadedProfile(profile: Profile) {
+    private fun displayDownloadedProfile(profileName: String, avatarUrl: String) {
         with(binding) {
             Glide.with(this@ProfileFragment)
-                .load(profile.avatar)
+                .load(avatarUrl)
                 .placeholder(R.color.shimmer_color)
                 .into(ivProfileAvatar)
-            tvProfileName.text = profile.name
+            tvProfileName.text = profileName
 
             ivProfileAvatar.isVisible = true
             tvProfileName.isVisible = true

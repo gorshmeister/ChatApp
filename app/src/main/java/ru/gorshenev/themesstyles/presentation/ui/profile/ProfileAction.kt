@@ -7,8 +7,9 @@ sealed class ProfileAction : BaseAction {
 }
 
 sealed class ProfileInternalAction : ProfileAction() {
-    object ProfileLoadingAction : ProfileInternalAction()
-    class ProfileSuccessAction(val name: String, val avatar: String) : ProfileInternalAction()
-    class ProfileFailureAction(val error: Throwable) : ProfileInternalAction()
+    object StartLoading : ProfileInternalAction()
+    class DownloadFailure(val error: Throwable) : ProfileInternalAction()
+    class DownloadSuccessful(val profileName: String, val avatarUrl: String) :
+        ProfileInternalAction()
 }
 
