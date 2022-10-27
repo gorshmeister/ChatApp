@@ -30,11 +30,10 @@ class Store<A : BaseAction, S : BaseState, E : UiEffects>(
             .subscribe(state::accept)
 
         disposable += actions
-            .withLatestFrom(state) { action, state ->
-                reducer.reduceToEffect(action, state)?.let(effects::accept) ?: Unit
-            }
-//            .distinctUntilChanged()
-            .subscribe()
+            .withLatestFrom(state, reducer::reduceToEffect)
+            .filter { it.isPresent }
+            .map { it.get() }
+            .subscribe(effects::accept)
 
         disposable += Observable.merge(
             middlewares.map { it.bind(actions, state) }

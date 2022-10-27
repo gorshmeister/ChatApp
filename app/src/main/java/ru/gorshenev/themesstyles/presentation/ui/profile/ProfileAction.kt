@@ -8,8 +8,8 @@ sealed class ProfileAction : BaseAction {
 
 sealed class ProfileInternalAction : ProfileAction() {
     object StartLoading : ProfileInternalAction()
-    class DownloadFailure(val error: Throwable) : ProfileInternalAction()
-    class DownloadSuccessful(val profileName: String, val avatarUrl: String) :
+    class LoadError(val error: Throwable) : ProfileInternalAction()
+    class LoadResult(val profileName: String, val avatarUrl: String) :
         ProfileInternalAction()
 }
 

@@ -16,13 +16,13 @@ class ProfileMiddleware(private val repository: ProfileRepository) :
             .flatMap {
                 repository.getUser()
                     .map<ProfileInternalAction> { result ->
-                        ProfileInternalAction.DownloadSuccessful(
+                        ProfileInternalAction.LoadResult(
                             result.members.firstName,
                             result.members.avatarUrl
                         )
                     }
                     .toObservable()
-                    .onErrorReturn { ProfileInternalAction.DownloadFailure(it) }
+                    .onErrorReturn { ProfileInternalAction.LoadError(it) }
                     .startWith(ProfileInternalAction.StartLoading)
             }
     }

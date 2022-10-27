@@ -16,6 +16,7 @@ import ru.gorshenev.themesstyles.di.GlobalDI
 import ru.gorshenev.themesstyles.presentation.mvi_core.*
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
+import java.util.*
 
 class ProfileFragment : Fragment(R.layout.fragment_profile),
     MviView<ProfileState, UiEffects> {
@@ -42,9 +43,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
 
     override fun render(state: ProfileState) {
         when (state) {
-            ProfileState.Error -> displayEmptyState()
+            ProfileState.Error -> showEmptyState()
             ProfileState.Loading -> showLoading()
-            is ProfileState.Result -> displayDownloadedProfile(
+            is ProfileState.Result -> showProfile(
                 profileName = state.profileName,
                 avatarUrl = state.avatarUrl
             )
@@ -53,7 +54,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
 
     override fun handleUiEffects(effect: UiEffects) {
         when (effect) {
-            is UiEffects.SnackBar -> displayError(effect.error)
+            is UiEffects.SnackBar -> showError(effect.error)
         }
     }
 
@@ -63,7 +64,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
     }
 
 
-    private fun displayDownloadedProfile(profileName: String, avatarUrl: String) {
+    private fun showProfile(profileName: String, avatarUrl: String) {
         with(binding) {
             Glide.with(this@ProfileFragment)
                 .load(avatarUrl)
@@ -79,7 +80,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
         }
     }
 
-    private fun displayEmptyState() {
+    private fun showEmptyState() {
         with(binding) {
             ivProfileAvatar.isGone = true
             tvProfileName.isGone = true
@@ -89,7 +90,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
         }
     }
 
-    private fun displayError(error: Throwable?) {
+    private fun showError(error: Throwable?) {
         Snackbar.make(binding.root, getString(R.string.error, error), Snackbar.LENGTH_LONG)
             .show()
         Log.d(ChannelsFragment.ERROR_LOG_TAG, "Profile problems: $error")
