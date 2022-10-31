@@ -14,8 +14,7 @@ class PeopleUploadMiddleware(private val repository: PeopleRepository) :
         return actions.ofType(PeopleAction.UploadUsers::class.java)
             .flatMap {
                 repository.getUsers()
-                    .map { it.toUi() }
-                    .map<PeopleInternalAction> { PeopleInternalAction.LoadResultToCache(it) }
+                    .map<PeopleInternalAction> { PeopleInternalAction.LoadResult(it.toUi()) }
                     .toObservable()
                     .onErrorReturn { PeopleInternalAction.LoadError(it) }
                     .startWith(PeopleInternalAction.StartLoading)

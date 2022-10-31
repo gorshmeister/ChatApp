@@ -7,11 +7,23 @@ import java.util.*
 class PeopleReducer : Reducer<PeopleAction, PeopleState, UiEffects> {
     override fun reduceToState(action: PeopleAction, state: PeopleState): PeopleState {
         return when (action) {
-            PeopleInternalAction.StartLoading -> PeopleState.Loading
-            is PeopleInternalAction.LoadError -> PeopleState.Error
-            is PeopleInternalAction.LoadResult -> PeopleState.Result(action.items)
-            is PeopleInternalAction.LoadResultToCache -> PeopleState.ResultWithCache(action.items)
-            else ->state
+            PeopleInternalAction.StartLoading -> {
+                PeopleState.Loading
+            }
+            is PeopleInternalAction.LoadError -> {
+                PeopleState.Error
+            }
+            is PeopleInternalAction.LoadResult -> {
+                PeopleState.Result(action.items, action.items)
+            }
+            is PeopleInternalAction.SearchResult -> {
+                if (state is PeopleState.Result) {
+                    state.copy(visibleItems = action.items)
+                } else {
+                    state
+                }
+            }
+            else -> state
         }
     }
 

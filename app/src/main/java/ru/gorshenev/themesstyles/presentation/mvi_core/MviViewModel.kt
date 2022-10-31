@@ -9,6 +9,9 @@ class MviViewModel<A : BaseAction, S : BaseState, E : UiEffects>(private val sto
 
     private var stateBinding: Disposable? = null
 
+    val state
+        get() = store.currentState
+
     fun accept(action: A) {
         store.accept(action)
     }

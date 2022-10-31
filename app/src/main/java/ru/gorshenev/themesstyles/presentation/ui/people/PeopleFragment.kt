@@ -30,8 +30,6 @@ class PeopleFragment : Fragment(R.layout.fragment_people),
 
     private val adapter = Adapter<ViewTyped>(holderFactory)
 
-    private var cachedItems = emptyList<ViewTyped>()
-
     private val peopleViewModel: MviViewModel<PeopleAction, PeopleState, UiEffects> by viewModels {
         val peopleStore: Store<PeopleAction, PeopleState, UiEffects> =
             Store(
@@ -54,7 +52,6 @@ class PeopleFragment : Fragment(R.layout.fragment_people),
         peopleViewModel.accept(PeopleAction.UploadUsers)
     }
 
-
     private fun initViews() {
         with(binding) {
             this@PeopleFragment.setStatusBarColor(R.color.color_background_primary)
@@ -62,9 +59,12 @@ class PeopleFragment : Fragment(R.layout.fragment_people),
             rvPeople.adapter = adapter
 
             usersField.etUsers.addTextChangedListener { text ->
-                peopleViewModel.accept(
-                    PeopleAction.SearchUsers(cachedItems, text?.toString().orEmpty())
-                )
+                val currentState = peopleViewModel.state
+                if (currentState is PeopleState.Result) {
+                    peopleViewModel.accept(
+                        PeopleAction.SearchUsers(currentState.items, text?.toString().orEmpty())
+                    )
+                }
             }
         }
     }
@@ -73,11 +73,7 @@ class PeopleFragment : Fragment(R.layout.fragment_people),
         when (state) {
             PeopleState.Error -> stopLoading()
             PeopleState.Loading -> showLoading()
-            is PeopleState.Result -> showItems(state.items)
-            is PeopleState.ResultWithCache -> {
-                cachedItems = state.items
-                showItems(state.items)
-            }
+            is PeopleState.Result -> showItems(state.visibleItems)
         }
     }
 
@@ -85,6 +81,11 @@ class PeopleFragment : Fragment(R.layout.fragment_people),
         when (effect) {
             is UiEffects.SnackBar -> showError(effect.error)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        peopleViewModel.unbind()
     }
 
 
