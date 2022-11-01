@@ -87,9 +87,16 @@ class StreamPresenter(private val repository: StreamRepository) :
     }
 
     fun onTopicClick(topicId: Int) {
-        val topic = displayedItems.find { (it is TopicUi) && it.id == topicId } as? TopicUi
+//        val topic = displayedItems.find { (it is TopicUi) && it.id == topicId } as? TopicUi
+//        val stream =
+//            displayedItems.find { (it is StreamUi) && it.topics.contains(topic) } as? StreamUi
+
+        val topic =
+            displayedItems.filterIsInstance<TopicUi>().find { it.id == topicId }
         val stream =
-            displayedItems.find { (it is StreamUi) && it.topics.contains(topic) } as? StreamUi
+            displayedItems.filterIsInstance<StreamUi>()
+                .find { it.topics.contains(topic) }
+
         if (topic != null && stream != null) {
             view?.goToChat(topic, stream)
         }
