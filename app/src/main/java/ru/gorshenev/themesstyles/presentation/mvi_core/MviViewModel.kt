@@ -3,7 +3,7 @@ package ru.gorshenev.themesstyles.presentation.mvi_core
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.Disposable
 
-class MviViewModel<A : BaseAction, S : BaseState, E : UiEffects>(private val store: Store<A, S, E>) :
+class MviViewModel<A : BaseAction, S : BaseState, E : BaseEffect>(private val store: Store<A, S, E>) :
     ViewModel() {
     private val wiring = store.wire()
 

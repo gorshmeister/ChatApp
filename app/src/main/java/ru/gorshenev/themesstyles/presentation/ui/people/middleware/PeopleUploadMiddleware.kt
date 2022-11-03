@@ -1,9 +1,12 @@
-package ru.gorshenev.themesstyles.presentation.ui.people
+package ru.gorshenev.themesstyles.presentation.ui.people.middleware
 
 import io.reactivex.Observable
 import ru.gorshenev.themesstyles.data.repositories.people.PeopleMapper.toUi
 import ru.gorshenev.themesstyles.data.repositories.people.PeopleRepository
 import ru.gorshenev.themesstyles.presentation.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.ui.people.PeopleAction
+import ru.gorshenev.themesstyles.presentation.ui.people.PeopleInternalAction
+import ru.gorshenev.themesstyles.presentation.ui.people.PeopleState
 
 class PeopleUploadMiddleware(private val repository: PeopleRepository) :
     Middleware<PeopleAction, PeopleState> {

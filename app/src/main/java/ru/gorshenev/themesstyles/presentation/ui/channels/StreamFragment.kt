@@ -16,7 +16,10 @@ import ru.gorshenev.themesstyles.di.GlobalDI
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.mvi_core.*
+import ru.gorshenev.themesstyles.presentation.mvi_core.MviView
+import ru.gorshenev.themesstyles.presentation.mvi_core.MviViewModel
+import ru.gorshenev.themesstyles.presentation.mvi_core.MviViewModelFactory
+import ru.gorshenev.themesstyles.presentation.mvi_core.Store
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.RESULT_STREAM
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STREAM_SEARCH
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STR_NAME
@@ -25,17 +28,21 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Compa
 import ru.gorshenev.themesstyles.presentation.ui.channels.adapter.StreamsHolderFactory
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
+import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.StreamOnStreamClickMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.StreamOnTopicClickMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.StreamSearchMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.StreamUploadMiddleware
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatFragment
 import ru.gorshenev.themesstyles.utils.Utils.setDivider
 
 class StreamFragment : Fragment(R.layout.fragment_channels_stream),
-    MviView<StreamState, UiEffects> {
+    MviView<StreamState, StreamEffect> {
     private val binding: FragmentChannelsStreamBinding by viewBinding()
 
     private val streamType by lazy { arguments?.get(STR_TYPE) as StreamType }
 
-    private val streamViewModel: MviViewModel<StreamAction, StreamState, UiEffects> by viewModels {
-        val streamStore: Store<StreamAction, StreamState, UiEffects> =
+    private val streamViewModel: MviViewModel<StreamAction, StreamState, StreamEffect> by viewModels {
+        val streamStore: Store<StreamAction, StreamState, StreamEffect> =
             Store(
                 reducer = StreamReducer(),
                 middlewares = listOf(
@@ -49,22 +56,15 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
         MviViewModelFactory(streamStore)
     }
 
-    private val currentState
-        get() = streamViewModel.state
-
     private val holderFactory: HolderFactory = StreamsHolderFactory(
         onStreamClick = { streamId ->
-            if (streamViewModel.state is StreamState.Result) {
-                streamViewModel.accept(
-                    StreamAction.OnStreamClick(streamId, (currentState as StreamState.Result).visibleItems)
-                )
+            streamViewModel.state.ifResult {
+                streamViewModel.accept(StreamAction.OnStreamClick(streamId, it.visibleItems))
             }
         },
         onTopicClick = { topicId ->
-            if (currentState is StreamState.Result) {
-                streamViewModel.accept(
-                    StreamAction.OnTopicClick(topicId, (currentState as StreamState.Result).visibleItems)
-                )
+            streamViewModel.state.ifResult {
+                streamViewModel.accept(StreamAction.OnTopicClick(topicId, it.visibleItems))
             }
         }
     )
@@ -89,11 +89,10 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
                 this@StreamFragment
             ) { _, result ->
                 val searchText = result.getString(RESULT_STREAM, "")
-                val currentState = streamViewModel.state
-                if (currentState is StreamState.Result) {
+                streamViewModel.state.ifResult {
                     streamViewModel.accept(
                         StreamAction.SearchStream(
-                            items = currentState.items,
+                            items = it.items,
                             query = searchText?.toString().orEmpty()
                         )
                     )
@@ -107,13 +106,13 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
             StreamState.Error -> stopLoading()
             StreamState.Loading -> showLoading()
             is StreamState.Result -> showItems(state.visibleItems)
-            is StreamState.OpenChat -> goToChat(state.topicUi, state.streamUi)
         }
     }
 
-    override fun handleUiEffects(effect: UiEffects) {
+    override fun handleUiEffects(effect: StreamEffect) {
         when (effect) {
-            is UiEffects.SnackBar -> showError(effect.error)
+            is StreamEffect.SnackBar -> showError(effect.error)
+            is StreamEffect.OpenChat -> goToChat(effect.topicName, effect.streamName)
         }
     }
 
@@ -123,9 +122,9 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
     }
 
 
-    private fun goToChat(topic: TopicUi, stream: StreamUi) {
+    private fun goToChat(topicName: String, streamName: String) {
         val chatFragment = ChatFragment()
-        chatFragment.arguments = bundleOf(STR_NAME to stream.name, TPC_NAME to topic.name)
+        chatFragment.arguments = bundleOf(STR_NAME to streamName, TPC_NAME to topicName)
 
         parentFragmentManager.beginTransaction()
             .add(R.id.fragment_container_view, chatFragment)
@@ -165,6 +164,11 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
         Snackbar.make(binding.root, getString(R.string.error, error), Snackbar.LENGTH_SHORT).show()
         Log.d(ChannelsFragment.ERROR_LOG_TAG, "Stream Problems: $error")
     }
+
+    private fun StreamState.ifResult(action: (state: StreamState.Result) -> Unit) {
+        (this as? StreamState.Result)?.let(action)
+    }
+
 
     enum class StreamType {
         SUBSCRIBED,

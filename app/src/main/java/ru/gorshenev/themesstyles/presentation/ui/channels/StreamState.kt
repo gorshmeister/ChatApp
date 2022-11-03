@@ -9,5 +9,4 @@ sealed class StreamState : BaseState {
     object Loading : StreamState()
     object Error : StreamState()
     data class Result(val items: List<ViewTyped>, val visibleItems: List<ViewTyped>) : StreamState()
-    data class OpenChat(val topicUi: TopicUi, val streamUi: StreamUi): StreamState()
 }

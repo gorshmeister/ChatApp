@@ -1,10 +1,9 @@
 package ru.gorshenev.themesstyles.presentation.ui.people
 
 import ru.gorshenev.themesstyles.presentation.mvi_core.Reducer
-import ru.gorshenev.themesstyles.presentation.mvi_core.UiEffects
 import java.util.*
 
-class PeopleReducer : Reducer<PeopleAction, PeopleState, UiEffects> {
+class PeopleReducer : Reducer<PeopleAction, PeopleState, PeopleEffect> {
     override fun reduceToState(action: PeopleAction, state: PeopleState): PeopleState {
         return when (action) {
             PeopleInternalAction.StartLoading -> {
@@ -27,9 +26,9 @@ class PeopleReducer : Reducer<PeopleAction, PeopleState, UiEffects> {
         }
     }
 
-    override fun reduceToEffect(action: PeopleAction, state: PeopleState): Optional<UiEffects> {
+    override fun reduceToEffect(action: PeopleAction, state: PeopleState): Optional<PeopleEffect> {
         return when (action) {
-            is PeopleInternalAction.LoadError -> Optional.of(UiEffects.SnackBar(action.error))
+            is PeopleInternalAction.LoadError -> Optional.of(PeopleEffect.SnackBar(action.error))
             else -> Optional.empty()
         }
     }

@@ -1,9 +1,12 @@
-package ru.gorshenev.themesstyles.presentation.ui.channels
+package ru.gorshenev.themesstyles.presentation.ui.channels.middleware
 
 import io.reactivex.Observable
 import io.reactivex.Single
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.ui.channels.StreamAction
+import ru.gorshenev.themesstyles.presentation.ui.channels.StreamInternalAction
+import ru.gorshenev.themesstyles.presentation.ui.channels.StreamState
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import java.util.concurrent.TimeUnit
 
@@ -24,33 +27,14 @@ class StreamSearchMiddleware : Middleware<StreamAction, StreamState> {
         cachedItems: List<ViewTyped>,
         searchText: String
     ): Single<List<ViewTyped>> {
-        val text = searchText.filter { !it.isDigit() }
-        val digits = searchText.filter { it.isDigit() }
-        val streamUiList = cachedItems.filterIsInstance<StreamUi>()
-
         return Single.fromCallable {
-            streamUiList.filter { stream ->
-
-                val nameContainsText = stream.name.contains(text, true)
-                val nameContainsDigits = stream.name.contains(digits, true)
-                val topicContainsTextOrDigit = stream.topics.any {
-                    it.name.contains(text, true) && it.name.contains(digits, true)
-                }
+            cachedItems.filterIsInstance<StreamUi>().filter { stream ->
                 val nameContainsSearchText = stream.name.contains(searchText, true)
                 val topicContainsSearchText =
                     stream.topics.any { it.name.contains(searchText, true) }
 
-                when (true) {
-                    digits.isNotEmpty() -> {
-                        nameContainsText && nameContainsDigits || topicContainsTextOrDigit
-                    }
-                    searchText.isNotEmpty() -> {
-                        nameContainsSearchText || topicContainsSearchText
-                    }
-                    else -> true
-                }
+                nameContainsSearchText || topicContainsSearchText
             }
         }
     }
-
 }

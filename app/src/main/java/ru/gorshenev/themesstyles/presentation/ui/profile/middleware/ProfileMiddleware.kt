@@ -1,8 +1,11 @@
-package ru.gorshenev.themesstyles.presentation.ui.profile
+package ru.gorshenev.themesstyles.presentation.ui.profile.middleware
 
 import io.reactivex.Observable
 import ru.gorshenev.themesstyles.data.repositories.profile.ProfileRepository
 import ru.gorshenev.themesstyles.presentation.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileAction
+import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileInternalAction
+import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileState
 
 class ProfileMiddleware(private val repository: ProfileRepository) :
     Middleware<ProfileAction, ProfileState> {
@@ -11,7 +14,6 @@ class ProfileMiddleware(private val repository: ProfileRepository) :
         actions: Observable<ProfileAction>,
         state: Observable<ProfileState>
     ): Observable<ProfileAction> {
-
         return actions.ofType(ProfileAction.UploadProfile::class.java)
             .flatMap {
                 repository.getUser()

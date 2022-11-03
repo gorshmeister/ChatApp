@@ -1,10 +1,9 @@
 package ru.gorshenev.themesstyles.presentation.ui.channels
 
 import ru.gorshenev.themesstyles.presentation.mvi_core.Reducer
-import ru.gorshenev.themesstyles.presentation.mvi_core.UiEffects
 import java.util.*
 
-class StreamReducer : Reducer<StreamAction, StreamState, UiEffects> {
+class StreamReducer : Reducer<StreamAction, StreamState, StreamEffect> {
     override fun reduceToState(action: StreamAction, state: StreamState): StreamState {
         return when (action) {
             StreamInternalAction.StartLoading -> {
@@ -16,9 +15,6 @@ class StreamReducer : Reducer<StreamAction, StreamState, UiEffects> {
             is StreamInternalAction.LoadResult -> {
                 StreamState.Result(action.items, action.items)
             }
-            is StreamInternalAction.OpenChat -> {
-                StreamState.OpenChat(action.topic, action.stream)
-            }
             is StreamInternalAction.SearchResult -> {
                 if (state is StreamState.Result) {
                     state.copy(visibleItems = action.items)
@@ -26,9 +22,9 @@ class StreamReducer : Reducer<StreamAction, StreamState, UiEffects> {
                     state
                 }
             }
-            is StreamInternalAction.ExpandStream -> {
+            is StreamInternalAction.StreamExpandedResult -> {
                 if (state is StreamState.Result) {
-                    state.copy( visibleItems = action.items)
+                    state.copy(visibleItems = action.items)
                 } else {
                     state
                 }
@@ -37,9 +33,12 @@ class StreamReducer : Reducer<StreamAction, StreamState, UiEffects> {
         }
     }
 
-    override fun reduceToEffect(action: StreamAction, state: StreamState): Optional<UiEffects> {
+    override fun reduceToEffect(action: StreamAction, state: StreamState): Optional<StreamEffect> {
         return when (action) {
-            is StreamInternalAction.LoadError -> Optional.of(UiEffects.SnackBar(action.error))
+            is StreamInternalAction.LoadError -> Optional.of(StreamEffect.SnackBar(action.error))
+            is StreamInternalAction.OpenChat -> Optional.of(
+                StreamEffect.OpenChat(action.topicName, action.streamName)
+            )
             else -> Optional.empty()
         }
     }

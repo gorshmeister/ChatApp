@@ -8,7 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import ru.gorshenev.themesstyles.utils.Utils.plusAssign
 
-class Store<A : BaseAction, S : BaseState, E : UiEffects>(
+class Store<A : BaseAction, S : BaseState, E : BaseEffect>(
     private val reducer: Reducer<A, S, E>,
     private val middlewares: List<Middleware<A, S>>,
     initialState: S

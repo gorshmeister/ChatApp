@@ -1,9 +1,12 @@
-package ru.gorshenev.themesstyles.presentation.ui.channels
+package ru.gorshenev.themesstyles.presentation.ui.channels.middleware
 
 import io.reactivex.Observable
 import ru.gorshenev.themesstyles.data.repositories.stream.StreamMapper.toUi
 import ru.gorshenev.themesstyles.data.repositories.stream.StreamRepository
 import ru.gorshenev.themesstyles.presentation.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.ui.channels.StreamAction
+import ru.gorshenev.themesstyles.presentation.ui.channels.StreamInternalAction
+import ru.gorshenev.themesstyles.presentation.ui.channels.StreamState
 
 class StreamUploadMiddleware(private val repository: StreamRepository) :
     Middleware<StreamAction, StreamState> {
@@ -12,8 +15,7 @@ class StreamUploadMiddleware(private val repository: StreamRepository) :
         state: Observable<StreamState>
     ): Observable<StreamAction> {
         return actions.ofType(StreamAction.UploadStreams::class.java)
-            .withLatestFrom(state) { action, currentState -> action to currentState }
-            .flatMap { (action, _) ->
+            .flatMap { action ->
                 repository.getStreams(action.streamType)
                     .map<StreamInternalAction> { StreamInternalAction.LoadResult(it.toUi(action.streamType)) }
                     .onErrorReturn { StreamInternalAction.LoadError(it) }

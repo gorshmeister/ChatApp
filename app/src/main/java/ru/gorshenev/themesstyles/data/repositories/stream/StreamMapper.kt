@@ -90,19 +90,20 @@ object StreamMapper {
             StreamUi(
                 id = streamModel.id,
                 name = streamModel.name,
-                topics = streamModel.topics.toUi(strType),
+                topics = streamModel.topics.toUi(strType, streamModel.id),
                 isExpanded = false
             )
         }
     }
 
-    private fun List<TopicModel>.toUi(strType: StreamFragment.StreamType): List<TopicUi> {
+    private fun List<TopicModel>.toUi(strType: StreamFragment.StreamType, streamId: Int): List<TopicUi> {
         return this.filter { it.type == strType }
             .map { topicModel ->
                 TopicUi(
                     id = topicModel.id,
                     name = topicModel.name,
-                    color = topicModel.color
+                    color = topicModel.color,
+                    streamId = streamId
                 )
             }
     }

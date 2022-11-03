@@ -16,13 +16,18 @@ import ru.gorshenev.themesstyles.di.GlobalDI
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.mvi_core.*
+import ru.gorshenev.themesstyles.presentation.mvi_core.MviView
+import ru.gorshenev.themesstyles.presentation.mvi_core.MviViewModel
+import ru.gorshenev.themesstyles.presentation.mvi_core.MviViewModelFactory
+import ru.gorshenev.themesstyles.presentation.mvi_core.Store
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
 import ru.gorshenev.themesstyles.presentation.ui.people.adapter.PeopleHolderFactory
+import ru.gorshenev.themesstyles.presentation.ui.people.middleware.PeopleSearchMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.people.middleware.PeopleUploadMiddleware
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 
 class PeopleFragment : Fragment(R.layout.fragment_people),
-    MviView<PeopleState, UiEffects> {
+    MviView<PeopleState, PeopleEffect> {
 
     private val binding: FragmentPeopleBinding by viewBinding()
 
@@ -30,8 +35,8 @@ class PeopleFragment : Fragment(R.layout.fragment_people),
 
     private val adapter = Adapter<ViewTyped>(holderFactory)
 
-    private val peopleViewModel: MviViewModel<PeopleAction, PeopleState, UiEffects> by viewModels {
-        val peopleStore: Store<PeopleAction, PeopleState, UiEffects> =
+    private val peopleViewModel: MviViewModel<PeopleAction, PeopleState, PeopleEffect> by viewModels {
+        val peopleStore: Store<PeopleAction, PeopleState, PeopleEffect> =
             Store(
                 reducer = PeopleReducer(),
                 middlewares = listOf(
@@ -77,9 +82,13 @@ class PeopleFragment : Fragment(R.layout.fragment_people),
         }
     }
 
-    override fun handleUiEffects(effect: UiEffects) {
+    override fun handleUiEffects(effect: PeopleEffect) {
         when (effect) {
-            is UiEffects.SnackBar -> showError(effect.error)
+            is PeopleEffect.SnackBar -> {
+                Snackbar.make(binding.root, getString(R.string.error, effect.error), Snackbar.LENGTH_LONG)
+                    .show()
+                Log.d(ChannelsFragment.ERROR_LOG_TAG, "People Problems: ${effect.error}")
+            }
         }
     }
 
@@ -102,12 +111,6 @@ class PeopleFragment : Fragment(R.layout.fragment_people),
             }
         }
 
-    }
-
-    private fun showError(error: Throwable?) {
-        Snackbar.make(binding.root, getString(R.string.error, error), Snackbar.LENGTH_LONG)
-            .show()
-        Log.d(ChannelsFragment.ERROR_LOG_TAG, "People Problems: $error")
     }
 
     private fun showLoading() {
