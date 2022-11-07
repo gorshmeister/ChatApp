@@ -1,6 +1,6 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat
 
-import ru.gorshenev.themesstyles.presentation.mvi_core.Reducer
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Reducer
 import java.util.*
 
 class ChatReducer : Reducer<ChatAction, ChatState, ChatEffect> {
@@ -9,23 +9,32 @@ class ChatReducer : Reducer<ChatAction, ChatState, ChatEffect> {
             ChatInternalAction.StartLoading -> {
                 ChatState.Loading
             }
-            is ChatInternalAction.LoadError, is ChatInternalAction.ReactionExist -> {
-                ChatState.Error
+            ChatInternalAction.StartPaginationLoading -> {
+                if (state is ChatState.Result) {
+                    state.copy(isPaginationLoading = true)
+                } else {
+                    state
+                }
             }
             is ChatInternalAction.LoadResult -> {
-                ChatState.Result(action.items)
+                ChatState.Result(action.items, false)
+            }
+            is ChatInternalAction.LoadError -> {
+                ChatState.Error
             }
             is ChatAction.GetQueueMessage -> {
-                if (state is ChatState.Result && action.items.isNotEmpty())
-                    ChatState.Result(state.items + action.items)
-                else
+                if (state is ChatState.Result && action.items.isNotEmpty()) {
+                    state.copy(items = state.items + action.items)
+                } else {
                     state
+                }
             }
             is ChatAction.GetQueueReaction -> {
-                if (action.items.isNotEmpty())
-                    ChatState.Result(action.items)
-                else
+                if (state is ChatState.Result && action.items.isNotEmpty()) {
+                    state.copy(items = action.items)
+                } else {
                     state
+                }
             }
             else -> state
         }
@@ -34,9 +43,8 @@ class ChatReducer : Reducer<ChatAction, ChatState, ChatEffect> {
     override fun reduceToEffect(action: ChatAction, state: ChatState): Optional<ChatEffect> {
         return when (action) {
             is ChatInternalAction.LoadError -> Optional.of(ChatEffect.SnackBar(action.error))
-            is ChatInternalAction.ReactionExist -> Optional.of(ChatEffect.Toast(action.error))
+            is ChatInternalAction.StartPaginationLoading -> Optional.of(ChatEffect.ProgressBar)
             is ChatInternalAction.ScrollToTheEnd -> Optional.of(ChatEffect.Scroll)
-            ChatInternalAction.EmptyAction -> Optional.empty()
             else -> Optional.empty()
         }
     }

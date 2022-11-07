@@ -1,10 +1,8 @@
 package ru.gorshenev.themesstyles.presentation.ui.channels
 
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.mvi_core.BaseAction
-import ru.gorshenev.themesstyles.presentation.mvi_core.BaseEffect
-import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
-import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseAction
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseEffect
 
 sealed class StreamAction : BaseAction {
     data class UploadStreams(val streamType: StreamFragment.StreamType) : StreamAction()

@@ -16,14 +16,14 @@ import ru.gorshenev.themesstyles.di.GlobalDI
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.mvi_core.MviView
-import ru.gorshenev.themesstyles.presentation.mvi_core.MviViewModel
-import ru.gorshenev.themesstyles.presentation.mvi_core.MviViewModelFactory
-import ru.gorshenev.themesstyles.presentation.mvi_core.Store
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviView
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModel
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModelFactory
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Store
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
 import ru.gorshenev.themesstyles.presentation.ui.people.adapter.PeopleHolderFactory
-import ru.gorshenev.themesstyles.presentation.ui.people.middleware.PeopleSearchMiddleware
-import ru.gorshenev.themesstyles.presentation.ui.people.middleware.PeopleUploadMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.people.middleware.SearchMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.people.middleware.UploadMiddleware
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 
 class PeopleFragment : Fragment(R.layout.fragment_people),
@@ -40,8 +40,8 @@ class PeopleFragment : Fragment(R.layout.fragment_people),
             Store(
                 reducer = PeopleReducer(),
                 middlewares = listOf(
-                    PeopleUploadMiddleware(GlobalDI.INSTANSE.peopleRepository),
-                    PeopleSearchMiddleware()
+                    UploadMiddleware(GlobalDI.INSTANSE.peopleRepository),
+                    SearchMiddleware()
                 ),
                 initialState = PeopleState.Loading
             )

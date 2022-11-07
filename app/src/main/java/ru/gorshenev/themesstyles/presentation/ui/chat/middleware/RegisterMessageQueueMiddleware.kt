@@ -2,7 +2,7 @@ package ru.gorshenev.themesstyles.presentation.ui.chat.middleware
 
 import io.reactivex.Observable
 import ru.gorshenev.themesstyles.data.repositories.chat.ChatRepository
-import ru.gorshenev.themesstyles.presentation.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatFragment
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatInternalAction
@@ -15,8 +15,7 @@ class RegisterMessageQueueMiddleware(private val repository: ChatRepository) :
         state: Observable<ChatState>
     ): Observable<ChatAction> {
         return actions.ofType(ChatAction.RegisterMessageQueue::class.java)
-            .withLatestFrom(state) { action, currentState -> action to currentState }
-            .flatMap { (action, state) ->
+            .flatMap { action ->
                 repository.registerMessageQueue(action.streamName, action.topicName)
                     .toObservable()
                     .map<ChatAction> {
@@ -26,8 +25,7 @@ class RegisterMessageQueueMiddleware(private val repository: ChatRepository) :
                             topicName = action.topicName,
                             items = emptyList()
                         )
-                    }
-                    .onErrorReturn { ChatInternalAction.LoadError(it) }
+                    }.onErrorReturn { ChatInternalAction.LoadError(it) }
             }
     }
 }

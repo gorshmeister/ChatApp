@@ -3,7 +3,7 @@ package ru.gorshenev.themesstyles.presentation.ui.chat.middleware
 import io.reactivex.Observable
 import ru.gorshenev.themesstyles.data.repositories.chat.ChatMapper.toUi
 import ru.gorshenev.themesstyles.data.repositories.chat.ChatRepository
-import ru.gorshenev.themesstyles.presentation.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatState
@@ -21,7 +21,7 @@ class UploadMiddleware(private val repository: ChatRepository) :
                     streamName = action.streamName,
                     topicName = action.topicName,
                     anchorMessageId = ChatRepository.DEFAULT_MESSAGE_ANCHOR,
-                    ChatRepository.DEFAULT_NUM_BEFORE,
+                    numBefore = ChatRepository.DEFAULT_NUM_BEFORE,
                     onlyRemote = false
                 ).debounce(400, TimeUnit.MILLISECONDS)
                     .map<ChatAction> { ChatInternalAction.LoadResult(it.toUi()) }

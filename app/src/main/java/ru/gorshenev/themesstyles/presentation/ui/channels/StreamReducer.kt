@@ -1,6 +1,6 @@
 package ru.gorshenev.themesstyles.presentation.ui.channels
 
-import ru.gorshenev.themesstyles.presentation.mvi_core.Reducer
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Reducer
 import java.util.*
 
 class StreamReducer : Reducer<StreamAction, StreamState, StreamEffect> {

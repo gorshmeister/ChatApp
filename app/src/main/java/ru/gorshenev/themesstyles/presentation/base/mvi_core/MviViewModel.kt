@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.presentation.mvi_core
+package ru.gorshenev.themesstyles.presentation.base.mvi_core
 
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.Disposable

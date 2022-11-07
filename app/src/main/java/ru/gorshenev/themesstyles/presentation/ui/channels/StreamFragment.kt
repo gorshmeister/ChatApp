@@ -16,22 +16,20 @@ import ru.gorshenev.themesstyles.di.GlobalDI
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.mvi_core.MviView
-import ru.gorshenev.themesstyles.presentation.mvi_core.MviViewModel
-import ru.gorshenev.themesstyles.presentation.mvi_core.MviViewModelFactory
-import ru.gorshenev.themesstyles.presentation.mvi_core.Store
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviView
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModel
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModelFactory
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Store
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.RESULT_STREAM
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STREAM_SEARCH
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STR_NAME
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STR_TYPE
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.TPC_NAME
 import ru.gorshenev.themesstyles.presentation.ui.channels.adapter.StreamsHolderFactory
-import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
-import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
-import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.StreamOnStreamClickMiddleware
-import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.StreamOnTopicClickMiddleware
-import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.StreamSearchMiddleware
-import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.StreamUploadMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.ExpandStreamMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.OpenChatMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.SearchMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.UploadMiddleware
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatFragment
 import ru.gorshenev.themesstyles.utils.Utils.setDivider
 
@@ -46,10 +44,10 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
             Store(
                 reducer = StreamReducer(),
                 middlewares = listOf(
-                    StreamUploadMiddleware(GlobalDI.INSTANSE.streamRepository),
-                    StreamSearchMiddleware(),
-                    StreamOnStreamClickMiddleware(),
-                    StreamOnTopicClickMiddleware()
+                    UploadMiddleware(GlobalDI.INSTANSE.streamRepository),
+                    SearchMiddleware(),
+                    OpenChatMiddleware(),
+                    ExpandStreamMiddleware()
                 ),
                 initialState = StreamState.Loading
             )

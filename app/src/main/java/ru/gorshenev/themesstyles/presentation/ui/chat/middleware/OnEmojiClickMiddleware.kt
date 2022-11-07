@@ -1,9 +1,8 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat.middleware
 
 import io.reactivex.Observable
-import ru.gorshenev.themesstyles.data.Errors
 import ru.gorshenev.themesstyles.data.repositories.chat.ChatRepository
-import ru.gorshenev.themesstyles.presentation.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatState
@@ -22,13 +21,8 @@ class OnEmojiClickMiddleware(private val repository: ChatRepository) :
                     throwOnConflict = action.isBottomSheetClick
                 )
                     .toObservable()
-                    .map<ChatAction> { ChatInternalAction.EmptyAction }
-                    .onErrorReturn { err ->
-                        when (err) {
-                            is Errors.ReactionAlreadyExist -> ChatInternalAction.ReactionExist(err)
-                            else -> ChatInternalAction.LoadError(err)
-                        }
-                    }
+                    .ofType(ChatAction::class.java)
+                    .onErrorReturn {ChatInternalAction.LoadError(it)}
             }
     }
 }

@@ -1,6 +1,6 @@
 package ru.gorshenev.themesstyles.presentation.ui.people
 
-import ru.gorshenev.themesstyles.presentation.mvi_core.Reducer
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Reducer
 import java.util.*
 
 class PeopleReducer : Reducer<PeopleAction, PeopleState, PeopleEffect> {

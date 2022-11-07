@@ -1,8 +1,8 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat
 
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseAction
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseEffect
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.mvi_core.BaseAction
-import ru.gorshenev.themesstyles.presentation.mvi_core.BaseEffect
 
 sealed class ChatAction : BaseAction {
     data class UploadMessages(
@@ -24,7 +24,7 @@ sealed class ChatAction : BaseAction {
     data class OnEmojiClick(
         val emojiName: String,
         val messageId: Int,
-        val isBottomSheetClick: Boolean = false
+        val isBottomSheetClick: Boolean
     ) : ChatAction()
 
     data class RegisterMessageQueue(
@@ -54,16 +54,15 @@ sealed class ChatAction : BaseAction {
 }
 
 sealed class ChatInternalAction : ChatAction() {
-    object EmptyAction : ChatInternalAction()
-    object ScrollToTheEnd : ChatInternalAction()
     object StartLoading : ChatInternalAction()
+    object ScrollToTheEnd : ChatInternalAction()
+    object StartPaginationLoading : ChatInternalAction()
     data class LoadError(val error: Throwable) : ChatInternalAction()
     data class LoadResult(val items: List<ViewTyped>) : ChatInternalAction()
-    data class ReactionExist(val error: Throwable) : ChatInternalAction()
 }
 
 sealed class ChatEffect : BaseEffect {
+    object Scroll : ChatEffect()
+    object ProgressBar : ChatEffect()
     data class SnackBar(val error: Throwable) : ChatEffect()
-    data class Toast(val error: Throwable) : ChatEffect()
-    object Scroll: ChatEffect()
 }

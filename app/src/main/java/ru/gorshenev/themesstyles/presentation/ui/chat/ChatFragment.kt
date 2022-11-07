@@ -3,7 +3,6 @@ package ru.gorshenev.themesstyles.presentation.ui.chat
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
@@ -16,15 +15,16 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
+import ru.gorshenev.themesstyles.data.Errors
 import ru.gorshenev.themesstyles.databinding.FragmentChatBinding
 import ru.gorshenev.themesstyles.di.GlobalDI
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviView
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModel
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModelFactory
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Store
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.mvi_core.MviView
-import ru.gorshenev.themesstyles.presentation.mvi_core.MviViewModel
-import ru.gorshenev.themesstyles.presentation.mvi_core.MviViewModelFactory
-import ru.gorshenev.themesstyles.presentation.mvi_core.Store
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STR_NAME
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.TPC_NAME
@@ -52,9 +52,9 @@ ChatFragment : Fragment(R.layout.fragment_chat),
                 reducer = ChatReducer(),
                 middlewares = listOf(
                     UploadMiddleware(repository),
-                    OnEmojiClickMiddleware(repository),
                     UploadMoreMiddleware(repository),
                     SendMessageMiddleware(repository),
+                    OnEmojiClickMiddleware(repository),
                     RegisterMessageQueueMiddleware(repository),
                     GetQueueMessageMiddleware(repository),
                     RegisterReactionQueueMiddleware(repository),
@@ -74,7 +74,7 @@ ChatFragment : Fragment(R.layout.fragment_chat),
             }
         },
         onEmojiClick = { emojiName, _, messageId ->
-            chatViewModel.accept(ChatAction.OnEmojiClick(emojiName, messageId))
+            chatViewModel.accept(ChatAction.OnEmojiClick(emojiName, messageId, false))
         }
     )
     private val adapter = Adapter<ViewTyped>(holderFactory)
@@ -101,9 +101,10 @@ ChatFragment : Fragment(R.layout.fragment_chat),
                     super.onScrolled(recyclerView, dx, dy)
                     val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
                     if (position == START_LOADING_POSITION && dy != ZERO_SCROLL_POSITION) {
-                            chatViewModel.accept(
-                                ChatAction.UploadMoreMessages(streamName, topicName)
-                            )
+                        progress(true)
+                        chatViewModel.accept(
+                            ChatAction.UploadMoreMessages(streamName, topicName)
+                        )
                     }
                 }
             })
@@ -125,6 +126,22 @@ ChatFragment : Fragment(R.layout.fragment_chat),
         }
     }
 
+    fun progress(switch: Boolean) {
+        with(binding) {
+            when (switch) {
+                true -> {
+                    progressBar.isVisible = true
+//                    progressBar.incrementProgressBy(100)
+                }
+
+                false -> {
+//                    progressBar.setProgress(0, true)
+                    progressBar.isGone = true
+                }
+            }
+        }
+    }
+
     override fun render(state: ChatState) {
         when (state) {
             ChatState.Error -> stopLoading()
@@ -136,8 +153,8 @@ ChatFragment : Fragment(R.layout.fragment_chat),
     override fun handleUiEffects(effect: ChatEffect) {
         when (effect) {
             is ChatEffect.SnackBar -> showError(effect.error)
-            is ChatEffect.Toast -> showReactionExistsToast()
             ChatEffect.Scroll -> scrollToTheEnd()
+            ChatEffect.ProgressBar -> progress(false)
         }
     }
 
@@ -200,11 +217,6 @@ ChatFragment : Fragment(R.layout.fragment_chat),
         binding.rvItems.smoothScrollToPosition(adapter.itemCount)
     }
 
-    private fun showReactionExistsToast() {
-        Toast.makeText(context, getString(R.string.reaction_already_exists), Toast.LENGTH_SHORT)
-            .show()
-    }
-
     private fun showItems(items: List<ViewTyped>) {
         with(binding) {
             if (items.isEmpty()) {
@@ -214,15 +226,24 @@ ChatFragment : Fragment(R.layout.fragment_chat),
                 emptyState.tvEmptyState.isGone = true
                 rvItems.isVisible = true
                 adapter.items = items
-//                scrollToTheEnd()
             }
             stopLoading()
         }
     }
 
     private fun showError(error: Throwable?) {
-        Snackbar.make(binding.root, getString(R.string.error, error), Snackbar.LENGTH_SHORT)
-            .show()
+        when (error) {
+            is Errors.ReactionAlreadyExist -> Snackbar.make(
+                binding.root,
+                getString(R.string.reaction_already_exists),
+                Snackbar.LENGTH_SHORT
+            ).show()
+            else -> Snackbar.make(
+                binding.root,
+                getString(R.string.error, error),
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
         Log.d(ChannelsFragment.ERROR_LOG_TAG, "Chat Problems: $error")
     }
 

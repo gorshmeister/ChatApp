@@ -2,7 +2,7 @@ package ru.gorshenev.themesstyles.presentation.ui.chat.middleware
 
 import io.reactivex.Observable
 import ru.gorshenev.themesstyles.data.repositories.chat.ChatRepository
-import ru.gorshenev.themesstyles.presentation.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatState
@@ -19,7 +19,7 @@ class SendMessageMiddleware(private val repository: ChatRepository) :
                     messageText = action.messageText, streamName = action.streamName,
                     topicName = action.topicName
                 ).toObservable()
-                    .map<ChatAction> { ChatInternalAction.ScrollToTheEnd }
+                    .ofType(ChatAction::class.java)
                     .onErrorReturn { ChatInternalAction.LoadError(it) }
             }
     }

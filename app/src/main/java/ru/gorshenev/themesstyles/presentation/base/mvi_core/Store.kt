@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.presentation.mvi_core
+package ru.gorshenev.themesstyles.presentation.base.mvi_core
 
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay

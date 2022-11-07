@@ -13,9 +13,9 @@ import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentProfileBinding
 import ru.gorshenev.themesstyles.di.GlobalDI
-import ru.gorshenev.themesstyles.presentation.mvi_core.*
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.*
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
-import ru.gorshenev.themesstyles.presentation.ui.profile.middleware.ProfileMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.profile.middleware.UploadMiddleware
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 
 class ProfileFragment : Fragment(R.layout.fragment_profile),
@@ -26,7 +26,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
         val profileStore: Store<ProfileAction, ProfileState, ProfileEffect> =
             Store(
                 reducer = ProfileReducer(),
-                middlewares = listOf(ProfileMiddleware(GlobalDI.INSTANSE.profileRepository)),
+                middlewares = listOf(UploadMiddleware(GlobalDI.INSTANSE.profileRepository)),
                 initialState = ProfileState.Loading
             )
         MviViewModelFactory(profileStore)

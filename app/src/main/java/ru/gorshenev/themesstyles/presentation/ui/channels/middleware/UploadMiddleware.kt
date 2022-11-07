@@ -3,12 +3,12 @@ package ru.gorshenev.themesstyles.presentation.ui.channels.middleware
 import io.reactivex.Observable
 import ru.gorshenev.themesstyles.data.repositories.stream.StreamMapper.toUi
 import ru.gorshenev.themesstyles.data.repositories.stream.StreamRepository
-import ru.gorshenev.themesstyles.presentation.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamAction
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamState
 
-class StreamUploadMiddleware(private val repository: StreamRepository) :
+class UploadMiddleware(private val repository: StreamRepository) :
     Middleware<StreamAction, StreamState> {
     override fun bind(
         actions: Observable<StreamAction>,

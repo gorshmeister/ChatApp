@@ -1,7 +1,6 @@
 package ru.gorshenev.themesstyles.presentation.ui.profile
 
-import ru.gorshenev.themesstyles.presentation.mvi_core.Reducer
-import ru.gorshenev.themesstyles.presentation.mvi_core.BaseEffect
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Reducer
 import java.util.*
 
 class ProfileReducer : Reducer<ProfileAction, ProfileState, ProfileEffect> {

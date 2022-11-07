@@ -1,7 +1,7 @@
 package ru.gorshenev.themesstyles.presentation.ui.people
 
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.mvi_core.BaseState
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseState
 
 sealed class PeopleState : BaseState {
     object Loading : PeopleState()

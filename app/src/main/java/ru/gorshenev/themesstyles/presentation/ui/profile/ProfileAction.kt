@@ -1,7 +1,7 @@
 package ru.gorshenev.themesstyles.presentation.ui.profile
 
-import ru.gorshenev.themesstyles.presentation.mvi_core.BaseAction
-import ru.gorshenev.themesstyles.presentation.mvi_core.BaseEffect
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseAction
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseEffect
 
 sealed class ProfileAction : BaseAction {
     object UploadProfile : ProfileAction()

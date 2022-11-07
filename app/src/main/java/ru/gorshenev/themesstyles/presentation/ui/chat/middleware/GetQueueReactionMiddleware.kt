@@ -5,7 +5,7 @@ import ru.gorshenev.themesstyles.data.repositories.chat.ChatMapper.toDomain
 import ru.gorshenev.themesstyles.data.repositories.chat.ChatMapper.toUi
 import ru.gorshenev.themesstyles.data.repositories.chat.ChatRepository
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatState
@@ -22,28 +22,30 @@ class GetQueueReactionMiddleware(private val repository: ChatRepository) :
         state: Observable<ChatState>
     ): Observable<ChatAction> {
         return actions.ofType(ChatAction.GetQueueReaction::class.java)
-            .withLatestFrom(state) { action, currentState -> action to currentState }
-            .switchMap { (action, state) ->
+            .switchMap { action ->
                 repository.getQueueReactions(action.queueId, action.lastId)
-                    .toObservable()
                     .retry()
-                    .flatMap { response ->
+                    .flatMapObservable { response ->
                         val event = response.events.single()
                         lastId = event.id
                         repository.getMessage(event.messageId).toObservable()
                     }
-                    .flatMap { response ->
-                        Observable.just(response.message)
-                            .flatMapCompletable { repository.saveMessage(it, action.topicName) }
-                            .toSingle {
-                                updateMessage(
-                                    newMessage = listOf(response.message).toDomain().toUi().first(),
-                                    currentItems = if (state is ChatState.Result) state.items else emptyList()
-                                )
-                            }
+                    .withLatestFrom(state) { response, currentState -> response to currentState }
+                    .filter { (_, currentState) -> currentState is ChatState.Result }
+                    .flatMap<ChatAction> { (response, currentState) ->
+                        val updatedItems = updateMessage(
+                            newMessage = listOf(response.message).toDomain().toUi().first(),
+                            currentItems = (currentState as ChatState.Result).items
+                        )
+                        val resultAction = ChatAction.GetQueueReaction(
+                            queueId = action.queueId,
+                            lastId = lastId,
+                            topicName = action.topicName,
+                            items = updatedItems
+                        )
+                        repository.saveMessage(response.message, action.topicName)
+                            .toSingleDefault(resultAction)
                             .toObservable()
-                    }.map<ChatAction> {
-                        ChatAction.GetQueueReaction(action.queueId, lastId, action.topicName, it)
                     }
                     .onErrorReturn { ChatInternalAction.LoadError(it) }
             }
@@ -71,5 +73,4 @@ class GetQueueReactionMiddleware(private val repository: ChatRepository) :
             }
         }
     }
-
 }

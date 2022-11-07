@@ -2,14 +2,14 @@ package ru.gorshenev.themesstyles.presentation.ui.people.middleware
 
 import io.reactivex.Observable
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
 import ru.gorshenev.themesstyles.presentation.ui.people.PeopleAction
 import ru.gorshenev.themesstyles.presentation.ui.people.PeopleInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.people.PeopleState
 import ru.gorshenev.themesstyles.presentation.ui.people.items.PeopleUi
 import java.util.concurrent.TimeUnit
 
-class PeopleSearchMiddleware() : Middleware<PeopleAction, PeopleState> {
+class SearchMiddleware() : Middleware<PeopleAction, PeopleState> {
     override fun bind(
         actions: Observable<PeopleAction>,
         state: Observable<PeopleState>
