@@ -29,7 +29,7 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.adapter.StreamsHolderF
 import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.ExpandStreamMiddleware
 import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.OpenChatMiddleware
 import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.SearchMiddleware
-import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.UploadMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.LoadMiddleware
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatFragment
 import ru.gorshenev.themesstyles.utils.Utils.setDivider
 
@@ -44,7 +44,7 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
             Store(
                 reducer = StreamReducer(),
                 middlewares = listOf(
-                    UploadMiddleware(GlobalDI.INSTANSE.streamRepository),
+                    LoadMiddleware(GlobalDI.INSTANSE.streamRepository),
                     SearchMiddleware(),
                     OpenChatMiddleware(),
                     ExpandStreamMiddleware()

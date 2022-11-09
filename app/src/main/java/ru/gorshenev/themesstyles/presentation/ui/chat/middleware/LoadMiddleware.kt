@@ -9,7 +9,7 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.ChatInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatState
 import java.util.concurrent.TimeUnit
 
-class UploadMiddleware(private val repository: ChatRepository) :
+class LoadMiddleware(private val repository: ChatRepository) :
     Middleware<ChatAction, ChatState> {
     override fun bind(
         actions: Observable<ChatAction>,

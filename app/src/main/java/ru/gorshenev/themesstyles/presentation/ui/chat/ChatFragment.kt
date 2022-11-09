@@ -51,8 +51,8 @@ ChatFragment : Fragment(R.layout.fragment_chat),
             Store(
                 reducer = ChatReducer(),
                 middlewares = listOf(
-                    UploadMiddleware(repository),
-                    UploadMoreMiddleware(repository),
+                    LoadMiddleware(repository),
+                    LoadMoreMiddleware(repository),
                     SendMessageMiddleware(repository),
                     OnEmojiClickMiddleware(repository),
                     RegisterMessageQueueMiddleware(repository),
@@ -127,6 +127,7 @@ ChatFragment : Fragment(R.layout.fragment_chat),
     }
 
     fun progress(switch: Boolean) {
+        //TODO()
         with(binding) {
             when (switch) {
                 true -> {
@@ -147,6 +148,7 @@ ChatFragment : Fragment(R.layout.fragment_chat),
             ChatState.Error -> stopLoading()
             ChatState.Loading -> showLoading()
             is ChatState.Result -> showItems(state.items)
+            //progress.isVisible = state.isPagination
         }
     }
 

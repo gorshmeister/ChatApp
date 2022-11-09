@@ -15,9 +15,8 @@ class RegisterMessageQueueMiddleware(private val repository: ChatRepository) :
         state: Observable<ChatState>
     ): Observable<ChatAction> {
         return actions.ofType(ChatAction.RegisterMessageQueue::class.java)
-            .flatMap { action ->
+            .flatMapSingle { action ->
                 repository.registerMessageQueue(action.streamName, action.topicName)
-                    .toObservable()
                     .map<ChatAction> {
                         ChatAction.GetQueueMessage(
                             queueId = it.queueId,

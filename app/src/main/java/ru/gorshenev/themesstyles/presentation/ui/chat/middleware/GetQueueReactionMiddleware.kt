@@ -32,7 +32,7 @@ class GetQueueReactionMiddleware(private val repository: ChatRepository) :
                     }
                     .withLatestFrom(state) { response, currentState -> response to currentState }
                     .filter { (_, currentState) -> currentState is ChatState.Result }
-                    .flatMap<ChatAction> { (response, currentState) ->
+                    .flatMapSingle<ChatAction> { (response, currentState) ->
                         val updatedItems = updateMessage(
                             newMessage = listOf(response.message).toDomain().toUi().first(),
                             currentItems = (currentState as ChatState.Result).items
@@ -45,7 +45,6 @@ class GetQueueReactionMiddleware(private val repository: ChatRepository) :
                         )
                         repository.saveMessage(response.message, action.topicName)
                             .toSingleDefault(resultAction)
-                            .toObservable()
                     }
                     .onErrorReturn { ChatInternalAction.LoadError(it) }
             }

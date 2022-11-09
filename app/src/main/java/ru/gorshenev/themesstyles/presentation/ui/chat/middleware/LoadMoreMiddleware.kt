@@ -8,7 +8,7 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.ChatAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatState
 
-class UploadMoreMiddleware(private val repository: ChatRepository) :
+class LoadMoreMiddleware(private val repository: ChatRepository) :
     Middleware<ChatAction, ChatState> {
     override fun bind(
         actions: Observable<ChatAction>,

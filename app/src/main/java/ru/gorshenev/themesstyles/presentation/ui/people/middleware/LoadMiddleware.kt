@@ -8,19 +8,18 @@ import ru.gorshenev.themesstyles.presentation.ui.people.PeopleAction
 import ru.gorshenev.themesstyles.presentation.ui.people.PeopleInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.people.PeopleState
 
-class UploadMiddleware(private val repository: PeopleRepository) :
+class LoadMiddleware(private val repository: PeopleRepository) :
     Middleware<PeopleAction, PeopleState> {
     override fun bind(
         actions: Observable<PeopleAction>,
         state: Observable<PeopleState>
     ): Observable<PeopleAction> {
         return actions.ofType(PeopleAction.UploadUsers::class.java)
-            .flatMap {
+            .flatMapSingle<PeopleAction> {
                 repository.getUsers()
-                    .toObservable()
                     .map<PeopleInternalAction> { PeopleInternalAction.LoadResult(it.toUi()) }
                     .onErrorReturn { PeopleInternalAction.LoadError(it) }
-                    .startWith(PeopleInternalAction.StartLoading)
             }
+            .startWith(PeopleInternalAction.StartLoading)
     }
 }

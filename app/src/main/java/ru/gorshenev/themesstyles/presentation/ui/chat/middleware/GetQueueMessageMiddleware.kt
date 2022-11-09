@@ -34,7 +34,7 @@ class GetQueueMessageMiddleware(private val repository: ChatRepository) :
 
                         val scrollAction = Observable.just(ChatInternalAction.ScrollToTheEnd)
 
-                        Observable.mergeDelayError(getMessageAction, scrollAction)
+                        Observable.concatArrayDelayError(getMessageAction, scrollAction)
                     }.onErrorReturn { ChatInternalAction.LoadError(it) }
             }
     }

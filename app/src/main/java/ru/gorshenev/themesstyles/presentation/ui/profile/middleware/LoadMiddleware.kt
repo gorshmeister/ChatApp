@@ -7,7 +7,7 @@ import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileAction
 import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileState
 
-class UploadMiddleware(private val repository: ProfileRepository) :
+class LoadMiddleware(private val repository: ProfileRepository) :
     Middleware<ProfileAction, ProfileState> {
 
     override fun bind(
@@ -15,7 +15,7 @@ class UploadMiddleware(private val repository: ProfileRepository) :
         state: Observable<ProfileState>
     ): Observable<ProfileAction> {
         return actions.ofType(ProfileAction.UploadProfile::class.java)
-            .flatMap {
+            .flatMapSingle<ProfileAction> {
                 repository.getUser()
                     .map<ProfileInternalAction> { result ->
                         ProfileInternalAction.LoadResult(
@@ -23,9 +23,8 @@ class UploadMiddleware(private val repository: ProfileRepository) :
                             result.members.avatarUrl
                         )
                     }
-                    .toObservable()
                     .onErrorReturn { ProfileInternalAction.LoadError(it) }
-                    .startWith(ProfileInternalAction.StartLoading)
             }
+            .startWith(ProfileInternalAction.StartLoading)
     }
 }

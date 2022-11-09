@@ -23,7 +23,7 @@ import ru.gorshenev.themesstyles.presentation.base.mvi_core.Store
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
 import ru.gorshenev.themesstyles.presentation.ui.people.adapter.PeopleHolderFactory
 import ru.gorshenev.themesstyles.presentation.ui.people.middleware.SearchMiddleware
-import ru.gorshenev.themesstyles.presentation.ui.people.middleware.UploadMiddleware
+import ru.gorshenev.themesstyles.presentation.ui.people.middleware.LoadMiddleware
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 
 class PeopleFragment : Fragment(R.layout.fragment_people),
@@ -40,7 +40,7 @@ class PeopleFragment : Fragment(R.layout.fragment_people),
             Store(
                 reducer = PeopleReducer(),
                 middlewares = listOf(
-                    UploadMiddleware(GlobalDI.INSTANSE.peopleRepository),
+                    LoadMiddleware(GlobalDI.INSTANSE.peopleRepository),
                     SearchMiddleware()
                 ),
                 initialState = PeopleState.Loading
