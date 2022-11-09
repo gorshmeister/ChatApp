@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 
 object Network {
 
-    private const val BASE_URL = "https://setjy.zulipchat.com/api/v1/"
+     const val BASE_URL = "https://setjy.zulipchat.com/api/v1/"
 
     private val httpLoggingInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.BODY)

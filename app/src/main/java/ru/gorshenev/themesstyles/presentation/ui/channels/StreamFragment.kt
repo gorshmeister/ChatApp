@@ -1,5 +1,6 @@
 package ru.gorshenev.themesstyles.presentation.ui.channels
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -7,31 +8,25 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsStreamBinding
-import ru.gorshenev.themesstyles.di.GlobalDI
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviView
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModel
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
-import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviView
-import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModel
-import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModelFactory
-import ru.gorshenev.themesstyles.presentation.base.mvi_core.Store
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.RESULT_STREAM
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STREAM_SEARCH
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STR_NAME
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.STR_TYPE
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.TPC_NAME
 import ru.gorshenev.themesstyles.presentation.ui.channels.adapter.StreamsHolderFactory
-import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.ExpandStreamMiddleware
-import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.OpenChatMiddleware
-import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.SearchMiddleware
-import ru.gorshenev.themesstyles.presentation.ui.channels.middleware.LoadMiddleware
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatFragment
+import ru.gorshenev.themesstyles.utils.Utils.appComponent
 import ru.gorshenev.themesstyles.utils.Utils.setDivider
+import javax.inject.Inject
 
 class StreamFragment : Fragment(R.layout.fragment_channels_stream),
     MviView<StreamState, StreamEffect> {
@@ -39,40 +34,29 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
 
     private val streamType by lazy { arguments?.get(STR_TYPE) as StreamType }
 
-    private val streamViewModel: MviViewModel<StreamAction, StreamState, StreamEffect> by viewModels {
-        val streamStore: Store<StreamAction, StreamState, StreamEffect> =
-            Store(
-                reducer = StreamReducer(),
-                middlewares = listOf(
-                    LoadMiddleware(GlobalDI.INSTANSE.streamRepository),
-                    SearchMiddleware(),
-                    OpenChatMiddleware(),
-                    ExpandStreamMiddleware()
-                ),
-                initialState = StreamState.Loading
-            )
-        MviViewModelFactory(streamStore)
-    }
+    @Inject
+    lateinit var streamViewModel: MviViewModel<StreamAction, StreamState, StreamEffect>
 
-    private val holderFactory: HolderFactory = StreamsHolderFactory(
-        onStreamClick = { streamId ->
-            streamViewModel.state.ifResult {
-                streamViewModel.accept(StreamAction.OnStreamClick(streamId, it.visibleItems))
-            }
-        },
-        onTopicClick = { topicId ->
-            streamViewModel.state.ifResult {
-                streamViewModel.accept(StreamAction.OnTopicClick(topicId, it.visibleItems))
-            }
+    private val holderFactory: HolderFactory = StreamsHolderFactory(onStreamClick = { streamId ->
+        streamViewModel.state.ifResult {
+            streamViewModel.accept(StreamAction.OnStreamClick(streamId, it.visibleItems))
         }
-    )
+    }, onTopicClick = { topicId ->
+        streamViewModel.state.ifResult {
+            streamViewModel.accept(StreamAction.OnTopicClick(topicId, it.visibleItems))
+        }
+    })
 
     private val adapter = Adapter<ViewTyped>(holderFactory)
 
 
+    override fun onAttach(context: Context) {
+        context.appComponent.streamComponent().build().inject(this)
+        super.onAttach(context)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViews()
-
         streamViewModel.bind(this)
         streamViewModel.accept(StreamAction.UploadStreams(streamType))
     }
@@ -83,15 +67,13 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
             rvStreams.setDivider()
 
             parentFragmentManager.setFragmentResultListener(
-                STREAM_SEARCH,
-                this@StreamFragment
+                STREAM_SEARCH, this@StreamFragment
             ) { _, result ->
                 val searchText = result.getString(RESULT_STREAM, "")
                 streamViewModel.state.ifResult {
                     streamViewModel.accept(
                         StreamAction.SearchStream(
-                            items = it.items,
-                            query = searchText?.toString().orEmpty()
+                            items = it.items, query = searchText?.toString().orEmpty()
                         )
                     )
                 }
@@ -124,10 +106,8 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
         val chatFragment = ChatFragment()
         chatFragment.arguments = bundleOf(STR_NAME to streamName, TPC_NAME to topicName)
 
-        parentFragmentManager.beginTransaction()
-            .add(R.id.fragment_container_view, chatFragment)
-            .addToBackStack(null)
-            .commit()
+        parentFragmentManager.beginTransaction().add(R.id.fragment_container_view, chatFragment)
+            .addToBackStack(null).commit()
     }
 
     private fun showItems(items: List<ViewTyped>) {
@@ -169,8 +149,7 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
 
 
     enum class StreamType {
-        SUBSCRIBED,
-        ALL_STREAMS
+        SUBSCRIBED, ALL_STREAMS
     }
 
 

@@ -1,21 +1,16 @@
 package ru.gorshenev.themesstyles
 
 import android.app.Application
-import android.content.Context
-import ru.gorshenev.themesstyles.data.database.AppDataBase
-import ru.gorshenev.themesstyles.di.GlobalDI
+import ru.gorshenev.themesstyles.di.component.AppComponent
+import ru.gorshenev.themesstyles.di.component.DaggerAppComponent
 
 class ChatApp : Application() {
 
+    lateinit var appComponent: AppComponent
+
     override fun onCreate() {
         super.onCreate()
-        appContext = this
-        AppDataBase.getDataBase(appContext)
-        GlobalDI.init(appContext)
-    }
-
-    companion object {
-        lateinit var appContext: Context
+        appComponent = DaggerAppComponent.builder().context(this).build()
     }
 
 }

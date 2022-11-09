@@ -1,5 +1,6 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,7 +10,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -17,11 +17,8 @@ import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.data.Errors
 import ru.gorshenev.themesstyles.databinding.FragmentChatBinding
-import ru.gorshenev.themesstyles.di.GlobalDI
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviView
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModel
-import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModelFactory
-import ru.gorshenev.themesstyles.presentation.base.mvi_core.Store
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
@@ -30,8 +27,9 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Compa
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.TPC_NAME
 import ru.gorshenev.themesstyles.presentation.ui.chat.BottomSheet.Companion.PICKER_KEY
 import ru.gorshenev.themesstyles.presentation.ui.chat.adapter.ChatHolderFactory
-import ru.gorshenev.themesstyles.presentation.ui.chat.middleware.*
+import ru.gorshenev.themesstyles.utils.Utils.appComponent
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
+import javax.inject.Inject
 
 class
 ChatFragment : Fragment(R.layout.fragment_chat),
@@ -42,28 +40,11 @@ ChatFragment : Fragment(R.layout.fragment_chat),
 
     private val streamName: String by lazy { arguments?.getString(STR_NAME).toString() }
 
-    private val bottomSheet: BottomSheet = BottomSheet()
+    @Inject
+    lateinit var bottomSheet: BottomSheet
 
-    private val repository = GlobalDI.INSTANSE.chatRepository
-
-    private val chatViewModel: MviViewModel<ChatAction, ChatState, ChatEffect> by viewModels {
-        val chatStore: Store<ChatAction, ChatState, ChatEffect> =
-            Store(
-                reducer = ChatReducer(),
-                middlewares = listOf(
-                    LoadMiddleware(repository),
-                    LoadMoreMiddleware(repository),
-                    SendMessageMiddleware(repository),
-                    OnEmojiClickMiddleware(repository),
-                    RegisterMessageQueueMiddleware(repository),
-                    GetQueueMessageMiddleware(repository),
-                    RegisterReactionQueueMiddleware(repository),
-                    GetQueueReactionMiddleware(repository)
-                ),
-                initialState = ChatState.Loading
-            )
-        MviViewModelFactory(chatStore)
-    }
+    @Inject
+    lateinit var chatViewModel: MviViewModel<ChatAction, ChatState, ChatEffect>
 
     private val holderFactory: HolderFactory = ChatHolderFactory(
         longClick = { messageId ->
@@ -78,6 +59,11 @@ ChatFragment : Fragment(R.layout.fragment_chat),
         }
     )
     private val adapter = Adapter<ViewTyped>(holderFactory)
+
+    override fun onAttach(context: Context) {
+        context.appComponent.chatComponent().build().inject(this)
+        super.onAttach(context)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

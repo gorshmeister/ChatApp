@@ -3,19 +3,19 @@ package ru.gorshenev.themesstyles.data.repositories.stream
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
-import ru.gorshenev.themesstyles.data.database.dao.StreamDao
+import ru.gorshenev.themesstyles.data.database.AppDataBase
 import ru.gorshenev.themesstyles.data.network.ZulipApi
 import ru.gorshenev.themesstyles.data.repositories.stream.StreamMapper.toDomain
 import ru.gorshenev.themesstyles.data.repositories.stream.StreamMapper.toEntity
 import ru.gorshenev.themesstyles.domain.model.channels.StreamModel
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamFragment
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class StreamRepository(
-    private val streamDao: StreamDao,
+class StreamRepository @Inject constructor(
+    private val db: AppDataBase,
     private val api: ZulipApi,
-    private val executionScheduler: Scheduler = Schedulers.io()
+    private val executionScheduler: Scheduler
 ) {
 
     fun getStreams(streamType: StreamFragment.StreamType): Observable<List<StreamModel>> {
@@ -23,13 +23,13 @@ class StreamRepository(
             getStreamsLocal(streamType),
             getStreamsRemote(streamType)
         )
-            .debounce(400,TimeUnit.MILLISECONDS)
+            .debounce(400, TimeUnit.MILLISECONDS)
             .subscribeOn(executionScheduler)
     }
 
 
     private fun getStreamsLocal(streamType: StreamFragment.StreamType): Observable<List<StreamModel>> {
-        return streamDao.getStreams(streamType)
+        return db.streamDao().getStreams(streamType)
             .map { streamWithTopics -> streamWithTopics.toDomain() }
             .onErrorReturn { emptyList() }
             .toObservable()
@@ -64,6 +64,6 @@ class StreamRepository(
     ) {
         val streamEntities = streamModels.toEntity(streamType)
         val topicEntities = streamModels.flatMap { it.topics.toEntity(streamType, it.id) }
-        streamDao.replaceAll(streamEntities, topicEntities, streamType)
+        db.streamDao().replaceAll(streamEntities, topicEntities, streamType)
     }
 }

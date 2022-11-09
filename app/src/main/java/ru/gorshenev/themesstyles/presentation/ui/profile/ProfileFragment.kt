@@ -1,37 +1,36 @@
 package ru.gorshenev.themesstyles.presentation.ui.profile
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentProfileBinding
-import ru.gorshenev.themesstyles.di.GlobalDI
-import ru.gorshenev.themesstyles.presentation.base.mvi_core.*
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviView
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModel
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
-import ru.gorshenev.themesstyles.presentation.ui.profile.middleware.LoadMiddleware
+import ru.gorshenev.themesstyles.utils.Utils.appComponent
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
+import javax.inject.Inject
 
 class ProfileFragment : Fragment(R.layout.fragment_profile),
     MviView<ProfileState, ProfileEffect> {
     private val binding: FragmentProfileBinding by viewBinding()
 
-    private val profileViewModel: MviViewModel<ProfileAction, ProfileState, ProfileEffect> by viewModels {
-        val profileStore: Store<ProfileAction, ProfileState, ProfileEffect> =
-            Store(
-                reducer = ProfileReducer(),
-                middlewares = listOf(LoadMiddleware(GlobalDI.INSTANSE.profileRepository)),
-                initialState = ProfileState.Loading
-            )
-        MviViewModelFactory(profileStore)
-    }
+    @Inject
+    lateinit var profileViewModel: MviViewModel<ProfileAction, ProfileState, ProfileEffect>
 
+
+    override fun onAttach(context: Context) {
+        context.appComponent.profileComponent().build().inject(this)
+        super.onAttach(context)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,10 +54,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
     override fun handleUiEffects(effect: ProfileEffect) {
         when (effect) {
             is ProfileEffect.SnackBar -> {
-                Snackbar.make(binding.root, getString(R.string.error, effect.error), Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.error, effect.error),
+                    Snackbar.LENGTH_LONG
+                )
                     .show()
                 Log.d(ChannelsFragment.ERROR_LOG_TAG, "Profile problems: ${effect.error}")
-
             }
         }
     }

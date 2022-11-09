@@ -2,15 +2,16 @@ package ru.gorshenev.themesstyles.presentation.ui.channels.middleware
 
 import io.reactivex.Observable
 import io.reactivex.Single
-import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamAction
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamState
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class SearchMiddleware : Middleware<StreamAction, StreamState> {
+class SearchMiddleware @Inject constructor() : Middleware<StreamAction, StreamState> {
     override fun bind(
         actions: Observable<StreamAction>,
         state: Observable<StreamState>

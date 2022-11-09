@@ -2,8 +2,9 @@ package ru.gorshenev.themesstyles.presentation.ui.chat
 
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.Reducer
 import java.util.*
+import javax.inject.Inject
 
-class ChatReducer : Reducer<ChatAction, ChatState, ChatEffect> {
+class ChatReducer @Inject constructor(): Reducer<ChatAction, ChatState, ChatEffect> {
     override fun reduceToState(action: ChatAction, state: ChatState): ChatState {
         return when (action) {
             ChatInternalAction.StartLoading -> {

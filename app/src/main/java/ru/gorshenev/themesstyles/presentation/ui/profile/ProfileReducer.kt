@@ -2,8 +2,9 @@ package ru.gorshenev.themesstyles.presentation.ui.profile
 
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.Reducer
 import java.util.*
+import javax.inject.Inject
 
-class ProfileReducer : Reducer<ProfileAction, ProfileState, ProfileEffect> {
+class ProfileReducer @Inject constructor() : Reducer<ProfileAction, ProfileState, ProfileEffect> {
 
     override fun reduceToState(action: ProfileAction, state: ProfileState): ProfileState {
         return when (action) {

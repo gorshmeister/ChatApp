@@ -42,7 +42,7 @@ abstract class AppDataBase : RoomDatabase() {
             }
         }
 
-        private const val DB_NAME = "appDataBase"
+        const val DB_NAME = "appDataBase"
         const val MESSAGE = "message"
         const val REACTION = "reaction"
         const val STREAM = "stream"

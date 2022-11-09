@@ -7,8 +7,9 @@ import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamAction
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamState
+import javax.inject.Inject
 
-class LoadMiddleware(private val repository: StreamRepository) :
+class LoadMiddleware @Inject constructor(private val repository: StreamRepository) :
     Middleware<StreamAction, StreamState> {
     override fun bind(
         actions: Observable<StreamAction>,

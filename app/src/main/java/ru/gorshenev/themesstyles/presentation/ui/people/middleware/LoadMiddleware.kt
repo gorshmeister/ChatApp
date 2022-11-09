@@ -7,8 +7,9 @@ import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
 import ru.gorshenev.themesstyles.presentation.ui.people.PeopleAction
 import ru.gorshenev.themesstyles.presentation.ui.people.PeopleInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.people.PeopleState
+import javax.inject.Inject
 
-class LoadMiddleware(private val repository: PeopleRepository) :
+class LoadMiddleware @Inject constructor(private val repository: PeopleRepository) :
     Middleware<PeopleAction, PeopleState> {
     override fun bind(
         actions: Observable<PeopleAction>,

@@ -66,17 +66,17 @@ class BottomSheet : BottomSheetDialogFragment(R.layout.bottom_sheet) {
             ).apply { compositeDisposable.add(this) }
     }
 
-    companion object {
-        const val TAG = "BottomSheet"
-        const val ARG_MSG_ID = "ARG_MSG_ID"
-        const val PICKER_KEY = "PICKER_KEY"
-        const val RESULT_EMOJI_PICK = "RESULT_EMOJI_PICK"
-    }
-
     //todo read Parcelizable||Parcelable, differences between it
     data class EmojiPickResult(
         val messageId: Int,
         val emojiName: String,
         val emojiCode: String
     ) : Serializable
+
+    companion object {
+        const val TAG = "BottomSheet"
+        const val ARG_MSG_ID = "ARG_MSG_ID"
+        const val PICKER_KEY = "PICKER_KEY"
+        const val RESULT_EMOJI_PICK = "RESULT_EMOJI_PICK"
+    }
 }

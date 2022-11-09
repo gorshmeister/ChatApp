@@ -7,8 +7,9 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.ChatAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatFragment
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatState
+import javax.inject.Inject
 
-class RegisterReactionQueueMiddleware(private val repository: ChatRepository) :
+class RegisterReactionQueueMiddleware @Inject constructor(private val repository: ChatRepository) :
     Middleware<ChatAction, ChatState> {
     override fun bind(
         actions: Observable<ChatAction>,

@@ -11,8 +11,9 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.ChatInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatState
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageLeftUi
 import ru.gorshenev.themesstyles.presentation.ui.chat.items.MessageRightUi
+import javax.inject.Inject
 
-class GetQueueReactionMiddleware(private val repository: ChatRepository) :
+class GetQueueReactionMiddleware @Inject constructor(private val repository: ChatRepository) :
     Middleware<ChatAction, ChatState> {
 
     private var lastId = -1

@@ -6,8 +6,9 @@ import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
 import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileAction
 import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileState
+import javax.inject.Inject
 
-class LoadMiddleware(private val repository: ProfileRepository) :
+class LoadMiddleware @Inject constructor(private val repository: ProfileRepository) :
     Middleware<ProfileAction, ProfileState> {
 
     override fun bind(
