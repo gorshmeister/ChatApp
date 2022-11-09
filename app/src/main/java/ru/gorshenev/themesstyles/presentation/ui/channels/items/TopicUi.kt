@@ -7,6 +7,7 @@ data class TopicUi(
     override val id: Int,
     val name: String,
     val color: Int = DEFAULT_COLOR,
+    val streamId: Int,
     override val viewType: Int = R.layout.item_channels_topic
 ) : ViewTyped {
 

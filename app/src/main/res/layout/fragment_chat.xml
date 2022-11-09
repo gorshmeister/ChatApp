@@ -32,12 +32,25 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:text="Topic: #topic_name" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:max="100"
+        android:progress="5"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_topic_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <include
         android:id="@+id/emptyState"
         layout="@layout/view_empty_state"
-        android:layout_marginTop="150dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_topic_name" />
@@ -117,8 +130,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_sendMsg"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="@string/to_write"
-        />
+        tools:text="@string/to_write" />
 
     <ImageView
         android:id="@+id/btn_sendMsg"

@@ -1,13 +1,16 @@
-package ru.gorshenev.themesstyles.presentation.mvi_core
+package ru.gorshenev.themesstyles.presentation.base.mvi_core
 
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.Disposable
 
-class MviViewModel<A : BaseAction, S : BaseState, E : UiEffects>(private val store: Store<A, S, E>) :
+class MviViewModel<A : BaseAction, S : BaseState, E : BaseEffect>(private val store: Store<A, S, E>) :
     ViewModel() {
     private val wiring = store.wire()
 
     private var stateBinding: Disposable? = null
+
+    val state
+        get() = store.currentState
 
     fun accept(action: A) {
         store.accept(action)

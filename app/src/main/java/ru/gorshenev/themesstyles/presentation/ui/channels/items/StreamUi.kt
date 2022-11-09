@@ -9,6 +9,4 @@ data class StreamUi(
     val topics: List<TopicUi>,
     val isExpanded: Boolean = false,
     override val viewType: Int = R.layout.item_channels_stream
-) : ViewTyped {
-
-}
+) : ViewTyped

@@ -3,20 +3,25 @@ package ru.gorshenev.themesstyles.presentation.ui.chat
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
+import ru.gorshenev.themesstyles.data.Errors
 import ru.gorshenev.themesstyles.databinding.FragmentChatBinding
 import ru.gorshenev.themesstyles.di.GlobalDI
-import ru.gorshenev.themesstyles.presentation.base.MvpFragment
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviView
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModel
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModelFactory
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.Store
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
@@ -25,23 +30,40 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Compa
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.TPC_NAME
 import ru.gorshenev.themesstyles.presentation.ui.chat.BottomSheet.Companion.PICKER_KEY
 import ru.gorshenev.themesstyles.presentation.ui.chat.adapter.ChatHolderFactory
+import ru.gorshenev.themesstyles.presentation.ui.chat.middleware.*
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 
 class
-ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), ChatView {
+ChatFragment : Fragment(R.layout.fragment_chat),
+    MviView<ChatState, ChatEffect> {
     private val binding: FragmentChatBinding by viewBinding()
 
     private val topicName: String by lazy { arguments?.getString(TPC_NAME).toString() }
 
     private val streamName: String by lazy { arguments?.getString(STR_NAME).toString() }
 
-    private val chatPresenter by lazy { ChatPresenter(GlobalDI.INSTANSE.chatRepository) }
-
-    override fun getPresenter(): ChatPresenter = chatPresenter
-
-    override fun getMvpView(): ChatView = this
-
     private val bottomSheet: BottomSheet = BottomSheet()
+
+    private val repository = GlobalDI.INSTANSE.chatRepository
+
+    private val chatViewModel: MviViewModel<ChatAction, ChatState, ChatEffect> by viewModels {
+        val chatStore: Store<ChatAction, ChatState, ChatEffect> =
+            Store(
+                reducer = ChatReducer(),
+                middlewares = listOf(
+                    LoadMiddleware(repository),
+                    LoadMoreMiddleware(repository),
+                    SendMessageMiddleware(repository),
+                    OnEmojiClickMiddleware(repository),
+                    RegisterMessageQueueMiddleware(repository),
+                    GetQueueMessageMiddleware(repository),
+                    RegisterReactionQueueMiddleware(repository),
+                    GetQueueReactionMiddleware(repository)
+                ),
+                initialState = ChatState.Loading
+            )
+        MviViewModelFactory(chatStore)
+    }
 
     private val holderFactory: HolderFactory = ChatHolderFactory(
         longClick = { messageId ->
@@ -52,7 +74,7 @@ ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), Cha
             }
         },
         onEmojiClick = { emojiName, _, messageId ->
-            getPresenter().onEmojiClick(emojiName, messageId)
+            chatViewModel.accept(ChatAction.OnEmojiClick(emojiName, messageId, false))
         }
     )
     private val adapter = Adapter<ViewTyped>(holderFactory)
@@ -63,8 +85,10 @@ ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), Cha
         initInputField()
         initSendingMessages()
         initStreamAndTopicNames()
-        getPresenter().loadMessages(streamName, topicName)
+        chatViewModel.bind(this)
+        chatViewModel.accept(ChatAction.UploadMessages(streamName, topicName))
     }
+
 
     private fun initViews() {
         with(binding) {
@@ -77,26 +101,68 @@ ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), Cha
                     super.onScrolled(recyclerView, dx, dy)
                     val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
                     if (position == START_LOADING_POSITION && dy != ZERO_SCROLL_POSITION) {
-                        getPresenter().uploadMoreMessages()
+                        progress(true)
+                        chatViewModel.accept(
+                            ChatAction.UploadMoreMessages(streamName, topicName)
+                        )
                     }
                 }
             })
 
             rvItems.adapter = adapter
 
-            parentFragmentManager.setFragmentResultListener(
-                PICKER_KEY,
-                this@ChatFragment
-            ) { _, result ->
+            parentFragmentManager.setFragmentResultListener(PICKER_KEY, this@ChatFragment)
+            { _, result ->
                 val resultPick =
                     result.get(BottomSheet.RESULT_EMOJI_PICK) as BottomSheet.EmojiPickResult
-                getPresenter().onEmojiClick(
-                    emojiName = resultPick.emojiName,
-                    messageId = resultPick.messageId,
-                    isBottomSheetClick = true
+                chatViewModel.accept(
+                    ChatAction.OnEmojiClick(
+                        emojiName = resultPick.emojiName,
+                        messageId = resultPick.messageId,
+                        isBottomSheetClick = true
+                    )
                 )
             }
         }
+    }
+
+    fun progress(switch: Boolean) {
+        //TODO()
+        with(binding) {
+            when (switch) {
+                true -> {
+                    progressBar.isVisible = true
+//                    progressBar.incrementProgressBy(100)
+                }
+
+                false -> {
+//                    progressBar.setProgress(0, true)
+                    progressBar.isGone = true
+                }
+            }
+        }
+    }
+
+    override fun render(state: ChatState) {
+        when (state) {
+            ChatState.Error -> stopLoading()
+            ChatState.Loading -> showLoading()
+            is ChatState.Result -> showItems(state.items)
+            //progress.isVisible = state.isPagination
+        }
+    }
+
+    override fun handleUiEffects(effect: ChatEffect) {
+        when (effect) {
+            is ChatEffect.SnackBar -> showError(effect.error)
+            ChatEffect.Scroll -> scrollToTheEnd()
+            ChatEffect.ProgressBar -> progress(false)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        chatViewModel.unbind()
     }
 
     private fun initInputField() {
@@ -114,7 +180,12 @@ ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), Cha
         with(binding) {
             btnSendMsg.setOnClickListener {
                 if (etMsgField.text.isNotBlank()) {
-                    getPresenter().sendMessage(etMsgField.text.toString())
+                    chatViewModel.accept(
+                        ChatAction.SendMessage(
+                            messageText = etMsgField.text.toString(),
+                            streamName = streamName, topicName = topicName
+                        )
+                    )
                 }
                 etMsgField.text.clear()
             }
@@ -144,16 +215,11 @@ ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), Cha
         this.setStatusBarColor(R.color.color_background_primary)
     }
 
-    override fun scrollToTheEnd() {
+    private fun scrollToTheEnd() {
         binding.rvItems.smoothScrollToPosition(adapter.itemCount)
     }
 
-    override fun showReactionExistsToast() {
-        Toast.makeText(context, getString(R.string.reaction_already_exists), Toast.LENGTH_SHORT)
-            .show()
-    }
-
-    override fun showItems(items: List<ViewTyped>) {
+    private fun showItems(items: List<ViewTyped>) {
         with(binding) {
             if (items.isEmpty()) {
                 emptyState.tvEmptyState.isVisible = true
@@ -163,22 +229,34 @@ ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), Cha
                 rvItems.isVisible = true
                 adapter.items = items
             }
+            stopLoading()
         }
     }
 
-    override fun showError(error: Throwable?) {
-        Snackbar.make(binding.root, getString(R.string.error, error), Snackbar.LENGTH_SHORT).show()
+    private fun showError(error: Throwable?) {
+        when (error) {
+            is Errors.ReactionAlreadyExist -> Snackbar.make(
+                binding.root,
+                getString(R.string.reaction_already_exists),
+                Snackbar.LENGTH_SHORT
+            ).show()
+            else -> Snackbar.make(
+                binding.root,
+                getString(R.string.error, error),
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
         Log.d(ChannelsFragment.ERROR_LOG_TAG, "Chat Problems: $error")
     }
 
-    override fun showLoading() {
+    private fun showLoading() {
         binding.shimmerChat.apply {
             visibility = View.VISIBLE
             showShimmer(true)
         }
     }
 
-    override fun stopLoading() {
+    private fun stopLoading() {
         binding.shimmerChat.apply {
             visibility = View.GONE
             hideShimmer()
@@ -188,6 +266,7 @@ ChatFragment : MvpFragment<ChatView, ChatPresenter>(R.layout.fragment_chat), Cha
     companion object {
         const val START_LOADING_POSITION = 5
         const val ZERO_SCROLL_POSITION = 0
+        const val LAST_ID = -1
     }
 
 }
