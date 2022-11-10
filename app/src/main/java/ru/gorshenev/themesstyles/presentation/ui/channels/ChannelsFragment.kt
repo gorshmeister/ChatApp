@@ -12,14 +12,14 @@ import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsBinding
 import ru.gorshenev.themesstyles.presentation.ui.channels.view_pager.PagerAdapter
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
+import javax.inject.Inject
+
 
 class ChannelsFragment : Fragment(R.layout.fragment_channels) {
     private val binding: FragmentChannelsBinding by viewBinding()
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initViews()
     }
 

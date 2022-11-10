@@ -2,8 +2,9 @@ package ru.gorshenev.themesstyles.presentation.ui.people
 
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.Reducer
 import java.util.*
+import javax.inject.Inject
 
-class PeopleReducer : Reducer<PeopleAction, PeopleState, PeopleEffect> {
+class PeopleReducer @Inject constructor() : Reducer<PeopleAction, PeopleState, PeopleEffect> {
     override fun reduceToState(action: PeopleAction, state: PeopleState): PeopleState {
         return when (action) {
             PeopleInternalAction.StartLoading -> {

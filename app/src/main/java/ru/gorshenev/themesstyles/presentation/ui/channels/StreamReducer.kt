@@ -2,8 +2,9 @@ package ru.gorshenev.themesstyles.presentation.ui.channels
 
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.Reducer
 import java.util.*
+import javax.inject.Inject
 
-class StreamReducer : Reducer<StreamAction, StreamState, StreamEffect> {
+class StreamReducer @Inject constructor() : Reducer<StreamAction, StreamState, StreamEffect> {
     override fun reduceToState(action: StreamAction, state: StreamState): StreamState {
         return when (action) {
             StreamInternalAction.StartLoading -> {

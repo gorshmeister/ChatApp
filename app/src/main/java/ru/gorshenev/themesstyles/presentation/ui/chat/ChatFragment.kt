@@ -1,5 +1,6 @@
 package ru.gorshenev.themesstyles.presentation.ui.chat
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -17,11 +18,9 @@ import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.data.Errors
 import ru.gorshenev.themesstyles.databinding.FragmentChatBinding
-import ru.gorshenev.themesstyles.di.GlobalDI
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviView
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModel
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModelFactory
-import ru.gorshenev.themesstyles.presentation.base.mvi_core.Store
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
@@ -30,40 +29,25 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Compa
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment.Companion.TPC_NAME
 import ru.gorshenev.themesstyles.presentation.ui.chat.BottomSheet.Companion.PICKER_KEY
 import ru.gorshenev.themesstyles.presentation.ui.chat.adapter.ChatHolderFactory
-import ru.gorshenev.themesstyles.presentation.ui.chat.middleware.*
+import ru.gorshenev.themesstyles.utils.Utils.appComponent
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
+import javax.inject.Inject
 
 class
 ChatFragment : Fragment(R.layout.fragment_chat),
     MviView<ChatState, ChatEffect> {
     private val binding: FragmentChatBinding by viewBinding()
 
+    private val bottomSheet: BottomSheet = BottomSheet()
+
     private val topicName: String by lazy { arguments?.getString(TPC_NAME).toString() }
 
     private val streamName: String by lazy { arguments?.getString(STR_NAME).toString() }
 
-    private val bottomSheet: BottomSheet = BottomSheet()
+    @Inject
+    lateinit var factory: MviViewModelFactory<ChatAction, ChatState, ChatEffect>
 
-    private val repository = GlobalDI.INSTANSE.chatRepository
-
-    private val chatViewModel: MviViewModel<ChatAction, ChatState, ChatEffect> by viewModels {
-        val chatStore: Store<ChatAction, ChatState, ChatEffect> =
-            Store(
-                reducer = ChatReducer(),
-                middlewares = listOf(
-                    LoadMiddleware(repository),
-                    LoadMoreMiddleware(repository),
-                    SendMessageMiddleware(repository),
-                    OnEmojiClickMiddleware(repository),
-                    RegisterMessageQueueMiddleware(repository),
-                    GetQueueMessageMiddleware(repository),
-                    RegisterReactionQueueMiddleware(repository),
-                    GetQueueReactionMiddleware(repository)
-                ),
-                initialState = ChatState.Loading
-            )
-        MviViewModelFactory(chatStore)
-    }
+    private val chatViewModel: MviViewModel<ChatAction, ChatState, ChatEffect> by viewModels { factory }
 
     private val holderFactory: HolderFactory = ChatHolderFactory(
         longClick = { messageId ->
@@ -79,6 +63,11 @@ ChatFragment : Fragment(R.layout.fragment_chat),
     )
     private val adapter = Adapter<ViewTyped>(holderFactory)
 
+    override fun onAttach(context: Context) {
+        context.appComponent.chatComponent().build().inject(this)
+        super.onAttach(context)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
@@ -86,7 +75,7 @@ ChatFragment : Fragment(R.layout.fragment_chat),
         initSendingMessages()
         initStreamAndTopicNames()
         chatViewModel.bind(this)
-        chatViewModel.accept(ChatAction.UploadMessages(streamName, topicName))
+        chatViewModel.accept(ChatAction.LoadMessages(streamName, topicName))
     }
 
 
@@ -103,7 +92,7 @@ ChatFragment : Fragment(R.layout.fragment_chat),
                     if (position == START_LOADING_POSITION && dy != ZERO_SCROLL_POSITION) {
                         progress(true)
                         chatViewModel.accept(
-                            ChatAction.UploadMoreMessages(streamName, topicName)
+                            ChatAction.LoadMoreMessages(streamName, topicName)
                         )
                     }
                 }

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
+import ru.gorshenev.themesstyles.ChatApp
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.ActivityMainBinding
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
@@ -31,15 +32,9 @@ class MainActivity : AppCompatActivity() {
         with(binding) {
             bottomNavigation.setOnItemSelectedListener { item ->
                 val selectedFragment: Fragment = when (item.itemId) {
-                    R.id.channels -> {
-                        ChannelsFragment()
-                    }
-                    R.id.people -> {
-                        PeopleFragment()
-                    }
-                    R.id.profile -> {
-                        ProfileFragment()
-                    }
+                    R.id.channels -> ChannelsFragment()
+                    R.id.people -> PeopleFragment()
+                    R.id.profile -> ProfileFragment()
                     else -> throw Error(getString(R.string.unknown_fragment))
                 }
                 supportFragmentManager.beginTransaction()

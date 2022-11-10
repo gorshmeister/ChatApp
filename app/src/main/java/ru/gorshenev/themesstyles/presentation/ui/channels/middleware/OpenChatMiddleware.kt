@@ -7,8 +7,9 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.StreamInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamState
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
+import javax.inject.Inject
 
-class OpenChatMiddleware : Middleware<StreamAction, StreamState> {
+class OpenChatMiddleware @Inject constructor() : Middleware<StreamAction, StreamState> {
     override fun bind(
         actions: Observable<StreamAction>,
         state: Observable<StreamState>

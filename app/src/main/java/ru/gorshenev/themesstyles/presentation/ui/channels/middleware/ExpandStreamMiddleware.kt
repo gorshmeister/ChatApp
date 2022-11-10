@@ -1,15 +1,16 @@
 package ru.gorshenev.themesstyles.presentation.ui.channels.middleware
 
 import io.reactivex.Observable
-import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
+import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamAction
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.channels.StreamState
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import ru.gorshenev.themesstyles.presentation.ui.channels.items.TopicUi
+import javax.inject.Inject
 
-class ExpandStreamMiddleware : Middleware<StreamAction, StreamState> {
+class ExpandStreamMiddleware @Inject constructor() : Middleware<StreamAction, StreamState> {
     override fun bind(
         actions: Observable<StreamAction>,
         state: Observable<StreamState>

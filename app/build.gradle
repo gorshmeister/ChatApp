@@ -1,8 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-android'
     id 'kotlinx-serialization'
+    id 'kotlin-android'
     id 'kotlin-kapt'
 }
 
@@ -36,55 +36,75 @@ android {
         jvmTarget = '1.8'
     }
 }
-
+ext {
+    coreVersion = '1.8.0'
+    appCompatVersion = '1.5.1'
+    constraintLayoutVersion = '2.1.4'
+    materialVersion = '1.8.0-alpha01'
+    fragmentKtxVersion = '1.6.0-alpha01'
+    navigationFragmentKtxVersion = '2.5.2'
+    viewBindingVersion = '1.5.6'
+    rxJavaVersion = '2.2.21'
+    rxAndroidVersion = '2.1.1'
+    rxRelayVersion = '2.1.1'
+    adapterRxJavaVersion = '2.9.0'
+    shimmerVersion = '0.5.0'
+    kotlinSerializationVersion = '1.4.0'
+    okhttpVersion = '5.0.0-alpha.2'
+    retrofitVersion = '2.9.0'
+    retrofitConverterVersion = '0.8.0'
+    glideVersion = '4.13.2'
+    roomVersion = '2.4.3'
+    daggerVersion = '2.28.3'
+}
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.material:material:1.8.0-alpha01'
-    
+    implementation "androidx.core:core-ktx:$coreVersion"
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation "com.google.android.material:material:$materialVersion"
+
     //fragment
-    implementation 'androidx.fragment:fragment-ktx:1.6.0-alpha01'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.2'
+    implementation "androidx.fragment:fragment-ktx:$fragmentKtxVersion"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationFragmentKtxVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationFragmentKtxVersion"
 
     //viewBindings
-    implementation 'com.github.kirich1409:viewbindingpropertydelegate:1.5.6'
+    implementation "com.github.kirich1409:viewbindingpropertydelegate:$viewBindingVersion"
 
     //rxJava
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation "com.jakewharton.rxrelay2:rxrelay:$rxRelayVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$adapterRxJavaVersion"
 
     //shimmer
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    implementation "com.facebook.shimmer:shimmer:$shimmerVersion"
 
     //kotlin serialization
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationVersion"
 
     //okhttp
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
+    implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
 
     //retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$retrofitConverterVersion"
 
     //glide
-    implementation 'com.github.bumptech.glide:glide:4.13.2'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.2'
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 
     //room
-    implementation 'androidx.room:room-ktx:2.4.3'
-    implementation 'androidx.room:room-runtime:2.4.3'
-    implementation 'androidx.room:room-rxjava2:2.4.3'
-    kapt 'androidx.room:room-compiler:2.4.3'
+    implementation "androidx.room:room-ktx:$roomVersion"
+    implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "androidx.room:room-rxjava2:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
 
-    implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.1'
-
-
-
+    //dagger2
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
 
     testImplementation 'junit:junit:4.13.2'

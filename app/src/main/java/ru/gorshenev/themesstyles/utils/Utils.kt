@@ -1,5 +1,6 @@
 package ru.gorshenev.themesstyles.utils
 
+import android.content.Context
 import android.content.res.Resources
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
@@ -8,7 +9,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import ru.gorshenev.themesstyles.ChatApp
 import ru.gorshenev.themesstyles.R
+import ru.gorshenev.themesstyles.di.component.AppComponent
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -68,6 +71,13 @@ object Utils {
     operator fun CompositeDisposable.plusAssign(disposable: Disposable) {
         this.add(disposable)
     }
+
+    val Context.appComponent: AppComponent
+        get() = when (this) {
+            is ChatApp -> appComponent
+            else -> this.applicationContext.appComponent
+        }
+
 
 }
 

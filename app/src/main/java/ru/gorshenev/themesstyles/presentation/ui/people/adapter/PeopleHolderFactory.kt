@@ -4,6 +4,7 @@ import android.view.View
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.BaseViewHolder
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
+import javax.inject.Inject
 
 class PeopleHolderFactory : HolderFactory() {
 

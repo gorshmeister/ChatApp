@@ -4,22 +4,22 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import ru.gorshenev.themesstyles.data.Errors
-import ru.gorshenev.themesstyles.data.database.dao.MessageDao
+import ru.gorshenev.themesstyles.data.database.AppDataBase
 import ru.gorshenev.themesstyles.data.database.entities.MessageWithReactionsEntity
 import ru.gorshenev.themesstyles.data.network.ZulipApi
 import ru.gorshenev.themesstyles.data.network.model.*
 import ru.gorshenev.themesstyles.data.repositories.chat.ChatMapper.toDomain
 import ru.gorshenev.themesstyles.data.repositories.chat.ChatMapper.toEntity
 import ru.gorshenev.themesstyles.domain.model.chat.MessageModel
+import javax.inject.Inject
 
-class ChatRepository(
-    private val messageDao: MessageDao,
+class ChatRepository @Inject constructor(
+    private val db: AppDataBase,
     private val api: ZulipApi,
-    private val executionScheduler: Scheduler = Schedulers.io()
+    private val executionScheduler: Scheduler
 ) {
 
     fun getMessage(messageId: Int) = api.getMessage(messageId).subscribeOn(executionScheduler)
@@ -51,14 +51,14 @@ class ChatRepository(
     private fun replaceLocalMessages(topicName: String, remoteMessages: List<MessageResponse>) {
         val messageEntities = remoteMessages.map { it.toEntity(topicName) }
         val reactionEntities = remoteMessages.flatMap { it.reactions.toEntity(it.msgId, topicName) }
-        messageDao.deleteMessages(topicName)
-        messageDao.insertMessages(messageEntities)
-        messageDao.insertReactions(reactionEntities)
+        db.messageDao().deleteMessages(topicName)
+        db.messageDao().insertMessages(messageEntities)
+        db.messageDao().insertReactions(reactionEntities)
     }
 
 
     private fun getMessagesLocal(topicName: String): Observable<List<MessageWithReactionsEntity>> {
-        return messageDao.getMessagesWithReactions(topicName)
+        return db.messageDao().getMessagesWithReactions(topicName)
             .onErrorReturn { emptyList() }
             .toObservable()
             .subscribeOn(executionScheduler)
@@ -157,25 +157,25 @@ class ChatRepository(
     }
 
     fun saveMessage(newMessage: MessageResponse, topicName: String): Completable {
-        return messageDao.getMessages(topicName).flatMapCompletable { localMessages ->
+        return db.messageDao().getMessages(topicName).flatMapCompletable { localMessages ->
             val isMessageExists = localMessages.any { it.msgId == newMessage.msgId }
             Completable.fromCallable {
                 when {
                     isMessageExists -> {
-                        messageDao.updateMessageReactions(
+                        db.messageDao().updateMessageReactions(
                             newMessage.msgId,
                             newMessage.reactions.toEntity(newMessage.msgId, topicName)
                         )
                     }
                     localMessages.size < MAX_NUM_OF_MESSAGES_IN_DB -> {
-                        messageDao.insertMessageWithReactions(
+                        db.messageDao().insertMessageWithReactions(
                             newMessage.toEntity(topicName),
                             newMessage.reactions.toEntity(newMessage.msgId, topicName)
                         )
                     }
                     else -> {
-                        messageDao.deleteMessage(localMessages.first().msgId)
-                        messageDao.insertMessageWithReactions(
+                        db.messageDao().deleteMessage(localMessages.first().msgId)
+                        db.messageDao().insertMessageWithReactions(
                             newMessage.toEntity(topicName),
                             newMessage.reactions.toEntity(newMessage.msgId, topicName)
                         )

@@ -8,8 +8,9 @@ import ru.gorshenev.themesstyles.presentation.base.mvi_core.Middleware
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatState
+import javax.inject.Inject
 
-class GetQueueMessageMiddleware(private val repository: ChatRepository) :
+class GetQueueMessageMiddleware @Inject constructor(private val repository: ChatRepository) :
     Middleware<ChatAction, ChatState> {
     override fun bind(
         actions: Observable<ChatAction>,
@@ -34,7 +35,7 @@ class GetQueueMessageMiddleware(private val repository: ChatRepository) :
 
                         val scrollAction = Observable.just(ChatInternalAction.ScrollToTheEnd)
 
-                        Observable.concatArrayDelayError(getMessageAction, scrollAction)
+                        Observable.mergeDelayError(getMessageAction, scrollAction)
                     }.onErrorReturn { ChatInternalAction.LoadError(it) }
             }
     }
