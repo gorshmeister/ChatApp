@@ -8,12 +8,14 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsStreamBinding
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviView
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModel
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModelFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
@@ -35,7 +37,9 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
     private val streamType by lazy { arguments?.get(STR_TYPE) as StreamType }
 
     @Inject
-    lateinit var streamViewModel: MviViewModel<StreamAction, StreamState, StreamEffect>
+    lateinit var factory: MviViewModelFactory<StreamAction, StreamState, StreamEffect>
+
+    private val streamViewModel: MviViewModel<StreamAction, StreamState, StreamEffect> by viewModels { factory }
 
     private val holderFactory: HolderFactory = StreamsHolderFactory(onStreamClick = { streamId ->
         streamViewModel.state.ifResult {
@@ -58,7 +62,7 @@ class StreamFragment : Fragment(R.layout.fragment_channels_stream),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViews()
         streamViewModel.bind(this)
-        streamViewModel.accept(StreamAction.UploadStreams(streamType))
+        streamViewModel.accept(StreamAction.LoadStreams(streamType))
     }
 
     private fun initViews() {

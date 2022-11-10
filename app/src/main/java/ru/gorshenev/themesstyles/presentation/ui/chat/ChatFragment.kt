@@ -10,6 +10,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -19,6 +20,7 @@ import ru.gorshenev.themesstyles.data.Errors
 import ru.gorshenev.themesstyles.databinding.FragmentChatBinding
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviView
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModel
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModelFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.Adapter
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
@@ -36,15 +38,16 @@ ChatFragment : Fragment(R.layout.fragment_chat),
     MviView<ChatState, ChatEffect> {
     private val binding: FragmentChatBinding by viewBinding()
 
+    private val bottomSheet: BottomSheet = BottomSheet()
+
     private val topicName: String by lazy { arguments?.getString(TPC_NAME).toString() }
 
     private val streamName: String by lazy { arguments?.getString(STR_NAME).toString() }
 
     @Inject
-    lateinit var bottomSheet: BottomSheet
+    lateinit var factory: MviViewModelFactory<ChatAction, ChatState, ChatEffect>
 
-    @Inject
-    lateinit var chatViewModel: MviViewModel<ChatAction, ChatState, ChatEffect>
+    private val chatViewModel: MviViewModel<ChatAction, ChatState, ChatEffect> by viewModels { factory }
 
     private val holderFactory: HolderFactory = ChatHolderFactory(
         longClick = { messageId ->
@@ -72,7 +75,7 @@ ChatFragment : Fragment(R.layout.fragment_chat),
         initSendingMessages()
         initStreamAndTopicNames()
         chatViewModel.bind(this)
-        chatViewModel.accept(ChatAction.UploadMessages(streamName, topicName))
+        chatViewModel.accept(ChatAction.LoadMessages(streamName, topicName))
     }
 
 
@@ -89,7 +92,7 @@ ChatFragment : Fragment(R.layout.fragment_chat),
                     if (position == START_LOADING_POSITION && dy != ZERO_SCROLL_POSITION) {
                         progress(true)
                         chatViewModel.accept(
-                            ChatAction.UploadMoreMessages(streamName, topicName)
+                            ChatAction.LoadMoreMessages(streamName, topicName)
                         )
                     }
                 }

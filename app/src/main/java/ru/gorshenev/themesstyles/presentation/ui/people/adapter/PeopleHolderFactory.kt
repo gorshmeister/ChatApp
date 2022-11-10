@@ -6,7 +6,7 @@ import ru.gorshenev.themesstyles.presentation.base.recycler_view.BaseViewHolder
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.HolderFactory
 import javax.inject.Inject
 
-class PeopleHolderFactory @Inject constructor() : HolderFactory() {
+class PeopleHolderFactory : HolderFactory() {
 
     override fun createViewHolder(view: View, viewType: Int): BaseViewHolder<*>? {
         return when (viewType) {

@@ -10,7 +10,7 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.StreamFragment
 interface StreamComponent {
     fun inject(fragment: StreamFragment)
 
-    @dagger.Subcomponent.Builder
+    @Subcomponent.Builder
     interface Builder {
 
         fun build(): StreamComponent

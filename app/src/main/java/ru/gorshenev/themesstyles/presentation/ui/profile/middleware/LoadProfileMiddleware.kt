@@ -8,14 +8,14 @@ import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileState
 import javax.inject.Inject
 
-class LoadMiddleware @Inject constructor(private val repository: ProfileRepository) :
+class LoadProfileMiddleware @Inject constructor(private val repository: ProfileRepository) :
     Middleware<ProfileAction, ProfileState> {
 
     override fun bind(
         actions: Observable<ProfileAction>,
         state: Observable<ProfileState>
     ): Observable<ProfileAction> {
-        return actions.ofType(ProfileAction.UploadProfile::class.java)
+        return actions.ofType(ProfileAction.LoadProfile::class.java)
             .flatMapSingle<ProfileAction> {
                 repository.getUser()
                     .map<ProfileInternalAction> { result ->

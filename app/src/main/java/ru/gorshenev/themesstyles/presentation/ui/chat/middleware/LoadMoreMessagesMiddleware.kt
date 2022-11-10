@@ -9,13 +9,13 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.ChatInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.chat.ChatState
 import javax.inject.Inject
 
-class LoadMoreMiddleware @Inject constructor(private val repository: ChatRepository) :
+class LoadMoreMessagesMiddleware @Inject constructor(private val repository: ChatRepository) :
     Middleware<ChatAction, ChatState> {
     override fun bind(
         actions: Observable<ChatAction>,
         state: Observable<ChatState>
     ): Observable<ChatAction> {
-        return actions.ofType(ChatAction.UploadMoreMessages::class.java)
+        return actions.ofType(ChatAction.LoadMoreMessages::class.java)
             .withLatestFrom(state) { action, currentState -> action to currentState }
             .filter { (_, state) -> state is ChatState.Result && !state.isPaginationLoading }
             .flatMap { (action, state) ->

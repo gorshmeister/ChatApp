@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Module(
     includes = [NetworkModule::class],
-    subcomponents = [ChannelComponent::class,StreamComponent::class, ChatComponent::class, PeopleComponent::class,ProfileComponent::class]
+    subcomponents = [StreamComponent::class, ChatComponent::class, PeopleComponent::class,ProfileComponent::class]
 )
 class AppModule {
 

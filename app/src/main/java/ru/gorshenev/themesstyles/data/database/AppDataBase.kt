@@ -1,8 +1,6 @@
 package ru.gorshenev.themesstyles.data.database
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import ru.gorshenev.themesstyles.data.database.dao.MessageDao
 import ru.gorshenev.themesstyles.data.database.dao.StreamDao
@@ -25,23 +23,6 @@ abstract class AppDataBase : RoomDatabase() {
     abstract fun messageDao(): MessageDao
 
     companion object {
-        @Volatile
-        private var INSTANCE: AppDataBase? = null
-
-        fun getDataBase(context: Context): AppDataBase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDataBase::class.java,
-                    DB_NAME,
-                )
-                    .fallbackToDestructiveMigration()
-                    .build()
-                INSTANCE = instance
-                instance
-            }
-        }
-
         const val DB_NAME = "appDataBase"
         const val MESSAGE = "message"
         const val REACTION = "reaction"

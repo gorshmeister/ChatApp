@@ -10,7 +10,7 @@ import ru.gorshenev.themesstyles.presentation.ui.people.PeopleFragment
 interface PeopleComponent {
     fun inject(fragment: PeopleFragment)
 
-    @dagger.Subcomponent.Builder
+    @Subcomponent.Builder
     interface Builder {
 
         fun build(): PeopleComponent

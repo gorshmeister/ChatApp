@@ -9,13 +9,13 @@ import ru.gorshenev.themesstyles.presentation.ui.people.PeopleInternalAction
 import ru.gorshenev.themesstyles.presentation.ui.people.PeopleState
 import javax.inject.Inject
 
-class LoadMiddleware @Inject constructor(private val repository: PeopleRepository) :
+class LoadPeopleMiddleware @Inject constructor(private val repository: PeopleRepository) :
     Middleware<PeopleAction, PeopleState> {
     override fun bind(
         actions: Observable<PeopleAction>,
         state: Observable<PeopleState>
     ): Observable<PeopleAction> {
-        return actions.ofType(PeopleAction.UploadUsers::class.java)
+        return actions.ofType(PeopleAction.LoadUsers::class.java)
             .flatMapSingle<PeopleAction> {
                 repository.getUsers()
                     .map<PeopleInternalAction> { PeopleInternalAction.LoadResult(it.toUi()) }

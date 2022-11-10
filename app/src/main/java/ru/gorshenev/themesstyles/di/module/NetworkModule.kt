@@ -4,20 +4,26 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import dagger.Module
 import dagger.Provides
 import kotlinx.serialization.json.Json
+import okhttp3.Credentials
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import ru.gorshenev.themesstyles.data.network.Interceptor
-import ru.gorshenev.themesstyles.data.network.Network
 import ru.gorshenev.themesstyles.data.network.ZulipApi
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
 class NetworkModule {
+
+    private val BASE_URL = "https://setjy.zulipchat.com/api/v1/"
+    private val AUTHORIZATION = "Authorization"
+    private val EMAIL = "gorshmeister@gmail.com"
+    private val API_KEY = "Q449RzIFTSEeCOMGFclHxoiC8AtPRJft"
+
 
     @Provides
     @Singleton
@@ -40,7 +46,14 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideInterceptor(): Interceptor {
-        return Interceptor
+        return Interceptor { chain ->
+            chain.proceed(
+                chain.request()
+                    .newBuilder()
+                    .header(AUTHORIZATION, Credentials.basic(EMAIL, API_KEY))
+                    .build()
+            )
+        }
     }
 
     @Provides
@@ -66,7 +79,7 @@ class NetworkModule {
     ): ZulipApi {
         val retrofit = Retrofit.Builder()
             .client(httpClient)
-            .baseUrl(Network.BASE_URL)
+            .baseUrl(BASE_URL)
             .addConverterFactory(converterFactory)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()

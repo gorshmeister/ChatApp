@@ -5,7 +5,7 @@ import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseAction
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseEffect
 
 sealed class StreamAction : BaseAction {
-    data class UploadStreams(val streamType: StreamFragment.StreamType) : StreamAction()
+    data class LoadStreams(val streamType: StreamFragment.StreamType) : StreamAction()
     data class SearchStream(val items: List<ViewTyped>, val query: String) : StreamAction()
     data class OnStreamClick(val streamId: Int, val items: List<ViewTyped>) : StreamAction()
     data class OnTopicClick(val topicId: Int, val items: List<ViewTyped>) : StreamAction()

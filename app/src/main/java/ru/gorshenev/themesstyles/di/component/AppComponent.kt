@@ -11,7 +11,6 @@ import javax.inject.Singleton
 @Singleton
 interface AppComponent {
 
-    fun channelComponent(): ChannelComponent.Builder
     fun streamComponent(): StreamComponent.Builder
     fun chatComponent(): ChatComponent.Builder
     fun peopleComponent(): PeopleComponent.Builder
@@ -24,4 +23,7 @@ interface AppComponent {
 
         fun build(): AppComponent
     }
+
+
+
 }

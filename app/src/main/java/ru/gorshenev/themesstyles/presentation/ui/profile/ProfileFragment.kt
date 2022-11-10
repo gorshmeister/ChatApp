@@ -7,13 +7,16 @@ import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
+import ru.gorshenev.themesstyles.ChatApp
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentProfileBinding
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviView
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModel
+import ru.gorshenev.themesstyles.presentation.base.mvi_core.MviViewModelFactory
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
 import ru.gorshenev.themesstyles.utils.Utils.appComponent
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
@@ -24,8 +27,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
     private val binding: FragmentProfileBinding by viewBinding()
 
     @Inject
-    lateinit var profileViewModel: MviViewModel<ProfileAction, ProfileState, ProfileEffect>
+    lateinit var factory: MviViewModelFactory<ProfileAction, ProfileState, ProfileEffect>
 
+    private val profileViewModel: MviViewModel<ProfileAction, ProfileState, ProfileEffect> by viewModels { factory }
 
     override fun onAttach(context: Context) {
         context.appComponent.profileComponent().build().inject(this)
@@ -37,7 +41,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
         this@ProfileFragment.setStatusBarColor(R.color.color_window_background)
 
         profileViewModel.bind(this)
-        profileViewModel.accept(ProfileAction.UploadProfile)
+        profileViewModel.accept(ProfileAction.LoadProfile)
     }
 
     override fun render(state: ProfileState) {
@@ -68,6 +72,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
     override fun onDestroyView() {
         super.onDestroyView()
         profileViewModel.unbind()
+        (context?.applicationContext as ChatApp).releaseProfile()
     }
 
 

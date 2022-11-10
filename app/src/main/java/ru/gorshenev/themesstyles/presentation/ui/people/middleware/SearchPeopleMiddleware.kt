@@ -10,7 +10,7 @@ import ru.gorshenev.themesstyles.presentation.ui.people.items.PeopleUi
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class SearchMiddleware @Inject constructor() : Middleware<PeopleAction, PeopleState> {
+class SearchPeopleMiddleware @Inject constructor() : Middleware<PeopleAction, PeopleState> {
     override fun bind(
         actions: Observable<PeopleAction>,
         state: Observable<PeopleState>

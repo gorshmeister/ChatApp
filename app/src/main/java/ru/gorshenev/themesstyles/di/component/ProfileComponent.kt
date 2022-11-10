@@ -10,7 +10,7 @@ import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileFragment
 interface ProfileComponent {
     fun inject(fragment: ProfileFragment)
 
-    @dagger.Subcomponent.Builder
+    @Subcomponent.Builder
     interface Builder {
 
         fun build(): ProfileComponent

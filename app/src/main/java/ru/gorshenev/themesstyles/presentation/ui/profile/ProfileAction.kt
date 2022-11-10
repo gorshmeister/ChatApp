@@ -4,7 +4,7 @@ import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseAction
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseEffect
 
 sealed class ProfileAction : BaseAction {
-    object UploadProfile : ProfileAction()
+    object LoadProfile : ProfileAction()
 }
 
 sealed class ProfileInternalAction : ProfileAction() {

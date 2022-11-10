@@ -35,7 +35,8 @@ class GetQueueMessageMiddleware @Inject constructor(private val repository: Chat
 
                         val scrollAction = Observable.just(ChatInternalAction.ScrollToTheEnd)
 
-                        Observable.concatArrayDelayError(getMessageAction, scrollAction)
+                        Observable.mergeDelayError(getMessageAction, scrollAction)
+//                        todo concatArray не отрабатывает скрол
                     }.onErrorReturn { ChatInternalAction.LoadError(it) }
             }
     }

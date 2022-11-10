@@ -1,6 +1,5 @@
 package ru.gorshenev.themesstyles.presentation.ui.channels
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
@@ -11,9 +10,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.FragmentChannelsBinding
-import ru.gorshenev.themesstyles.di.component.ChannelComponent
 import ru.gorshenev.themesstyles.presentation.ui.channels.view_pager.PagerAdapter
-import ru.gorshenev.themesstyles.utils.Utils.appComponent
 import ru.gorshenev.themesstyles.utils.Utils.setStatusBarColor
 import javax.inject.Inject
 
@@ -21,23 +18,16 @@ import javax.inject.Inject
 class ChannelsFragment : Fragment(R.layout.fragment_channels) {
     private val binding: FragmentChannelsBinding by viewBinding()
 
-    lateinit var channelComponent: ChannelComponent
-
-    override fun onAttach(context: Context) {
-        channelComponent = context.appComponent.channelComponent().fragment(this).build()
-        super.onAttach(context)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        channelComponent.inject(this)
+        initViews()
     }
 
-    @Inject
-    fun initViews(pagerAdapter: PagerAdapter) {
+    private fun initViews() {
         with(binding) {
             this@ChannelsFragment.setStatusBarColor(R.color.color_background_primary)
 
+            val pagerAdapter = PagerAdapter(parentFragmentManager, lifecycle)
             fragmentViewPager.adapter = pagerAdapter
 
             pagerAdapter.update(

@@ -5,12 +5,12 @@ import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseEffect
 import ru.gorshenev.themesstyles.presentation.base.recycler_view.ViewTyped
 
 sealed class ChatAction : BaseAction {
-    data class UploadMessages(
+    data class LoadMessages(
         val streamName: String,
         val topicName: String
     ) : ChatAction()
 
-    data class UploadMoreMessages(
+    data class LoadMoreMessages(
         val streamName: String,
         val topicName: String,
     ) : ChatAction()

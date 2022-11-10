@@ -10,13 +10,13 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.ChatState
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class LoadMiddleware @Inject constructor(private val repository: ChatRepository) :
+class LoadMessagesMiddleware @Inject constructor(private val repository: ChatRepository) :
     Middleware<ChatAction, ChatState> {
     override fun bind(
         actions: Observable<ChatAction>,
         state: Observable<ChatState>
     ): Observable<ChatAction> {
-        return actions.ofType(ChatAction.UploadMessages::class.java)
+        return actions.ofType(ChatAction.LoadMessages::class.java)
             .flatMap { action ->
                 repository.getMessages(
                     streamName = action.streamName,

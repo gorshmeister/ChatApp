@@ -5,7 +5,7 @@ import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseAction
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseEffect
 
 sealed class PeopleAction : BaseAction {
-    object UploadUsers : PeopleAction()
+    object LoadUsers : PeopleAction()
     data class SearchUsers(val items: List<ViewTyped>, val query: String) : PeopleAction()
 }
 

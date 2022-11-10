@@ -11,7 +11,7 @@ import ru.gorshenev.themesstyles.presentation.ui.channels.items.StreamUi
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class SearchMiddleware @Inject constructor() : Middleware<StreamAction, StreamState> {
+class SearchStreamMiddleware @Inject constructor() : Middleware<StreamAction, StreamState> {
     override fun bind(
         actions: Observable<StreamAction>,
         state: Observable<StreamState>

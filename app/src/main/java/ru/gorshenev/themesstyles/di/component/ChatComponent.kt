@@ -10,7 +10,7 @@ import ru.gorshenev.themesstyles.presentation.ui.chat.ChatFragment
 interface ChatComponent {
     fun inject(fragment: ChatFragment)
 
-    @dagger.Subcomponent.Builder
+    @Subcomponent.Builder
     interface Builder {
 
         fun build(): ChatComponent
