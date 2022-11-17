@@ -8,12 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
-import ru.gorshenev.themesstyles.ChatApp
 import ru.gorshenev.themesstyles.R
 import ru.gorshenev.themesstyles.databinding.ActivityMainBinding
 import ru.gorshenev.themesstyles.presentation.ui.channels.ChannelsFragment
 import ru.gorshenev.themesstyles.presentation.ui.people.PeopleFragment
-import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileFragment
+import ru.gorshenev.themesstyles.presentation.ui.profile.coroutines.ProfileCoroutinesFragment
+import ru.gorshenev.themesstyles.presentation.ui.profile.rx.ProfileFragment
 
 class MainActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivityMainBinding::bind)
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
                 val selectedFragment: Fragment = when (item.itemId) {
                     R.id.channels -> ChannelsFragment()
                     R.id.people -> PeopleFragment()
-                    R.id.profile -> ProfileFragment()
+                    R.id.profile -> ProfileCoroutinesFragment()
                     else -> throw Error(getString(R.string.unknown_fragment))
                 }
                 supportFragmentManager.beginTransaction()

@@ -1,4 +1,4 @@
-package ru.gorshenev.themesstyles.presentation.ui.profile
+package ru.gorshenev.themesstyles.presentation.ui.profile.rx
 
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseAction
 import ru.gorshenev.themesstyles.presentation.base.mvi_core.BaseEffect

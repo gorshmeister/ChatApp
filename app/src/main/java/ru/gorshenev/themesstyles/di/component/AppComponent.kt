@@ -4,7 +4,6 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import ru.gorshenev.themesstyles.di.module.AppModule
-import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileFragment
 import javax.inject.Singleton
 
 @Component(modules = [AppModule::class])

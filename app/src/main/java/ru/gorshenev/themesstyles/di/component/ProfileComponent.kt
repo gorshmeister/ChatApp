@@ -3,12 +3,14 @@ package ru.gorshenev.themesstyles.di.component
 import dagger.Subcomponent
 import ru.gorshenev.themesstyles.di.module.ProfileModule
 import ru.gorshenev.themesstyles.di.scope.ProfileScope
-import ru.gorshenev.themesstyles.presentation.ui.profile.ProfileFragment
+import ru.gorshenev.themesstyles.presentation.ui.profile.coroutines.ProfileCoroutinesFragment
+import ru.gorshenev.themesstyles.presentation.ui.profile.rx.ProfileFragment
 
 @Subcomponent(modules = [ProfileModule::class])
 @ProfileScope
 interface ProfileComponent {
     fun inject(fragment: ProfileFragment)
+    fun inject(fragment: ProfileCoroutinesFragment)
 
     @Subcomponent.Builder
     interface Builder {
