@@ -13,6 +13,13 @@ The application is written in order to get acquainted with the practices and too
   * Glide
   * Room
   * Dagger2
+  
+  ***
+  
+  - ![715](https://user-images.githubusercontent.com/94898232/202643785-3e8ec17d-be09-4a90-8701-e29d28e40db7.gif)
+  - ![714](https://user-images.githubusercontent.com/94898232/202643971-d57dcef9-a02b-44d5-b0ca-4de976b2d141.gif)
+
+***
 
 ## As I was writing the application, I got acquainted with: 
 * ### Kotlin
