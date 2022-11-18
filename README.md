@@ -61,7 +61,7 @@ The application is written in order to get acquainted with the practices and too
   * Basic design principles: DRY, KISS, YAGNI, SOLID
   * Architectural patterns: MVC, MVP, MVVM
 * ### Dagger2 Framework
-  * Basic principles of dependency injection
+  * Basic principles of **Dependency injection**
 * ### Automation
   * How to write tests and autotests correctly
   * What are the built-in tools and third-party libraries for this
